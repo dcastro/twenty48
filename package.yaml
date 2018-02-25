@@ -47,6 +47,12 @@ dependencies:
 - wai
 - foreign-store
 
+ghc-options:
+- -fdefer-typed-holes
+
+default-extensions:
+- NoImplicitPrelude
+
 # The library contains all of our application code. The executable
 # defined below is just a thin wrapper.
 library:
