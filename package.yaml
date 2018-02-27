@@ -47,6 +47,7 @@ dependencies:
 - wai
 - foreign-store
 - MonadRandom
+- yesod-websockets
 
 ghc-options:
 - -fdefer-typed-holes

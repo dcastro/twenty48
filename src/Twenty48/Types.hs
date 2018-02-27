@@ -6,13 +6,14 @@ import           Import
 import qualified Data.Text as T
 
 newtype Piece = Piece { unPiece :: Int }
-  deriving Show
+  deriving (Eq, Show)
 
 type Row = [Maybe Piece]
 
 type Board = [Row]
 
 data Move = U | R | D | L
+  deriving (Enum, Bounded, Show)
 
 -- Coordinates (x, y),
 -- where x is the horizontal axis (left to right)
@@ -27,8 +28,8 @@ sampleBoard = fmap (fmap (fmap (Piece))) $
   , [Just 4, Just 4, Just 2, Just 2]
   ]
 
-printBoard :: Board -> Text
-printBoard rows =
+printBoard :: Board -> IO ()
+printBoard rows = putStrLn $
   T.intercalate "\n" $ fmap printRow rows
   where
     printRow :: Row -> Text
