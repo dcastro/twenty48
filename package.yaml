@@ -46,6 +46,7 @@ dependencies:
 - case-insensitive
 - wai
 - foreign-store
+- MonadRandom
 
 ghc-options:
 - -fdefer-typed-holes
