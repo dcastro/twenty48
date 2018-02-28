@@ -12,3 +12,4 @@
 /comments CommentR POST
 
 /profile ProfileR GET
+/2048 Twenty48R GET
