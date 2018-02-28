@@ -10,7 +10,10 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
 
-  this.setup();
+  const url = location.href.replace(/^(https:\/\/)|(http:\/\/)/, "ws://")
+  this.conn = new WebSocket(url);
+
+  this.conn.onopen = () => this.setup();
 }
 
 // Restart the game
@@ -56,6 +59,8 @@ GameManager.prototype.setup = function () {
 
   // Update the actuator
   this.actuate();
+
+  this.conn.send(this.grid.wsSerialize());
 };
 
 // Set up the initial tiles to start the game with

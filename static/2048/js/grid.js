@@ -115,3 +115,17 @@ Grid.prototype.serialize = function () {
     cells: cellState
   };
 };
+
+Grid.prototype.wsSerialize = function() {
+  const transpose = grid =>
+    grid[0].map((_, i) => grid.map(row => row[i]));
+
+  return JSON.stringify(transpose(
+    this.cells.map(row =>
+      row.map(cell =>
+        cell ? cell.value : null
+      )
+    )
+  ));
+}
+

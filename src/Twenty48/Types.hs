@@ -1,12 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Twenty48.Types where
 
 import           Import
 import qualified Data.Text as T
+import           Data.Aeson.TH
 
 newtype Piece = Piece { unPiece :: Int }
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
+
+$(deriveJSON defaultOptions { unwrapUnaryRecords = True } ''Piece)
 
 type Row = [Maybe Piece]
 
