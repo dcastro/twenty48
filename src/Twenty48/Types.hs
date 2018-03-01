@@ -18,7 +18,10 @@ type Row = [Maybe Piece]
 type Board = [Row]
 
 data Move = U | R | D | L
-  deriving (Enum, Bounded, Show)
+  deriving (Enum, Bounded, Show, Generic)
+
+$(deriveJSON defaultOptions ''Move)
+  
 
 -- Coordinates (x, y),
 -- where x is the horizontal axis (left to right)
