@@ -451,21 +451,29 @@ hr {
   @include animation-fill-mode(backwards);
 }
 
-.above-game {
-  @include clearfix;
+.above-game-buttons {
+
+  display: flex;
+  @include smaller($mobile-threshold) {
+    flex-wrap: wrap;
+  }
+
+  > a {
+    @include button;
+    flex-grow: 1;
+    flex-basis: 100%;
+    text-align: center;
+    margin: 0 0 0 2px;
+
+    @include smaller($mobile-threshold) {
+      margin: 0 0 2px 0;
+    }
+  }
 }
 
 .game-intro {
-  float: left;
   line-height: 42px;
   margin-bottom: 0;
-}
-
-.restart-button {
-  @include button;
-  display: block;
-  text-align: center;
-  float: right;
 }
 
 .game-explanation {
@@ -512,7 +520,6 @@ hr {
 
   // Show intro and restart button side by side
   .game-intro {
-    width: 55%;
     display: block;
     box-sizing: border-box;
     line-height: 1.65;

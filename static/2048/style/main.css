@@ -492,28 +492,31 @@ hr {
   -moz-animation-fill-mode: backwards;
   animation-fill-mode: backwards; }
 
-.above-game:after {
-  content: "";
-  display: block;
-  clear: both; }
+.above-game-buttons {
+  display: flex; }
+  @media screen and (max-width: 520px) {
+    .above-game-buttons {
+      flex-wrap: wrap; } }
+  .above-game-buttons > a {
+    display: inline-block;
+    background: #8f7a66;
+    border-radius: 3px;
+    padding: 0 20px;
+    text-decoration: none;
+    color: #f9f6f2;
+    height: 40px;
+    line-height: 42px;
+    flex-grow: 1;
+    flex-basis: 100%;
+    text-align: center;
+    margin: 0 0 0 2px; }
+    @media screen and (max-width: 520px) {
+      .above-game-buttons > a {
+        margin: 0 0 2px 0; } }
 
 .game-intro {
-  float: left;
   line-height: 42px;
   margin-bottom: 0; }
-
-.restart-button {
-  display: inline-block;
-  background: #8f7a66;
-  border-radius: 3px;
-  padding: 0 20px;
-  text-decoration: none;
-  color: #f9f6f2;
-  height: 40px;
-  line-height: 42px;
-  display: block;
-  text-align: center;
-  float: right; }
 
 .game-explanation {
   margin-top: 50px; }
@@ -543,7 +546,6 @@ hr {
     margin-bottom: 10px; }
 
   .game-intro {
-    width: 55%;
     display: block;
     box-sizing: border-box;
     line-height: 1.65; }
