@@ -8,7 +8,7 @@ module Handler.Twenty48 where
 import Import
 import Yesod.WebSockets
 import qualified Data.Aeson       as J
-import           Data.Aeson.TH    (deriveJSON, defaultOptions)
+import           Data.Aeson.TH    (deriveFromJSON, deriveToJSON, defaultOptions)
 import           Twenty48.Types
 import           Twenty48.Twenty48
 
@@ -22,8 +22,8 @@ wsApp =
   forever $ do
     msg <- J.decodeStrict' <$> receiveData
     case msg of
-      Just (AutoPlayOnceMsg board)  -> sendTextData $ J.encode $ MoveMsg U
-      _                             -> error "Unexpected message received"
+      Just (AutoPlayOnceMsg b)  -> sendTextData $ J.encode $ MoveMsg U
+      _                         -> error "Unexpected message received"
 
 data OutMsg
   = MoveMsg { direction :: Direction }
@@ -35,7 +35,7 @@ data InMsg =
   | OtherIn
   deriving (Generic, Show)
 
-$(deriveJSON defaultOptions ''OutMsg)
-$(deriveJSON defaultOptions ''InMsg)
+$(deriveToJSON defaultOptions ''OutMsg)
+$(deriveFromJSON defaultOptions ''InMsg)
 
 

@@ -1,14 +1,18 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DeriveFoldable #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 
 module Twenty48.Twenty48 where
 
 import           Import
 import           Twenty48.Types
 import           Utils.List (mapi, updated, padRight)
-import           Data.List (transpose, nub)
+import           Data.List (transpose)
 import           Utils.Random (oneFrom)
 import           Control.Monad.Random (MonadRandom)
 import           Data.Aeson.TH (defaultOptions, deriveJSON)
@@ -25,12 +29,26 @@ data StateTree current next a =
     { root :: a
     , forest :: [(current, StateTree next current a)]
     }
-  deriving Functor
+  deriving (Functor, Foldable, Show)
+
+instance MonoFoldable (StateTree c n a)
+type instance Element (StateTree c n a) = a
+
+printStateTree :: (Show c, Show n, Show a) => Int -> StateTree c n a -> IO ()
+printStateTree indent StateTree{..} = do
+
+  putStrLn $ unlines $ map (replicate indent ' ' <>) $ lines $ tshow root
+
+  let newIndent = indent + 4
+  forM_ forest $ \(move, subTree) -> do
+    putStrLn $ replicate newIndent '-' <> tshow move
+    printStateTree newIndent subTree
 
 
 -------------------------------------------------------
 -------------------------------------------------------
 data Player = Player Direction
+  deriving (Show)
 
 data Direction = U | R | D | L
   deriving (Enum, Bounded, Show, Generic)
@@ -41,20 +59,26 @@ directions :: [Direction]
 directions = [minBound .. maxBound]
 
 playPlayer :: Direction -> Board -> Board
-playPlayer dir rows = 
-  case dir of
-    L -> padRight Nothing 4 . fmap Just . mergeLeft . catMaybes <$> rows
-    R -> fmap reverse . playPlayer L . fmap reverse $ rows
-    U -> transpose . playPlayer L . transpose $ rows
-    D -> transpose . playPlayer R . transpose $ rows
+playPlayer d (Board rs) =
+  Board (playPlayer' d rs)
+  where
+
+    playPlayer' :: Direction -> [Row] -> [Row]
+    playPlayer' dir rows = 
+      case dir of
+        L -> padRight Nothing 4 . fmap Just . mergeLeft . catMaybes <$> rows
+        R -> fmap reverse . playPlayer' L . fmap reverse $ rows
+        U -> transpose . playPlayer' L . transpose $ rows
+        D -> transpose . playPlayer' R . transpose $ rows
 
 -------------------------------------------------------
 -------------------------------------------------------
 
 data Computer = Computer Coord Piece
+  deriving (Show)
 
 freeCoords :: Board -> [Coord]
-freeCoords rows = join $ mapi freeCoords' rows
+freeCoords (Board rows) = join $ mapi freeCoords' rows
   where
     freeCoords' :: Int -> Row -> [Coord]
     freeCoords' y row = 
@@ -68,8 +92,8 @@ computerAvailableMoves :: Board -> [Computer]
 computerAvailableMoves board = Computer <$> freeCoords board <*> [Piece 2, Piece 4]
 
 playComputer :: Computer -> Board -> Board
-playComputer (Computer (x, y) piece) =
-  updated y $ updated x (const $ Just piece)
+playComputer (Computer (x, y) piece) (Board rows) =
+  Board $ updated y (updated x (const $ Just piece)) rows
 
 
 -------------------------------------------------------
@@ -88,7 +112,7 @@ unfoldPlayerStateTree board =
       in  if newBoard == board
             then Nothing
             else Just (Player dir, unfoldComputerStateTree newBoard)
-  
+            
 unfoldComputerStateTree :: Board -> StateTree Computer Player Board
 unfoldComputerStateTree board = 
   StateTree { root = board, forest = subTrees }
