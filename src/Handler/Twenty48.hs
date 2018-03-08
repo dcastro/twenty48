@@ -9,7 +9,8 @@ import Import
 import Yesod.WebSockets
 import qualified Data.Aeson       as J
 import           Data.Aeson.TH    (deriveJSON, defaultOptions)
-import Twenty48.Types
+import           Twenty48.Types
+import           Twenty48.Twenty48
 
 getTwenty48R :: Handler Html
 getTwenty48R = do
@@ -25,7 +26,7 @@ wsApp =
       _                             -> error "Unexpected message received"
 
 data OutMsg
-  = MoveMsg { direction :: Move }
+  = MoveMsg { direction :: Direction }
   | OtherOut
   deriving (Generic)
 
