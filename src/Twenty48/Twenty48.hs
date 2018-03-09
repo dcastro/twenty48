@@ -16,6 +16,7 @@ import           Data.List (transpose)
 import           Utils.Random (oneFrom)
 import           Control.Monad.Random (MonadRandom)
 import           Data.Aeson.TH (defaultOptions, deriveJSON)
+import           Numeric.Natural (Natural)
 
 -- left to right
 mergeLeft :: [Piece] -> [Piece]
@@ -44,6 +45,13 @@ printStateTree indent StateTree{..} = do
     putStrLn $ replicate newIndent '-' <> tshow move
     printStateTree newIndent subTree
 
+height :: StateTree c n a -> Natural
+height StateTree{..} =
+  maybe 0 (+1) $ maximumMay $ fmap (height . snd) forest
+
+pruneHeight :: Int -> StateTree c n a -> StateTree c n a
+pruneHeight 0 StateTree{..} = StateTree root []
+pruneHeight n StateTree{..} = StateTree root $ map (second (pruneHeight (n-1))) forest
 
 -------------------------------------------------------
 -------------------------------------------------------
@@ -122,10 +130,6 @@ unfoldComputerStateTree board =
 
     subTree :: Computer -> (Computer, StateTree Player Computer Board)
     subTree c = (c, unfoldPlayerStateTree (playComputer c board))
-
-pruneDepth :: Int -> StateTree c n a -> StateTree c n a
-pruneDepth 0 StateTree{..} = StateTree root []
-pruneDepth n StateTree{..} = StateTree root $ map (second (pruneDepth (n-1))) forest
 
 -------------------------------------------------------
 -------------------------------------------------------
