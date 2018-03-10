@@ -17,6 +17,7 @@ import           Utils.Random (oneFrom)
 import           Control.Monad.Random (MonadRandom)
 import           Data.Aeson.TH (defaultOptions, deriveJSON)
 import           Numeric.Natural (Natural)
+import           Data.Tree (Tree(..), drawTree)
 
 -- left to right
 mergeLeft :: [Piece] -> [Piece]
@@ -35,15 +36,14 @@ data StateTree current next a =
 instance MonoFoldable (StateTree c n a)
 type instance Element (StateTree c n a) = a
 
-printStateTree :: (Show c, Show n, Show a) => Int -> StateTree c n a -> IO ()
-printStateTree indent StateTree{..} = do
-
-  putStrLn $ unlines $ map (replicate indent ' ' <>) $ lines $ tshow root
-
-  let newIndent = indent + 4
-  forM_ forest $ \(move, subTree) -> do
-    putStrLn $ replicate newIndent '-' <> tshow move
-    printStateTree newIndent subTree
+ppStateTree :: (Show c, Show n, Show a) => StateTree c n a -> IO ()
+ppStateTree tree = putStrLn $ pack $ drawTree $ ppStateTree' Nothing tree
+  where
+    ppStateTree' :: (Show c, Show n, Show a) => Maybe n -> StateTree c n a -> Tree String
+    ppStateTree' turn StateTree{..} =
+      Node
+        (maybe "-" show turn <> "\n" <> show root)
+        (uncurry ppStateTree' . first Just <$> forest)
 
 height :: StateTree c n a -> Natural
 height StateTree{..} =

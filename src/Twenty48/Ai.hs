@@ -48,3 +48,5 @@ printPaths = traverse_ printPath
     printPath (turns, score) = do
       putStrLn $ "Score: " <> tshow score
       traverse_ (putStrLn . tshow) turns
+
+
