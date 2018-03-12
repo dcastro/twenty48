@@ -31,19 +31,19 @@ maximize :: StateTree Player Computer Score -> NonNull [Path]
 maximize StateTree{..} = 
   fromMaybe (singleton (Path [] root)) $ fromNullable maxs
     where
-      maxs = map max' forest
+      maxs = map maximum $ map minimize' forest
 
-      max' :: (Player, StateTree Computer Player Score) -> Path
-      max' (player, sub) = addTurn (P player) $ maximum $ minimize sub
+      minimize' :: (Player, StateTree Computer Player Score) -> NonNull [Path]
+      minimize' (player, sub) = mapNonNull (addTurn (P player)) $ minimize sub
 
 minimize :: StateTree Computer Player Score -> NonNull [Path]
 minimize StateTree{..} =
-  fromMaybe (singleton (Path [] root)) $ fromNullable maxs
+  fromMaybe (singleton (Path [] root)) $ fromNullable mins
     where
-      maxs = map min' forest
+      mins = map minimum $ map maximize' forest      
 
-      min' :: (Computer, StateTree Player Computer Score) -> Path
-      min' (computer, sub) = addTurn (C computer) $ minimum $ maximize sub
+      maximize' :: (Computer, StateTree Player Computer Score) -> NonNull [Path]
+      maximize' (computer, sub) = mapNonNull (addTurn (C computer)) $ maximize sub
 
 printPaths :: NonNull [Path] -> IO ()
 printPaths = traverse_ printPath
