@@ -56,10 +56,10 @@ pruneHeight n StateTree{..} = StateTree root $ map (second (pruneHeight (n-1))) 
 -------------------------------------------------------
 -------------------------------------------------------
 data Player = Player Direction
-  deriving (Show)
+  deriving (Show, Eq)
 
 data Direction = U | R | D | L
-  deriving (Enum, Bounded, Show, Generic)
+  deriving (Enum, Bounded, Show, Generic, Eq)
 
 $(deriveJSON defaultOptions ''Direction)
 
@@ -83,7 +83,7 @@ playPlayer d (Board rs) =
 -------------------------------------------------------
 
 data Computer = Computer Coord Piece
-  deriving (Show)
+  deriving (Show, Eq)
 
 freeCoords :: Board -> [Coord]
 freeCoords (Board rows) = join $ mapi freeCoords' rows

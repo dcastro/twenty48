@@ -16,36 +16,40 @@ boardEval :: Board -> Score
 boardEval _ = unsafePerformIO $ randomRIO (1, 1000)
 
 data Turn = P Player | C Computer
-  deriving (Show)
+  deriving (Show, Eq)
 
-maximize :: StateTree Player Computer Score -> NonNull [([Turn], Score)]
+data Path = Path [Turn] Score
+  deriving (Show, Eq)
+
+addTurn :: Turn -> Path -> Path
+addTurn turn (Path turns score) = Path (turn : turns) score
+
+instance Ord Path where
+  Path _ x <= Path _ y = x <= y
+
+maximize :: StateTree Player Computer Score -> NonNull [Path]
 maximize StateTree{..} = 
-  fromMaybe (singleton ([], root)) $ fromNullable maxs
+  fromMaybe (singleton (Path [] root)) $ fromNullable maxs
     where
       maxs = map max' forest
 
-      max' :: (Player, StateTree Computer Player Score) -> ([Turn], Score)
-      max' (player, sub) = 
-        let (turns, score) = maximumBy (comparing snd) $ minimize sub
-        in  (P player : turns, score)
+      max' :: (Player, StateTree Computer Player Score) -> Path
+      max' (player, sub) = addTurn (P player) $ maximum $ minimize sub
 
-minimize :: StateTree Computer Player Score -> NonNull [([Turn], Score)]
+minimize :: StateTree Computer Player Score -> NonNull [Path]
 minimize StateTree{..} =
-  fromMaybe (singleton ([], root)) $ fromNullable maxs
+  fromMaybe (singleton (Path [] root)) $ fromNullable maxs
     where
       maxs = map min' forest
 
-      min' :: (Computer, StateTree Player Computer Score) -> ([Turn], Score)
-      min' (player, sub) = 
-        let (turns, score) = minimumBy (comparing snd) $ maximize sub
-        in  (C player : turns, score)
+      min' :: (Computer, StateTree Player Computer Score) -> Path
+      min' (computer, sub) = addTurn (C computer) $ minimum $ maximize sub
 
-
-printPaths :: NonNull [([Turn], Score)] -> IO ()
+printPaths :: NonNull [Path] -> IO ()
 printPaths = traverse_ printPath
   where
-    printPath :: ([Turn], Score) -> IO ()
-    printPath (turns, score) = do
+    printPath :: Path -> IO ()
+    printPath (Path turns score) = do
       putStrLn $ "Score: " <> tshow score
       traverse_ (putStrLn . tshow) turns
 
