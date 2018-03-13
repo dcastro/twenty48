@@ -26,6 +26,8 @@ mergeLeft (Piece x : Piece y : xs)
   | otherwise = Piece x : mergeLeft (Piece y : xs)
 mergeLeft xs = xs
 
+-- | Keep track of the player whose turn it is to play
+-- | and the ones who goes after
 data StateTree current next a = 
   StateTree
     { root :: a
@@ -70,7 +72,6 @@ playPlayer :: Direction -> Board -> Board
 playPlayer d (Board rs) =
   Board (playPlayer' d rs)
   where
-
     playPlayer' :: Direction -> [Row] -> [Row]
     playPlayer' dir rows = 
       case dir of
@@ -107,29 +108,28 @@ playComputer (Computer (x, y) piece) (Board rows) =
 -------------------------------------------------------
 -------------------------------------------------------
 
-unfoldPlayerStateTree :: Board -> StateTree Player Computer Board
-unfoldPlayerStateTree board =
-  StateTree { root = board, forest = subTrees }
-  where
-    subTrees :: [(Player, StateTree Computer Player Board)]
-    subTrees = catMaybes $ fmap subTree directions
+unfoldTree  :: (a -> [(c, a)])
+            -> (a -> [(n, a)])
+            -> a
+            -> StateTree c n a 
+unfoldTree f g a =
+  StateTree
+    { root = a
+    , forest = second (unfoldTree g f) <$> f a
+    }
 
-    subTree :: Direction -> Maybe (Player, StateTree Computer Player Board)
-    subTree dir =
-      let newBoard = playPlayer dir board
-      in  if newBoard == board
-            then Nothing
-            else Just (Player dir, unfoldComputerStateTree newBoard)
-            
-unfoldComputerStateTree :: Board -> StateTree Computer Player Board
-unfoldComputerStateTree board = 
-  StateTree { root = board, forest = subTrees }
+unfoldPlayerTree :: Board -> StateTree Player Computer Board
+unfoldPlayerTree board = unfoldTree f g board
   where
-    subTrees :: [(Computer, StateTree Player Computer Board)]
-    subTrees = fmap subTree (computerAvailableMoves board)
-
-    subTree :: Computer -> (Computer, StateTree Player Computer Board)
-    subTree c = (c, unfoldPlayerStateTree (playComputer c board))
+    f :: Board -> [(Player, Board)]
+    f b = catMaybes $ flip map directions $ \dir ->
+            let newBoard = playPlayer dir b
+            in  if newBoard == b
+                  then Nothing
+                  else Just (Player dir, newBoard)
+    g :: Board -> [(Computer, Board)]
+    g b = flip map (computerAvailableMoves b) $ \c ->
+            (c, playComputer c b)
 
 -------------------------------------------------------
 -------------------------------------------------------
