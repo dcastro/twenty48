@@ -16,20 +16,16 @@ boardEval :: Board -> Score
 boardEval b = smoothness b
 
 smoothness :: Board -> Score
-smoothness (Board rows) = getSum $ foldMap (Sum . negate . abs . truncate) distances
+smoothness (Board rows) = negate . getSum . foldMap (Sum . abs . truncate) $ distances
   where    
-    distances = (distanceBetweenPairs =<< unwrapRows rows) ++
-                (distanceBetweenPairs =<< unwrapRows (transpose rows))
-    unwrapRows :: [Row] -> [[Piece]]
-    unwrapRows rs = map catMaybes rs
+    distances = (distanceBetweenPairs =<< rows) ++
+                (distanceBetweenPairs =<< transpose rows)
 
-distanceBetweenPairs :: [Piece] -> [Double]
+distanceBetweenPairs :: Row -> [Double]
 distanceBetweenPairs row =
-  map distance . pairs . map realToFrac . map unPiece $ row
+  map distance . pairs . map (realToFrac . unPiece) . catMaybes $ row
     where
       distance (x, y) = logBase 2 x - logBase 2 y
-
-
 
 data Turn = P Player | C Computer
   deriving (Show, Eq)
