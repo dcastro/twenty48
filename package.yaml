@@ -48,6 +48,7 @@ dependencies:
 - foreign-store
 - MonadRandom
 - yesod-websockets
+- chunked-data
 
 ghc-options:
 - -fdefer-typed-holes

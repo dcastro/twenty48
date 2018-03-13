@@ -51,3 +51,12 @@ sampleBoard = Board $ fmap (fmap (fmap (Piece))) $
   , [Just 2, Just 2, Just 2, Just 2]
   , [Just 4, Just 4, Just 2, Just 2]
   ]
+
+sampleBoard2 :: Board
+sampleBoard2 = Board $ fmap (fmap (fmap (Piece))) $
+  [ [Nothing, Nothing, Just 2, Just 8]
+  , [Nothing, Nothing, Nothing, Just 8]
+  , [Just 2, Nothing, Just 4, Just 2]
+  , [Nothing, Nothing, Nothing, Nothing]
+  ]
+  
