@@ -75,7 +75,7 @@ playPlayer d (Board rs) =
     playPlayer' :: Direction -> [Row] -> [Row]
     playPlayer' dir rows = 
       case dir of
-        L -> padRight Nothing 4 . fmap Just . mergeLeft . catMaybes <$> rows
+        L -> padRight (Piece 0) 4 . mergeLeft . filter isOccupied <$> rows
         R -> fmap reverse . playPlayer' L . fmap reverse $ rows
         U -> transpose . playPlayer' L . transpose $ rows
         D -> transpose . playPlayer' R . transpose $ rows
@@ -93,16 +93,17 @@ freeCoords (Board rows) = join $ mapi freeCoords' rows
     freeCoords' y row = 
       catMaybes $ mapi (freeCoord y) row
 
-    freeCoord :: Int -> Int -> Maybe Piece -> Maybe Coord
-    freeCoord y x Nothing = Just (x, y)
-    freeCoord _ _ _       = Nothing
+    freeCoord :: Int -> Int -> Piece -> Maybe Coord
+    freeCoord y x p
+      | isOccupied p  = Nothing
+      | otherwise     = Just (x, y)
 
 computerAvailableMoves :: Board -> [Computer]
 computerAvailableMoves board = Computer <$> freeCoords board <*> [Piece 2, Piece 4]
 
 playComputer :: Computer -> Board -> Board
 playComputer (Computer (x, y) piece) (Board rows) =
-  Board $ updated y (updated x (const $ Just piece)) rows
+  Board $ updated y (updated x (const $ piece)) rows
 
 
 -------------------------------------------------------

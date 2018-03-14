@@ -5,9 +5,7 @@
 module Twenty48.Types where
 
 import           Import
-import qualified Data.Text as T
 import           Data.Aeson.TH
-import           Data.Aeson
 
 -- Piece
 newtype Piece = Piece { unPiece :: Int }
@@ -16,16 +14,27 @@ newtype Piece = Piece { unPiece :: Int }
 instance Show Piece where
   show (Piece p) = "Piece " <> show p
 
-$(deriveJSON defaultOptions { unwrapUnaryRecords = True } ''Piece)
+instance FromJSON Piece where
+  parseJSON = map (Piece . fromMaybe 0) . parseJSON
+  
+isOccupied :: Piece -> Bool
+isOccupied (Piece p) = p == 0
+
+-- take the value of a cell and convert it to its base 2, or 0 if the cell is empty
+-- e.g. toBase2 (Piece 16) = 4
+--      toBase2 (Piece 8) = 3
+toBase2 :: Piece -> Double
+toBase2 (Piece 0) = 0
+toBase2 (Piece p) = logBase 2 $ realToFrac p
 
 -- Row
-type Row = [Maybe Piece]
+type Row = [Piece]
 
 -- Board
 newtype Board = Board [Row]
   deriving (Eq)
 
-$(deriveJSON defaultOptions ''Board)
+$(deriveFromJSON defaultOptions ''Board)
 
 instance Show Board where
   show (Board rows) =
@@ -34,9 +43,8 @@ instance Show Board where
       printRow :: Row -> String
       printRow row =
           "[ " <> (intercalate ", " . fmap printPiece $ row) <> " ]"
-      printPiece :: Maybe Piece -> String
-      printPiece Nothing = "0"
-      printPiece (Just (Piece p)) = show p
+      printPiece :: Piece -> String
+      printPiece (Piece p) = show p
 
       
 -- Coordinates (x, y),
@@ -45,18 +53,25 @@ instance Show Board where
 type Coord = (Int, Int)
 
 sampleBoard :: Board
-sampleBoard = Board $ fmap (fmap (fmap (Piece))) $
-  [ [Nothing, Just 2, Just 4, Just 8]
-  , [Nothing, Just 2, Just 2, Just 8]
-  , [Just 2, Just 2, Just 2, Just 2]
-  , [Just 4, Just 4, Just 2, Just 2]
+sampleBoard = Board $ fmap (fmap (Piece)) $
+  [ [0, 2, 4, 8]
+  , [0, 2, 2, 8]
+  , [2, 2, 2, 2]
+  , [4, 4, 2, 2]
   ]
 
 sampleBoard2 :: Board
-sampleBoard2 = Board $ fmap (fmap (fmap (Piece))) $
-  [ [Nothing, Nothing, Just 2, Just 8]
-  , [Nothing, Nothing, Nothing, Just 8]
-  , [Just 2, Nothing, Just 4, Just 2]
-  , [Nothing, Nothing, Nothing, Nothing]
+sampleBoard2 = Board $ fmap (fmap (Piece)) $
+  [ [0, 0, 2, 8]
+  , [0, 0, 0, 8]
+  , [2, 0, 4, 2]
+  , [0, 0, 0, 0]
   ]
-  
+
+sampleBoard3 :: Board
+sampleBoard3 = Board $ fmap (fmap (Piece)) $
+  [ [2, 0, 0, 0]
+  , [2, 0, 0, 0]
+  , [4, 8, 0, 0]
+  , [8, 8, 2, 0]
+  ]

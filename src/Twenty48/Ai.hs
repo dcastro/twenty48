@@ -23,7 +23,7 @@ smoothness (Board rows) = negate . getSum . foldMap (Sum . abs) $ distances
 
 distanceBetweenPairs :: Row -> [Double]
 distanceBetweenPairs row =
-  map distance . pairs . map (logBase 2 . realToFrac . unPiece) . catMaybes $ row
+  map distance . pairs . map toBase2 . filter isOccupied $ row
     where
       distance (x, y) = x - y
 
@@ -31,11 +31,11 @@ monotonicity :: Board -> Score
 monotonicity (Board rows) =
   max decreaseHori increaseHori + max decreaseVert increaseVert
     where
-      rowValues :: [[Double]]
-      rowValues = map (map (maybe 0 (logBase 2 . realToFrac . unPiece))) rows
+      rowsBase2 :: [[Double]]
+      rowsBase2 = map (map toBase2) rows
 
-      (Sum decreaseHori, Sum increaseHori) = foldMap (foldMap variance . pairs) rowValues
-      (Sum decreaseVert, Sum increaseVert) = foldMap (foldMap variance . pairs) (transpose rowValues)
+      (Sum decreaseHori, Sum increaseHori) = foldMap (foldMap variance . pairs) rowsBase2
+      (Sum decreaseVert, Sum increaseVert) = foldMap (foldMap variance . pairs) (transpose rowsBase2)
 
       variance :: (Double, Double) -> (Sum Double, Sum Double)
       variance (x, y) = if x < y 
