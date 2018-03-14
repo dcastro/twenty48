@@ -10,22 +10,40 @@ import Data.List (transpose)
 import Data.Monoid (Sum(..), getSum)
 import Utils.List (pairs)
 
-type Score = Int
+type Score = Double
 
 boardEval :: Board -> Score
-boardEval b = smoothness b
+boardEval b = smoothness b + monotonicity b
 
 smoothness :: Board -> Score
-smoothness (Board rows) = negate . getSum . foldMap (Sum . abs . truncate) $ distances
+smoothness (Board rows) = negate . getSum . foldMap (Sum . abs) $ distances
   where    
     distances = (distanceBetweenPairs =<< rows) ++
                 (distanceBetweenPairs =<< transpose rows)
 
 distanceBetweenPairs :: Row -> [Double]
 distanceBetweenPairs row =
-  map distance . pairs . map (realToFrac . unPiece) . catMaybes $ row
+  map distance . pairs . map (logBase 2 . realToFrac . unPiece) . catMaybes $ row
     where
-      distance (x, y) = logBase 2 x - logBase 2 y
+      distance (x, y) = x - y
+
+monotonicity :: Board -> Score
+monotonicity (Board rows) =
+  max decreaseHori increaseHori + max decreaseVert increaseVert
+    where
+      rowValues :: [[Double]]
+      rowValues = map (map (maybe 0 (logBase 2 . realToFrac . unPiece))) rows
+
+      (Sum decreaseHori, Sum increaseHori) = foldMap (foldMap variance . pairs) rowValues
+      (Sum decreaseVert, Sum increaseVert) = foldMap (foldMap variance . pairs) (transpose rowValues)
+
+      variance :: (Double, Double) -> (Sum Double, Sum Double)
+      variance (x, y) = if x < y 
+                          then (mempty, Sum $ x - y)
+                          else (Sum $ y - x, mempty)
+
+-------------------------------------------------------
+-------------------------------------------------------
 
 data Turn = P Player | C Computer
   deriving (Show, Eq)
