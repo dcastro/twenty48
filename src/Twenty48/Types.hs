@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Twenty48.Types where
 
@@ -9,7 +10,7 @@ import           Data.Aeson.TH
 
 -- Cell
 newtype Cell = Cell { unCell :: Int }
-  deriving (Eq, Generic)
+  deriving (Eq, Generic, Num, Ord)
 
 instance Show Cell where
   show (Cell p) = "Cell " <> show p

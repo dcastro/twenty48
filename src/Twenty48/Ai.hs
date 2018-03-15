@@ -3,12 +3,13 @@
 
 module Twenty48.Ai where
 
-import Import
-import Twenty48.Types
-import Twenty48.Twenty48
-import Data.List (transpose)
-import Data.Monoid (Sum(..), getSum)
-import Utils.List (pairs)
+import           Import
+import           Twenty48.Types
+import           Twenty48.Twenty48
+import           Data.Monoid (Sum(..), getSum)
+import           Utils.List (pairs)
+import           Data.List (transpose)
+import qualified Data.List as L
 
 type Score = Double
 
@@ -41,6 +42,9 @@ monotonicity (Board rows) =
       variance (x, y) = if x < y 
                           then (mempty, Sum $ x - y)
                           else (Sum $ y - x, mempty)
+
+maxValue :: Board -> Score
+maxValue (Board rows) = toBase2 . L.maximum . map L.maximum $ rows
 
 -------------------------------------------------------
 -------------------------------------------------------
