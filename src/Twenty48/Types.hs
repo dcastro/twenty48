@@ -7,28 +7,28 @@ module Twenty48.Types where
 import           Import
 import           Data.Aeson.TH
 
--- Piece
-newtype Piece = Piece { unPiece :: Int }
+-- Cell
+newtype Cell = Cell { unCell :: Int }
   deriving (Eq, Generic)
 
-instance Show Piece where
-  show (Piece p) = "Piece " <> show p
+instance Show Cell where
+  show (Cell p) = "Cell " <> show p
 
-instance FromJSON Piece where
-  parseJSON = map (Piece . fromMaybe 0) . parseJSON
+instance FromJSON Cell where
+  parseJSON = map (Cell . fromMaybe 0) . parseJSON
   
-isOccupied :: Piece -> Bool
-isOccupied (Piece p) = p == 0
+isOccupied :: Cell -> Bool
+isOccupied (Cell p) = p == 0
 
 -- take the value of a cell and convert it to its base 2, or 0 if the cell is empty
--- e.g. toBase2 (Piece 16) = 4
---      toBase2 (Piece 8) = 3
-toBase2 :: Piece -> Double
-toBase2 (Piece 0) = 0
-toBase2 (Piece p) = logBase 2 $ realToFrac p
+-- e.g. toBase2 (Cell 16) = 4
+--      toBase2 (Cell 8) = 3
+toBase2 :: Cell -> Double
+toBase2 (Cell 0) = 0
+toBase2 (Cell p) = logBase 2 $ realToFrac p
 
 -- Row
-type Row = [Piece]
+type Row = [Cell]
 
 -- Board
 newtype Board = Board [Row]
@@ -42,9 +42,9 @@ instance Show Board where
     where
       printRow :: Row -> String
       printRow row =
-          "[ " <> (intercalate ", " . fmap printPiece $ row) <> " ]"
-      printPiece :: Piece -> String
-      printPiece (Piece p) = show p
+          "[ " <> (intercalate ", " . fmap printCell $ row) <> " ]"
+      printCell :: Cell -> String
+      printCell (Cell p) = show p
 
       
 -- Coordinates (x, y),
@@ -53,7 +53,7 @@ instance Show Board where
 type Coord = (Int, Int)
 
 sampleBoard :: Board
-sampleBoard = Board $ fmap (fmap (Piece)) $
+sampleBoard = Board $ fmap (fmap (Cell)) $
   [ [0, 2, 4, 8]
   , [0, 2, 2, 8]
   , [2, 2, 2, 2]
@@ -61,7 +61,7 @@ sampleBoard = Board $ fmap (fmap (Piece)) $
   ]
 
 sampleBoard2 :: Board
-sampleBoard2 = Board $ fmap (fmap (Piece)) $
+sampleBoard2 = Board $ fmap (fmap (Cell)) $
   [ [0, 0, 2, 8]
   , [0, 0, 0, 8]
   , [2, 0, 4, 2]
@@ -69,7 +69,7 @@ sampleBoard2 = Board $ fmap (fmap (Piece)) $
   ]
 
 sampleBoard3 :: Board
-sampleBoard3 = Board $ fmap (fmap (Piece)) $
+sampleBoard3 = Board $ fmap (fmap (Cell)) $
   [ [2, 0, 0, 0]
   , [2, 0, 0, 0]
   , [4, 8, 0, 0]

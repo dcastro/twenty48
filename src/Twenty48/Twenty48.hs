@@ -20,10 +20,10 @@ import           Numeric.Natural (Natural)
 import           Data.Tree (Tree(..), drawTree)
 
 -- left to right
-mergeLeft :: [Piece] -> [Piece]
-mergeLeft (Piece x : Piece y : xs)
-  | x == y    = Piece (x + y) : mergeLeft xs
-  | otherwise = Piece x : mergeLeft (Piece y : xs)
+mergeLeft :: [Cell] -> [Cell]
+mergeLeft (Cell x : Cell y : xs)
+  | x == y    = Cell (x + y) : mergeLeft xs
+  | otherwise = Cell x : mergeLeft (Cell y : xs)
 mergeLeft xs = xs
 
 -- | Keep track of the player whose turn it is to play
@@ -75,7 +75,7 @@ playPlayer d (Board rs) =
     playPlayer' :: Direction -> [Row] -> [Row]
     playPlayer' dir rows = 
       case dir of
-        L -> padRight (Piece 0) 4 . mergeLeft . filter isOccupied <$> rows
+        L -> padRight (Cell 0) 4 . mergeLeft . filter isOccupied <$> rows
         R -> fmap reverse . playPlayer' L . fmap reverse $ rows
         U -> transpose . playPlayer' L . transpose $ rows
         D -> transpose . playPlayer' R . transpose $ rows
@@ -83,7 +83,7 @@ playPlayer d (Board rs) =
 -------------------------------------------------------
 -------------------------------------------------------
 
-data Computer = Computer Coord Piece
+data Computer = Computer Coord Cell
   deriving (Show, Eq)
 
 freeCoords :: Board -> [Coord]
@@ -93,17 +93,17 @@ freeCoords (Board rows) = join $ mapi freeCoords' rows
     freeCoords' y row = 
       catMaybes $ mapi (freeCoord y) row
 
-    freeCoord :: Int -> Int -> Piece -> Maybe Coord
+    freeCoord :: Int -> Int -> Cell -> Maybe Coord
     freeCoord y x p
       | isOccupied p  = Nothing
       | otherwise     = Just (x, y)
 
 computerAvailableMoves :: Board -> [Computer]
-computerAvailableMoves board = Computer <$> freeCoords board <*> [Piece 2, Piece 4]
+computerAvailableMoves board = Computer <$> freeCoords board <*> [Cell 2, Cell 4]
 
 playComputer :: Computer -> Board -> Board
-playComputer (Computer (x, y) piece) (Board rows) =
-  Board $ updated y (updated x (const $ piece)) rows
+playComputer (Computer (x, y) cell) (Board rows) =
+  Board $ updated y (updated x (const $ cell)) rows
 
 
 -------------------------------------------------------
@@ -139,12 +139,12 @@ unfoldPlayerTree board = unfoldTree f g board
 -- | non-total, assumes there's at least 1 possuble move
 playComputerRandom :: MonadRandom m => Board -> m Board
 playComputerRandom board =
-  let randomComputerMove = Computer <$> randomCoord board <*> randomPiece
+  let randomComputerMove = Computer <$> randomCoord board <*> randomCell
   in  flip playComputer board <$> randomComputerMove
 
-randomPiece :: MonadRandom m => m Piece
-randomPiece =
-  oneFrom $ Piece 4 : replicate 9 (Piece 2)
+randomCell :: MonadRandom m => m Cell
+randomCell =
+  oneFrom $ Cell 4 : replicate 9 (Cell 2)
 
 -- | non-total, assumes there's at least 1 possuble move
 randomCoord :: MonadRandom m => Board -> m Coord
