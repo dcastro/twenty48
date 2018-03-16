@@ -6,7 +6,7 @@ module Twenty48.Ai where
 import           Import
 import           Twenty48.Types
 import           Twenty48.Twenty48
-import           Data.Monoid (Sum(..), getSum)
+import           Data.Monoid (Sum(..))
 import           Utils.List (pairs)
 import           Data.List (transpose)
 import qualified Data.List as L

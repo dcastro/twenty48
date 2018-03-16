@@ -19,7 +19,7 @@ instance FromJSON Cell where
   parseJSON = map (Cell . fromMaybe 0) . parseJSON
   
 isOccupied :: Cell -> Bool
-isOccupied (Cell p) = p == 0
+isOccupied (Cell p) = p /= 0
 
 isAvailable :: Cell -> Bool
 isAvailable = not . isOccupied
