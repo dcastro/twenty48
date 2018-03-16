@@ -21,6 +21,9 @@ instance FromJSON Cell where
 isOccupied :: Cell -> Bool
 isOccupied (Cell p) = p == 0
 
+isAvailable :: Cell -> Bool
+isAvailable = not . isOccupied
+
 -- take the value of a cell and convert it to its base 2, or 0 if the cell is empty
 -- e.g. toBase2 (Cell 16) = 4
 --      toBase2 (Cell 8) = 3

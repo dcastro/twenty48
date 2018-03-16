@@ -14,10 +14,14 @@ import qualified Data.List as L
 type Score = Double
 
 boardEval :: Board -> Score
-boardEval b = smoothness b + monotonicity b
+boardEval b =
+  smoothness b   * 0.1 +
+  monotonicity b * 1   +
+  maxValue b     * 1   +
+  emptyCells b   * 2.7
 
 smoothness :: Board -> Score
-smoothness (Board rows) = negate . getSum . foldMap (Sum . abs) $ distances
+smoothness (Board rows) = negate . sum . map abs $ distances
   where    
     distances = (distanceBetweenPairs =<< rows) ++
                 (distanceBetweenPairs =<< transpose rows)
@@ -45,6 +49,9 @@ monotonicity (Board rows) =
 
 maxValue :: Board -> Score
 maxValue (Board rows) = toBase2 . L.maximum . map L.maximum $ rows
+
+emptyCells :: Board -> Score
+emptyCells (Board rows) = realToFrac . sum . map (length . filter isAvailable) $ rows
 
 -------------------------------------------------------
 -------------------------------------------------------
