@@ -2,6 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Twenty48.Types where
 
@@ -17,6 +18,10 @@ instance Show Cell where
 
 instance FromJSON Cell where
   parseJSON = map (Cell . fromMaybe 0) . parseJSON
+
+instance ToJSON Cell where
+  toJSON (Cell 0) = toJSON $ Nothing @Int
+  toJSON (Cell c) = toJSON c
   
 isOccupied :: Cell -> Bool
 isOccupied (Cell p) = p /= 0
