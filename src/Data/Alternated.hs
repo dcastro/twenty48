@@ -23,6 +23,15 @@ instance Bifunctor Alternated where
   first f = bimap f id
   second g = bimap id g
 
+instance (Show a, Show b) => Show (Alternated a b) where
+  show xs = "[ " <> intercalate ", " strs <> " ]"
+    where 
+      strs = fromAlternated show show xs
+
+head :: Alternated a b -> Maybe a
+head ANil = Nothing
+head (Alternated x _) = Just x
+
 atraverse :: Applicative f
           => (a -> f c)
           -> (b -> f d)

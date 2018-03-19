@@ -9,12 +9,26 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
+  this.inputManager.on("autoPlay", this.autoPlay.bind(this))
   this.inputManager.on("autoPlayOnce", this.autoPlayOnce.bind(this))
 
   const url = location.href.replace(/^(https:\/\/)|(http:\/\/)/, "ws://")
   this.conn = new WebSocket(url);
 
+  this.autoPlay = false;
   this.conn.onopen = () => this.setup();
+
+}
+
+GameManager.prototype.autoPlay = function () {
+  this.autoPlay = true;
+
+  const msg = {
+    tag: "AutoPlayMsg",
+    board: this.grid.wsSerialize()
+  };
+
+  this.conn.send(JSON.stringify(msg));
 }
 
 GameManager.prototype.autoPlayOnce = function () {
@@ -74,7 +88,7 @@ GameManager.prototype.setup = function () {
     const data = JSON.parse(msg.data);
 
     switch (data.tag) {
-      case "MoveMsg":
+      case "PlayPlayerMsg":
         switch (data.direction) {
           // 0: up, 1: right, 2: down, 3: left
           case "U": this.move(0); break;
@@ -82,8 +96,13 @@ GameManager.prototype.setup = function () {
           case "D": this.move(2); break;
           case "L": this.move(3); break;
         }
+        break;
+      case "PlayComputerMsg":
+        const cell = new Tile({ x: data.coord[0], y: data.coord[1], }, data.cell);
+        this.grid.insertTile(cell);
+        break;        
     }
-  };
+  }
 };
 
 // Set up the initial tiles to start the game with
@@ -208,7 +227,8 @@ GameManager.prototype.move = function (direction) {
   });
 
   if (moved) {
-    this.addRandomTile();
+    if (!this.autoPlay)
+      this.addRandomTile();
 
     if (!this.movesAvailable()) {
       this.over = true; // Game over!

@@ -5,13 +5,14 @@
 module Handler.Twenty48 where
 
 import Import
-import Yesod.WebSockets
+import Yesod.WebSockets hiding (race_)
 import qualified Data.Aeson       as J
 import           Data.Aeson.TH    (deriveFromJSON, deriveToJSON, defaultOptions)
 import           Twenty48.Types
 import           Twenty48.Twenty48
 import           Twenty48.Ai
-import           Data.Alternated
+import           Data.Alternated as A
+import           Utils.Control
 
 getTwenty48R :: Handler Html
 getTwenty48R = do
@@ -24,24 +25,63 @@ aiDepth = 5
 wsApp :: WebSocketsT Handler ()
 wsApp = 
   forever $ do
-    msg <- J.decodeStrict' <$> receiveData
+    msg <- receiveMsg
     case msg of
-      Just (AutoPlayOnceMsg b)  ->
-        let Path (Alternated (Player dir) _) _ = maximumBy (comparing score) $ maximize $ map boardEval $ pruneHeight aiDepth $ unfoldPlayerTree b
-        in  sendTextData $ J.encode $ PlayPlayer dir
-      _                         -> error "Unexpected message received"
+      AutoPlayOnceMsg b -> do
+        let Path (Alternated player _) _ = maximumBy (comparing score) $ maximize $ map boardEval $ pruneHeight aiDepth $ unfoldPlayerTree b
+        sendMsg $ playPlayerMsg player
+      AutoPlayMsg b -> do
+        race_
+          (autoPlay b)
+          (whileM ((/= StopMsg) <$> receiveMsg))
+      StopMsg -> $logError "Stop message received at unexpected time"
+      
+autoPlay :: Board -> WebSocketsT Handler ()
+autoPlay board = do
+  let Path turns _ = maximumBy (comparing score) $ maximize $ map boardEval $ pruneHeight aiDepth $ unfoldPlayerTree board
+  whenJust (A.head turns) $ \player -> do
+    sendMsg $ playPlayerMsg player
+
+    let newBoard = playPlayer player board
+
+    mbComputer <- liftIO $ randomComputerMove newBoard
+    whenJust mbComputer $ \computer -> do
+      sendMsg $ playComputerMsg computer
+
+      let newBoard' = playComputer computer newBoard
+      autoPlay newBoard'
 
 data OutMsg
-  = PlayPlayer { direction :: Direction }
-  | PlayerComputer { coord :: Coord, cell :: Cell }
+  = PlayPlayerMsg { direction :: Direction }
+  | PlayComputerMsg { coord :: Coord, cell :: Cell }
   deriving (Generic)
+
+playPlayerMsg :: Player -> OutMsg
+playPlayerMsg (Player direction) = PlayPlayerMsg direction
+
+playComputerMsg :: Computer -> OutMsg
+playComputerMsg (Computer coord cell) = PlayComputerMsg coord cell
 
 data InMsg
   = AutoPlayOnceMsg { board :: Board }
-  | OtherIn
-  deriving (Generic, Show)
+  | AutoPlayMsg     { board :: Board }
+  | StopMsg
+  deriving (Generic, Show, Eq)
+
+receiveMsg :: (MonadIO m, MonadLogger m) => WebSocketsT m InMsg
+receiveMsg = do
+  d <- receiveData
+  case J.decodeStrict' d of
+    Just msg -> pure msg
+    Nothing -> do
+      $logError $ "Unexpected message received " <> decodeUtf8 d
+      receiveMsg
+
+sendMsg :: (MonadIO m, MonadLogger m) => OutMsg -> WebSocketsT m ()
+sendMsg = sendTextData . J.encode
 
 $(deriveToJSON defaultOptions ''OutMsg)
 $(deriveFromJSON defaultOptions ''InMsg)
+
 
 

@@ -57,7 +57,7 @@ pruneHeight n StateTree{..} = StateTree root $ map (second (pruneHeight (n-1))) 
 
 -------------------------------------------------------
 -------------------------------------------------------
-data Player = Player Direction
+newtype Player = Player Direction
   deriving (Show, Eq)
 
 data Direction = U | R | D | L
@@ -68,8 +68,8 @@ $(deriveJSON defaultOptions ''Direction)
 directions :: [Direction]
 directions = [minBound .. maxBound]
 
-playPlayer :: Direction -> Board -> Board
-playPlayer d (Board rs) =
+playPlayer :: Player -> Board -> Board
+playPlayer (Player d) (Board rs) =
   Board (playPlayer' d rs)
   where
     playPlayer' :: Direction -> [Row] -> [Row]
@@ -124,29 +124,30 @@ unfoldPlayerTree board = unfoldTree f g board
   where
     f :: Board -> [(Player, Board)]
     f b = catMaybes $ flip map directions $ \dir ->
-            let newBoard = playPlayer dir b
+            let player = Player dir
+                newBoard = playPlayer player b
             in  if newBoard == b
                   then Nothing
-                  else Just (Player dir, newBoard)
+                  else Just (player, newBoard)
     g :: Board -> [(Computer, Board)]
-    g b = flip map (computerAvailableMoves b) $ \c ->
-            (c, playComputer c b)
+    g b = flip map (computerAvailableMoves b) $ \computer ->
+            (computer, playComputer computer b)
 
 -------------------------------------------------------
 -------------------------------------------------------
 
 
--- | non-total, assumes there's at least 1 possuble move
-playComputerRandom :: MonadRandom m => Board -> m Board
-playComputerRandom board =
-  let randomComputerMove = Computer <$> randomCoord board <*> randomCell
-  in  flip playComputer board <$> randomComputerMove
+randomComputerMove :: MonadRandom m => Board -> m (Maybe Computer)
+randomComputerMove board = do
+  cell <- randomCell
+  coord <- randomCoord board
+  pure $ Computer <$> coord <*> Just cell
 
 randomCell :: MonadRandom m => m Cell
 randomCell =
-  oneFrom $ Cell 4 : replicate 9 (Cell 2)
+  oneFrom $
+    nReplicate 1 (Cell 4) <> nReplicate 9 (Cell 2)
 
--- | non-total, assumes there's at least 1 possuble move
-randomCoord :: MonadRandom m => Board -> m Coord
-randomCoord rows =
-  oneFrom $ freeCoords rows
+randomCoord :: MonadRandom m => Board -> m (Maybe Coord)
+randomCoord board =
+  traverse oneFrom $ fromNullable $ freeCoords board

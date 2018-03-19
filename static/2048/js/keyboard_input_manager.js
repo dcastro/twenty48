@@ -71,6 +71,7 @@ KeyboardInputManager.prototype.listen = function () {
   // Respond to button presses
   this.bindButtonPress(".retry-button", this.restart);
   this.bindButtonPress(".restart-button", this.restart);
+  this.bindButtonPress(".auto-play-button", this.autoPlay);
   this.bindButtonPress(".auto-play-once-button", this.autoPlayOnce);
   this.bindButtonPress(".keep-playing-button", this.keepPlaying);
 
@@ -142,6 +143,11 @@ KeyboardInputManager.prototype.bindButtonPress = function (selector, fn) {
   var button = document.querySelector(selector);
   button.addEventListener("click", fn.bind(this));
   button.addEventListener(this.eventTouchend, fn.bind(this));
+};
+
+KeyboardInputManager.prototype.autoPlay = function (event) {
+  event.preventDefault();
+  this.emit("autoPlay");
 };
 
 KeyboardInputManager.prototype.autoPlayOnce = function (event) {
