@@ -513,6 +513,8 @@ hr {
     @media screen and (max-width: 520px) {
       .above-game-buttons > a {
         margin: 0 0 2px 0; } }
+  .above-game-buttons .stop-auto-play-button {
+    display: none; }
 
 .game-intro {
   line-height: 42px;

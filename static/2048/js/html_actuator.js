@@ -137,3 +137,14 @@ HTMLActuator.prototype.clearMessage = function () {
   this.messageContainer.classList.remove("game-won");
   this.messageContainer.classList.remove("game-over");
 };
+
+HTMLActuator.prototype.autoPlay = function() {
+  document.getElementsByClassName("auto-play-button")[0].style.display = 'none';
+  document.getElementsByClassName("stop-auto-play-button")[0].style.display = 'block';
+};
+
+HTMLActuator.prototype.stopAutoPlay = function() {
+  document.getElementsByClassName("auto-play-button")[0].style.display = 'block';
+  document.getElementsByClassName("stop-auto-play-button")[0].style.display = 'none';
+};
+

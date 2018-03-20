@@ -11,17 +11,18 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
   this.inputManager.on("autoPlay", this.autoPlay.bind(this))
   this.inputManager.on("autoPlayOnce", this.autoPlayOnce.bind(this))
+  this.inputManager.on("stopAutoPlay", this.stopAutoPlay.bind(this))
 
   const url = location.href.replace(/^(https:\/\/)|(http:\/\/)/, "ws://")
   this.conn = new WebSocket(url);
 
-  this.autoPlay = false;
+  this.autoPlaying = false;
   this.conn.onopen = () => this.setup();
 
 }
 
 GameManager.prototype.autoPlay = function () {
-  this.autoPlay = true;
+  this.autoPlaying = true;
 
   const msg = {
     tag: "AutoPlayMsg",
@@ -29,6 +30,7 @@ GameManager.prototype.autoPlay = function () {
   };
 
   this.conn.send(JSON.stringify(msg));
+  this.actuator.autoPlay();
 }
 
 GameManager.prototype.autoPlayOnce = function () {
@@ -38,6 +40,17 @@ GameManager.prototype.autoPlayOnce = function () {
   };
 
   this.conn.send(JSON.stringify(msg));
+}
+
+GameManager.prototype.stopAutoPlay = function () {
+  const msg = {
+    tag: "StopMsg",
+    board: this.grid.wsSerialize()
+  };
+
+  this.conn.send(JSON.stringify(msg));
+  this.actuator.stopAutoPlay();
+  this.autoPlaying = false;
 }
 
 // Restart the game
@@ -214,7 +227,10 @@ GameManager.prototype.move = function (direction) {
           self.score += merged.value;
 
           // The mighty 2048 tile
-          if (merged.value === 2048) self.won = true;
+          if (merged.value === 2048) {
+            self.won = true;
+            self.stopAutoPlay();
+          }
         } else {
           self.moveTile(tile, positions.farthest);
         }
@@ -227,7 +243,7 @@ GameManager.prototype.move = function (direction) {
   });
 
   if (moved) {
-    if (!this.autoPlay)
+    if (!this.autoPlaying)
       this.addRandomTile();
 
     if (!this.movesAvailable()) {

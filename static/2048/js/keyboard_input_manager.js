@@ -73,6 +73,7 @@ KeyboardInputManager.prototype.listen = function () {
   this.bindButtonPress(".restart-button", this.restart);
   this.bindButtonPress(".auto-play-button", this.autoPlay);
   this.bindButtonPress(".auto-play-once-button", this.autoPlayOnce);
+  this.bindButtonPress(".stop-auto-play-button", this.stopAutoPlay);
   this.bindButtonPress(".keep-playing-button", this.keepPlaying);
 
   // Respond to swipe events
@@ -154,4 +155,10 @@ KeyboardInputManager.prototype.autoPlayOnce = function (event) {
   event.preventDefault();
   this.emit("autoPlayOnce");
 };
+
+KeyboardInputManager.prototype.stopAutoPlay = function (event) {
+  event.preventDefault();
+  this.emit("stopAutoPlay");
+};
+
 
