@@ -28,8 +28,9 @@ wsApp =
     msg <- receiveMsg
     case msg of
       AutoPlayOnceMsg b -> do
-        let Path (Alternated player _) _ = maximumBy (comparing score) $ maximize $ map boardEval $ pruneHeight aiDepth $ unfoldPlayerTree b
-        sendMsg $ playPlayerMsg player
+        let Path turns _ = maximumBy (comparing score) $ maximize $ map boardEval $ pruneHeight aiDepth $ unfoldPlayerTree b
+        whenJust (A.head turns) $ \player -> 
+          sendMsg $ playPlayerMsg player
       AutoPlayMsg b -> do
         race_
           (autoPlay b)
