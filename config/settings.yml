@@ -29,12 +29,12 @@ ip-from-header: "_env:IP_FROM_HEADER:false"
 # See https://github.com/yesodweb/yesod/wiki/Configuration#parsing-numeric-values-as-strings
 
 database:
-  user:     "_env:PGUSER:hgames"
-  password: "_env:PGPASS:hgames"
+  user:     "_env:PGUSER:twenty48"
+  password: "_env:PGPASS:twenty48"
   host:     "_env:PGHOST:localhost"
   port:     "_env:PGPORT:5432"
   # See config/test-settings.yml for an override during tests
-  database: "_env:PGDATABASE:hgames"
+  database: "_env:PGDATABASE:twenty48"
   poolsize: "_env:PGPOOLSIZE:10"
 
 copyright: Insert copyright statement here

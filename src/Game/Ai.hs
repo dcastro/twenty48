@@ -1,11 +1,11 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Twenty48.Ai where
+module Game.Ai where
 
 import           Import
-import           Twenty48.Types
-import           Twenty48.Twenty48
+import           Game.Types
+import           Game.Twenty48
 import           Data.Monoid (Sum(..))
 import           Utils.List (pairs)
 import           Data.List (transpose)

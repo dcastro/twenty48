@@ -1,4 +1,4 @@
-name:    hgames
+name:    twenty48
 version: "0.0.0"
 
 dependencies:
@@ -76,7 +76,7 @@ library:
 
 # Runnable executable for our application
 executables:
-  hgames:
+  twenty48:
     main: main.hs
     source-dirs: app
     ghc-options:
@@ -84,7 +84,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - hgames
+    - twenty48
     when:
     - condition: flag(library-only)
       buildable: false
@@ -96,7 +96,7 @@ tests:
     source-dirs: test
     ghc-options: -Wall
     dependencies:
-    - hgames
+    - twenty48
     - hspec >=2.0.0
     - yesod-test
 

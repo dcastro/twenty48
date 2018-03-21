@@ -15,8 +15,8 @@ stanzas:
     #
     # The path given is for Stack projects. If you're still using cabal, change
     # to
-    # exec: ../dist/build/hgames/hgames
-    exec: ../dist/bin/hgames
+    # exec: ../dist/build/twenty48/twenty48
+    exec: ../dist/bin/twenty48
 
     # Command line options passed to your application.
     args: []
@@ -25,7 +25,7 @@ stanzas:
       # You can specify one or more hostnames for your application to respond
       # to. The primary hostname will be used for generating your application
       # root.
-      - www.hgames.com
+      - www.twenty48.com
 
     # Enable to force Keter to redirect to https
     # Can be added to any stanza
@@ -34,7 +34,7 @@ stanzas:
   # Static files.
   - type: static-files
     hosts:
-      - static.hgames.com
+      - static.twenty48.com
     root: ../static
 
     # Uncomment to turn on directory listings.
@@ -44,9 +44,9 @@ stanzas:
   - type: redirect
 
     hosts:
-      - hgames.com
+      - twenty48.com
     actions:
-      - host: www.hgames.com
+      - host: www.twenty48.com
         # secure: false
         # port: 80
 

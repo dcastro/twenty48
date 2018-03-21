@@ -4,7 +4,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE TypeApplications #-}
 
-module Twenty48.Types where
+module Game.Types where
 
 import           Import
 import           Data.Aeson.TH

@@ -7,10 +7,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 
-module Twenty48.Twenty48 where
+module Game.Twenty48 where
 
 import           Import
-import           Twenty48.Types
+import           Game.Types
 import           Utils.List (mapi, updated, padRight)
 import           Data.List (transpose)
 import           Utils.Random (oneFrom)

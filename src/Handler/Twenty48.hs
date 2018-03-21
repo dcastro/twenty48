@@ -8,9 +8,9 @@ import Import
 import Yesod.WebSockets hiding (race_)
 import qualified Data.Aeson       as J
 import           Data.Aeson.TH    (deriveFromJSON, deriveToJSON, defaultOptions)
-import           Twenty48.Types
-import           Twenty48.Twenty48
-import           Twenty48.Ai
+import           Game.Types
+import           Game.Twenty48
+import           Game.Ai
 import           Data.Alternated as A
 import           Utils.Control
 

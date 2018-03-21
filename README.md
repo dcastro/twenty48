@@ -3,9 +3,9 @@
 After installing Postgres, run:
 
 ```
-createuser hgames --password hgames --superuser
-createdb hgames
-createdb hgames_test
+createuser twenty48 --password twenty48 --superuser
+createdb twenty48
+createdb twenty48_test
 ```
 
 ## Haskell Setup
@@ -30,7 +30,7 @@ As your code changes, your site will be automatically be recompiled and redeploy
 ## Tests
 
 ```
-stack test --flag hgames:library-only --flag hgames:dev
+stack test --flag twenty48:library-only --flag twenty48:dev
 ```
 
 (Because `yesod devel` passes the `library-only` and `dev` flags, matching those flags means you don't need to recompile between tests and development, and it disables optimization to speed up your test compile times).

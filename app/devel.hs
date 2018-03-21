@@ -1,5 +1,5 @@
 {-# LANGUAGE PackageImports #-}
-import "hgames" Application (develMain)
+import "twenty48" Application (develMain)
 import Prelude (IO)
 
 main :: IO ()
