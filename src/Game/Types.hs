@@ -84,3 +84,11 @@ sampleBoard3 = Board $ fmap (fmap (Cell)) $
   , [4, 8, 0, 0]
   , [8, 8, 2, 0]
   ]
+
+sampleBoard4 :: Board
+sampleBoard4 = Board $ fmap (fmap (Cell)) $
+  [ [8, 0, 0, 0]
+  , [64, 8, 0, 0]
+  , [32, 16, 4, 4]
+  , [32, 0, 0, 0]
+  ]

@@ -1,3 +1,9 @@
+## Benchmarks
+
+```
+stack bench --benchmark-arguments "--output bench.html"
+```
+
 ## Database Setup
 
 After installing Postgres, run:

@@ -110,3 +110,12 @@ flags:
     description: Turn on development settings, like auto-reload templates.
     manual: false
     default: false
+
+benchmarks:
+  bench:
+    main: Bench.hs
+    source-dirs: benchmark
+    ghc-options: -Wall
+    dependencies:
+    - criterion
+    - twenty48

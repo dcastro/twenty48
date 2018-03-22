@@ -57,7 +57,7 @@ pruneHeight n StateTree{..} = StateTree root $ map (second (pruneHeight (n-1))) 
 
 -------------------------------------------------------
 -------------------------------------------------------
-newtype Player = Player Direction
+newtype Player = Player { unPlayer :: Direction }
   deriving (Show, Eq)
 
 data Direction = U | R | D | L
