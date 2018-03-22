@@ -22,37 +22,34 @@ boardEval b =
   emptyCells b   * 2.7
 
 smoothness :: Board -> Score
-smoothness (Board rows) = negate . sum . map abs $ distances
+smoothness (Board rows) = fromIntegral . negate . sum . map abs $ distances
   where    
     distances = (distanceBetweenPairs =<< rows) ++
                 (distanceBetweenPairs =<< transpose rows)
 
-distanceBetweenPairs :: Row -> [Double]
+distanceBetweenPairs :: Row -> [Int]
 distanceBetweenPairs row =
-  map distance . pairs . map toBase2 . filter isOccupied $ row
+  map distance . pairs . map unCell . filter isOccupied $ row
     where
       distance (x, y) = x - y
 
 monotonicity :: Board -> Score
 monotonicity (Board rows) =
-  max decreaseHori increaseHori + max decreaseVert increaseVert
+  fromIntegral $ max decreaseHori increaseHori + max decreaseVert increaseVert
     where
-      rowsBase2 :: [[Double]]
-      rowsBase2 = map (map toBase2) rows
+      (Sum decreaseHori, Sum increaseHori) = foldMap (foldMap variance . pairs . map unCell) rows
+      (Sum decreaseVert, Sum increaseVert) = foldMap (foldMap variance . pairs . map unCell) (transpose rows)
 
-      (Sum decreaseHori, Sum increaseHori) = foldMap (foldMap variance . pairs) rowsBase2
-      (Sum decreaseVert, Sum increaseVert) = foldMap (foldMap variance . pairs) (transpose rowsBase2)
-
-      variance :: (Double, Double) -> (Sum Double, Sum Double)
+      variance :: (Int, Int) -> (Sum Int, Sum Int)
       variance (x, y) = if x < y 
                           then (mempty, Sum $ x - y)
                           else (Sum $ y - x, mempty)
 
 maxValue :: Board -> Score
-maxValue (Board rows) = toBase2 . L.maximum . map L.maximum $ rows
+maxValue (Board rows) = fromIntegral . unCell . L.maximum . map L.maximum $ rows
 
 emptyCells :: Board -> Score
-emptyCells (Board rows) = realToFrac . sum . map (length . filter isAvailable) $ rows
+emptyCells (Board rows) = fromIntegral . sum . map (length . filter isAvailable) $ rows
 
 -------------------------------------------------------
 -------------------------------------------------------

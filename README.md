@@ -1,3 +1,5 @@
+An AI for the 2048 game using minimax and alpha-beta pruning, written in Haskell + Yesod. WIP.
+
 ## Benchmarks
 
 ```

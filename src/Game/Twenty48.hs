@@ -22,7 +22,7 @@ import           Data.Tree (Tree(..), drawTree)
 -- left to right
 mergeLeft :: [Cell] -> [Cell]
 mergeLeft (Cell x : Cell y : xs)
-  | x == y    = Cell (x + y) : mergeLeft xs
+  | x == y    = Cell (x + 1) : mergeLeft xs
   | otherwise = Cell x : mergeLeft (Cell y : xs)
 mergeLeft xs = xs
 
