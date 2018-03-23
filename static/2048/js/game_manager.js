@@ -26,7 +26,7 @@ GameManager.prototype.autoPlay = function () {
 
   const msg = {
     tag: "AutoPlayMsg",
-    board: this.grid.wsSerialize()
+    _board: this.grid.wsSerialize()
   };
 
   this.conn.send(JSON.stringify(msg));
@@ -36,7 +36,7 @@ GameManager.prototype.autoPlay = function () {
 GameManager.prototype.autoPlayOnce = function () {
   const msg = {
     tag: "AutoPlayOnceMsg",
-    board: this.grid.wsSerialize()
+    _board: this.grid.wsSerialize()
   };
 
   this.conn.send(JSON.stringify(msg));
@@ -45,7 +45,6 @@ GameManager.prototype.autoPlayOnce = function () {
 GameManager.prototype.stopAutoPlay = function () {
   const msg = {
     tag: "StopMsg",
-    board: this.grid.wsSerialize()
   };
 
   this.conn.send(JSON.stringify(msg));
@@ -102,7 +101,7 @@ GameManager.prototype.setup = function () {
 
     switch (data.tag) {
       case "PlayPlayerMsg":
-        switch (data.direction) {
+        switch (data._direction) {
           // 0: up, 1: right, 2: down, 3: left
           case "U": this.move(0); break;
           case "R": this.move(1); break;
@@ -111,7 +110,7 @@ GameManager.prototype.setup = function () {
         }
         break;
       case "PlayComputerMsg":
-        const cell = new Tile({ x: data.coord[0], y: data.coord[1], }, data.cell);
+        const cell = new Tile({ x: data._coord[0], y: data._coord[1], }, data._cell);
         this.grid.insertTile(cell);
         break;        
     }

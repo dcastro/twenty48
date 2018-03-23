@@ -53,8 +53,8 @@ autoPlay board = do
       autoPlay newBoard'
 
 data OutMsg
-  = PlayPlayerMsg { direction :: Direction }
-  | PlayComputerMsg { coord :: Coord, cell :: Cell }
+  = PlayPlayerMsg { _direction :: Direction }
+  | PlayComputerMsg { _coord :: Coord, _cell :: Cell }
   deriving (Generic)
 
 playPlayerMsg :: Player -> OutMsg
@@ -64,8 +64,8 @@ playComputerMsg :: Computer -> OutMsg
 playComputerMsg (Computer coord cell) = PlayComputerMsg coord cell
 
 data InMsg
-  = AutoPlayOnceMsg { board :: Board }
-  | AutoPlayMsg     { board :: Board }
+  = AutoPlayOnceMsg { _board :: Board }
+  | AutoPlayMsg     { _board :: Board }
   | StopMsg
   deriving (Generic, Show, Eq)
 
