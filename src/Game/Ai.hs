@@ -7,10 +7,10 @@ import           Import
 import           Game.Types
 import           Game.Twenty48
 import           Data.Monoid (Sum(..))
-import           Utils.List (pairs)
+import           Utils.Misc (pairs, filterMaybe)
 import           Data.List (transpose)
 import qualified Data.List as L
-import           Data.Alternated
+import           Data.Alternated (Alternated(..), acons, atraverse_)
 
 type Score = Double
 
@@ -27,18 +27,24 @@ smoothness (Board rows) = fromIntegral . negate . sum . map abs $ distances
     distances = (distanceBetweenPairs =<< rows) ++
                 (distanceBetweenPairs =<< transpose rows)
 
-distanceBetweenPairs :: Row -> [Int]
-distanceBetweenPairs row =
-  map distance . pairs . map unCell . filter isOccupied $ row
-    where
-      distance (x, y) = x - y
+    distanceBetweenPairs :: Row -> [Int]
+    distanceBetweenPairs row =
+      map distance . pairs . map unCell . filter isOccupied $ row
+        where
+          distance (x, y) = x - y
 
 monotonicity :: Board -> Score
 monotonicity (Board rows) =
   fromIntegral $ max decreaseHori increaseHori + max decreaseVert increaseVert
     where
-      (Sum decreaseHori, Sum increaseHori) = foldMap (foldMap variance . pairs . map unCell) rows
-      (Sum decreaseVert, Sum increaseVert) = foldMap (foldMap variance . pairs . map unCell) (transpose rows)
+      (Sum decreaseHori, Sum increaseHori) = foldMap (foldMap variance . pairs . removeMiddleZeros . map unCell) rows
+      (Sum decreaseVert, Sum increaseVert) = foldMap (foldMap variance . pairs . removeMiddleZeros . map unCell) (transpose rows)
+
+      removeMiddleZeros :: [Int] -> [Int]
+      removeMiddleZeros xs = start ++ filter (/= 0) xs ++ end
+        where
+          start = maybeToList $ filterMaybe (== 0) $ headMay xs
+          end   = maybeToList $ filterMaybe (== 0) $ lastMay xs
 
       variance :: (Int, Int) -> (Sum Int, Sum Int)
       variance (x, y) = if x < y 

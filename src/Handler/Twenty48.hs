@@ -78,7 +78,7 @@ receiveMsg = do
       $logError $ "Unexpected message received " <> decodeUtf8 d
       receiveMsg
 
-sendMsg :: (MonadIO m, MonadLogger m) => OutMsg -> WebSocketsT m ()
+sendMsg :: MonadIO m => OutMsg -> WebSocketsT m ()
 sendMsg = sendTextData . J.encode
 
 $(deriveToJSON defaultOptions ''OutMsg)

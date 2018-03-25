@@ -52,6 +52,9 @@ dependencies:
 
 ghc-options:
 - -fdefer-typed-holes
+- -Wcompat
+# - -Wredundant-constraints
+
 
 default-extensions:
 - NoImplicitPrelude

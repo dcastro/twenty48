@@ -1,4 +1,4 @@
-module Utils.List where
+module Utils.Misc where
 
 import           Import
 import           Numeric.Natural
@@ -19,3 +19,7 @@ mapi f as = uncurry f <$> [0..] `zip` as
 
 pairs :: (Zip f, IsSequence (f a)) => f a -> f (a, a)
 pairs xs = zip xs (tailDef xs)
+
+filterMaybe :: (a -> Bool) -> Maybe a -> Maybe a
+filterMaybe _ Nothing = Nothing
+filterMaybe p (Just a) = if p a then Just a else Nothing

@@ -11,7 +11,7 @@ module Game.Twenty48 where
 
 import           Import
 import           Game.Types
-import           Utils.List (mapi, updated, padRight)
+import           Utils.Misc (mapi, updated, padRight)
 import           Data.List (transpose)
 import           Utils.Random (oneFrom)
 import           Control.Monad.Random (MonadRandom)
