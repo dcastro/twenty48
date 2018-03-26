@@ -1,6 +1,6 @@
 module Utils.Control where
 
-import Import
+import           Import
 
 whenJust :: Applicative f => Maybe a -> (a -> f ()) -> f ()
 whenJust Nothing _ = pure ()

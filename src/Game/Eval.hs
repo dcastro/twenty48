@@ -1,11 +1,11 @@
 module Game.Eval where
 
-import Import
-import Game.Types
-import           Data.Monoid (Sum(..))
-import           Data.List (transpose)
-import qualified Data.List as L
-import           Utils.Misc (pairs, filterMaybe)
+import           Data.List   (transpose)
+import qualified Data.List   as L
+import           Data.Monoid (Sum (..))
+import           Game.Types
+import           Import
+import           Utils.Misc  (filterMaybe, pairs)
 
 boardEval :: Board -> Score
 boardEval b =

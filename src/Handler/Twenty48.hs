@@ -4,14 +4,14 @@
 
 module Handler.Twenty48 where
 
-import Import
-import Yesod.WebSockets hiding (race_)
 import qualified Data.Aeson       as J
-import           Data.Aeson.TH    (deriveFromJSON, deriveToJSON, defaultOptions)
-import           Game.Types
-import           Game.Moves
+import           Data.Aeson.TH    (defaultOptions, deriveFromJSON, deriveToJSON)
 import           Game.AlphaBeta
+import           Game.Moves
+import           Game.Types
+import           Import
 import           Utils.Control
+import           Yesod.WebSockets hiding (race_)
 
 getTwenty48R :: Handler Html
 getTwenty48R = do

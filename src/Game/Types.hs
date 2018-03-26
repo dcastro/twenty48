@@ -8,7 +8,7 @@
 module Game.Types where
 
 import           Data.Aeson.TH   (defaultOptions, deriveFromJSON, deriveJSON)
-import           Data.Alternated (Alternated(..), acons, atraverse_)
+import           Data.Alternated (Alternated (..), acons, atraverse_)
 import           Import
 
 ------------------------------------------------

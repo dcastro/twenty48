@@ -2,12 +2,12 @@
 
 module Main where
 
-import ClassyPrelude
-import Criterion.Main
-import Game.Types
-import Game.AlphaBeta
-import Control.Monad.Random (MonadRandom)
-import Utils.Random
+import           ClassyPrelude
+import           Control.Monad.Random (MonadRandom)
+import           Criterion.Main
+import           Game.AlphaBeta
+import           Game.Types
+import           Utils.Random
 
 main :: IO ()
 main = defaultMain

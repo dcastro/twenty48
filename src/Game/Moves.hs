@@ -4,12 +4,12 @@
 
 module Game.Moves where
 
-import           Import
-import           Game.Types
-import           Utils.Misc (mapi, updated, padRight)
-import           Data.List (transpose)
-import           Utils.Random (oneFrom)
 import           Control.Monad.Random (MonadRandom)
+import           Data.List            (transpose)
+import           Game.Types
+import           Import
+import           Utils.Misc           (mapi, padRight, updated)
+import           Utils.Random         (oneFrom)
 
 playPlayer :: Player -> Board -> Board
 playPlayer (Player d) (Board rs) =

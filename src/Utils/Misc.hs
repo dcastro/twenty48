@@ -1,8 +1,8 @@
 module Utils.Misc where
 
+import           Data.ChunkedZip (Zip)
 import           Import
 import           Numeric.Natural
-import           Data.ChunkedZip (Zip)
 
 padRight :: a -> Natural -> [a] -> [a]
 padRight _ 0 xs       = xs

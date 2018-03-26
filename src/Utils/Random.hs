@@ -1,8 +1,8 @@
 module Utils.Random where
 
-import           Import
-import           Data.List ((!!))
 import           Control.Monad.Random (MonadRandom, getRandomR)
+import           Data.List            ((!!))
+import           Import
 
 oneFrom :: MonadRandom m => NonNull [a] -> m a
 oneFrom xs = do

@@ -3,9 +3,9 @@
 
 module Game.EvalSpec where
 
-import TestImport
-import Game.Types
-import Game.Eval
+import           Game.Eval
+import           Game.Types
+import           TestImport
 
 spec :: Spec
 spec =
