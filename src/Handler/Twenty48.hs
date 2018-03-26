@@ -9,9 +9,8 @@ import Yesod.WebSockets hiding (race_)
 import qualified Data.Aeson       as J
 import           Data.Aeson.TH    (deriveFromJSON, deriveToJSON, defaultOptions)
 import           Game.Types
-import           Game.Twenty48
-import           Game.Ai
-import           Data.Alternated as A
+import           Game.Moves
+import           Game.AlphaBeta
 import           Utils.Control
 
 getTwenty48R :: Handler Html
@@ -27,9 +26,8 @@ wsApp =
   forever $ do
     msg <- receiveMsg
     case msg of
-      AutoPlayOnceMsg b -> do
-        let Path turns _ = maximumBy (comparing score) $ maximize $ map boardEval $ pruneHeight aiDepth $ unfoldPlayerTree b
-        whenJust (A.head turns) $ \player -> 
+      AutoPlayOnceMsg board -> do
+        whenJust (alphaBeta board aiDepth) $ \player -> 
           sendMsg $ playPlayerMsg player
       AutoPlayMsg b -> do
         race_
@@ -39,8 +37,7 @@ wsApp =
       
 autoPlay :: Board -> WebSocketsT Handler ()
 autoPlay board = do
-  let Path turns _ = maximumBy (comparing score) $ maximize $ map boardEval $ pruneHeight aiDepth $ unfoldPlayerTree board
-  whenJust (A.head turns) $ \player -> do
+  whenJust (alphaBeta board aiDepth) $ \player -> do
     sendMsg $ playPlayerMsg player
 
     let newBoard = playPlayer player board
@@ -63,6 +60,10 @@ playPlayerMsg (Player direction) = PlayPlayerMsg direction
 playComputerMsg :: Computer -> OutMsg
 playComputerMsg (Computer coord cell) = PlayComputerMsg coord cell
 
+sendMsg :: MonadIO m => OutMsg -> WebSocketsT m ()
+sendMsg = sendTextData . J.encode
+
+
 data InMsg
   = AutoPlayOnceMsg { _board :: Board }
   | AutoPlayMsg     { _board :: Board }
@@ -78,11 +79,7 @@ receiveMsg = do
       $logError $ "Unexpected message received " <> decodeUtf8 d
       receiveMsg
 
-sendMsg :: MonadIO m => OutMsg -> WebSocketsT m ()
-sendMsg = sendTextData . J.encode
 
 $(deriveToJSON defaultOptions ''OutMsg)
 $(deriveFromJSON defaultOptions ''InMsg)
-
-
 

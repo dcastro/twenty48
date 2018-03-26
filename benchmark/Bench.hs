@@ -4,10 +4,8 @@ module Main where
 
 import ClassyPrelude
 import Criterion.Main
-import Game.Twenty48
 import Game.Types
-import Game.Ai
-import Data.Alternated as A
+import Game.AlphaBeta
 import Control.Monad.Random (MonadRandom)
 import Utils.Random
 
@@ -22,7 +20,7 @@ depth :: Int
 depth = 6
 
 findBestMove :: Board -> Maybe Int
-findBestMove b = fmap (fromEnum . unPlayer) $ A.head $ path $ maximumBy (comparing score) $ maximize $ fmap boardEval $ pruneHeight depth $ unfoldPlayerTree b
+findBestMove b = fmap (fromEnum . unPlayer) $ alphaBeta b depth
 
 randomBoard :: MonadRandom m => m Board
 randomBoard =

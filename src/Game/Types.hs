@@ -3,13 +3,17 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Game.Types where
 
+import           Data.Aeson.TH   (defaultOptions, deriveFromJSON, deriveJSON)
+import           Data.Alternated (Alternated(..), acons, atraverse_)
 import           Import
-import           Data.Aeson.TH
 
--- Cell
+------------------------------------------------
+------------------------------------------------
+
 newtype Cell = Cell { unCell :: Int }
   deriving (Eq, Generic, Num, Ord)
 
@@ -32,10 +36,14 @@ isOccupied (Cell p) = p /= 0
 isAvailable :: Cell -> Bool
 isAvailable = not . isOccupied
 
--- Row
+------------------------------------------------
+------------------------------------------------
+
 type Row = [Cell]
 
--- Board
+------------------------------------------------
+------------------------------------------------
+
 newtype Board = Board [Row]
   deriving (Eq)
 
@@ -51,11 +59,59 @@ instance Show Board where
       printCell :: Cell -> String
       printCell (Cell p) = show p
 
-      
+------------------------------------------------
+------------------------------------------------
+
 -- Coordinates (x, y),
 -- where x is the horizontal axis (left to right)
 -- and y is the inverted vertical axis (up to down)
 type Coord = (Int, Int)
+
+------------------------------------------------
+------------------------------------------------
+
+data Direction = U | R | D | L
+  deriving (Enum, Bounded, Show, Generic, Eq)
+
+$(deriveJSON defaultOptions ''Direction)
+
+directions :: [Direction]
+directions = [minBound .. maxBound]
+
+------------------------------------------------
+------------------------------------------------
+
+newtype Player = Player { unPlayer :: Direction }
+  deriving (Show, Eq)
+
+data Computer = Computer Coord Cell
+  deriving (Show, Eq)
+
+------------------------------------------------
+------------------------------------------------
+
+-- | represents a solution: a list of turns to take, and the score 
+-- | attained at the end of those turns.
+-- | `a` and `b` represent the two players:
+-- | `a` goes first, `b` goes after.
+data Path a b = Path
+  { turns :: Alternated a b
+  , score :: Score
+  }
+  deriving (Eq)
+  
+type Score = Double
+
+addTurn :: a -> Path b a -> Path a b
+addTurn turn Path{..} = Path (acons turn turns) score
+
+printPath :: (Show a, Show b) => Path a b -> IO ()
+printPath Path{..} = do
+  putStrLn $ "Score: " <> tshow score
+  atraverse_ (putStrLn . tshow) (putStrLn . tshow) turns
+
+------------------------------------------------
+------------------------------------------------
 
 sampleBoard :: Board
 sampleBoard = Board $ fmap (fmap (Cell)) $

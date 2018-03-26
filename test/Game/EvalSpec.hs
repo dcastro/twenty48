@@ -1,11 +1,11 @@
 {-# LANGUAGE NegativeLiterals #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Game.AiSpec where
+module Game.EvalSpec where
 
 import TestImport
-import Game.Ai
 import Game.Types
+import Game.Eval
 
 spec :: Spec
 spec =
