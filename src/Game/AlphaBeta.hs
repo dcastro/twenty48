@@ -2,9 +2,10 @@
 
 module Game.AlphaBeta where
 
-import           Data.Alternated (Alternated (..))
-import qualified Data.Alternated as A
-import           Game.Eval
+import           Data.Alternated      (Alternated (..))
+import qualified Data.Alternated      as A
+import           Game.Optimized.Eval
+import           Game.Optimized.Board
 import           Game.StateTree
 import           Game.Types
 import           Import

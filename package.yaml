@@ -49,6 +49,7 @@ dependencies:
 - MonadRandom
 - yesod-websockets
 - chunked-data
+- vector-th-unbox
 
 ghc-options:
 - -fdefer-typed-holes

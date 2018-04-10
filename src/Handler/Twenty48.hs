@@ -4,14 +4,16 @@
 
 module Handler.Twenty48 where
 
-import qualified Data.Aeson       as J
-import           Data.Aeson.TH    (defaultOptions, deriveFromJSON, deriveToJSON)
+import qualified Data.Aeson           as J
+import           Data.Aeson.TH        (defaultOptions, deriveFromJSON,
+                                       deriveToJSON)
 import           Game.AlphaBeta
-import           Game.Moves
+import           Game.Optimized.Board
+import           Game.Optimized.Moves
 import           Game.Types
 import           Import
 import           Utils.Control
-import           Yesod.WebSockets hiding (race_)
+import           Yesod.WebSockets     hiding (race_)
 
 getTwenty48R :: Handler Html
 getTwenty48R = do
@@ -19,7 +21,7 @@ getTwenty48R = do
   sendFile typeHtml "static/2048/index.html"
 
 aiDepth :: Int
-aiDepth = 5
+aiDepth = 6
 
 wsApp :: WebSocketsT Handler ()
 wsApp = 

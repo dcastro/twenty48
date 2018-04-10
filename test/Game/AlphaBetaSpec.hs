@@ -1,13 +1,13 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-
 module Game.AlphaBetaSpec where
 
-import Game.AlphaBeta
-import Game.Minimax
-import Game.Types
-import TestImport
-import Test.QuickCheck
+import           Game.AlphaBeta
+import           Game.Minimax
+import           Game.Optimized.Board
+import           Game.Types
+import           Test.QuickCheck
+import           TestImport
 
 spec :: Spec
 spec = 
@@ -22,7 +22,7 @@ genBoard =
   let cell = map Cell $ elements [0..4]
       row = sequence $ replicate 4 cell
       rows = sequence $ replicate 4 row
-  in  map Board rows
+  in  map boardFromLists rows
 
 genDepth :: Gen Int
 genDepth = choose (0, 3)

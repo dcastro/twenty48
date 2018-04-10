@@ -5,11 +5,12 @@
 
 module Game.StateTree where
 
-import           Data.Tree       (Tree (..), drawTree)
-import           Game.Moves
+import           Data.Tree            (Tree (..), drawTree)
+import           Game.Optimized.Moves
+import           Game.Optimized.Board
 import           Game.Types
 import           Import
-import           Numeric.Natural (Natural)
+import           Numeric.Natural      (Natural)
 
 -- | Keep track of the player whose turn it is to play
 -- | and the ones who goes after

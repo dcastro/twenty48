@@ -1,11 +1,14 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE OverloadedStrings #-}
-
-module Game.Moves where
+module Game.Simple.Moves
+  ( playPlayer
+  , playComputer
+  , transpose
+  , computerAvailableMoves
+  , randomComputerMove
+  ) where
 
 import           Control.Monad.Random (MonadRandom)
 import           Data.List            (transpose)
+import           Game.Simple.Board
 import           Game.Types
 import           Import
 import           Utils.Misc           (mapi, padRight, updated)

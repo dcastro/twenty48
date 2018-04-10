@@ -3,7 +3,10 @@
 
 module Game.EvalSpec where
 
-import           Game.Eval
+import qualified Game.Optimized.Board as OB
+import qualified Game.Optimized.Eval  as OE
+import qualified Game.Simple.Board    as SB
+import qualified Game.Simple.Eval     as SE
 import           Game.Types
 import           TestImport
 
@@ -13,65 +16,65 @@ spec =
 
     describe "smoothness" $ do
       forM_ testCases $ \(TestCase {..}, i) ->
-        it ("board #" <> show i ) $ 
-          smoothness testBoard `shouldBe` expectedSmoothness
+        it ("board #" <> show i ) $ do
+          OE.smoothness testBoardO `shouldBe` expectedSmoothness
+          SE.smoothness testBoardS `shouldBe` expectedSmoothness
   
     describe "monotonicity" $ do
       forM_ testCases $ \(TestCase {..}, i) ->
-        it ("board #" <> show i ) $ 
-        monotonicity testBoard `shouldBe` expectedMonotonicity
+        it ("board #" <> show i ) $ do
+          OE.monotonicity testBoardO `shouldBe` expectedMonotonicity
+          SE.monotonicity testBoardS `shouldBe` expectedMonotonicity
 
     describe "max value" $ 
       forM_ testCases $ \(TestCase {..}, i) ->
-        it ("board #" <> show i ) $ 
-          maxValue testBoard `shouldBe` expectedMaxValue
+        it ("board #" <> show i ) $ do
+          OE.maxValue testBoardO `shouldBe` expectedMaxValue
+          SE.maxValue testBoardS `shouldBe` expectedMaxValue
     
     describe "empty cells" $
       forM_ testCases $ \(TestCase {..}, i) ->
-        it ("board #" <> show i ) $ 
-          emptyCells testBoard `shouldBe` expectedEmptyCells
-
-
-mkBoard :: [[Int]] -> Board
-mkBoard = Board . fmap (fmap (Cell))
+        it ("board #" <> show i ) $ do
+          OE.emptyCells testBoardO `shouldBe` expectedEmptyCells
+          SE.emptyCells testBoardS `shouldBe` expectedEmptyCells
 
 data TestCase = TestCase 
   { expectedSmoothness :: Score
   , expectedMonotonicity :: Score
   , expectedMaxValue :: Score
   , expectedEmptyCells :: Score
-  , testBoard :: Board
+  , testBoardO :: OB.Board
+  , testBoardS :: SB.Board
   }
+
+testCase :: Score -> Score -> Score -> Score -> [[Cell]] -> TestCase
+testCase s m mv ec cells = TestCase s m mv ec (OB.boardFromLists cells) (SB.boardFromLists cells)
 
 testCases :: [(TestCase, Int)]
 testCases =
-  [ TestCase
+  [ testCase
       -23 -9 5 6 $
-      mkBoard
         [ [1, 3, 4, 1]
         , [5, 0, 5, 2]
         , [3, 0, 0, 0]
         , [1, 0, 1, 0]
         ]
-  , TestCase
+  , testCase
       -29 -13 6 7 $
-      mkBoard
         [ [0, 0, 0, 0]
         , [1, 4, 0, 0]
         , [2, 5, 1, 0]
         , [3, 2, 6, 3]
         ]
-  , TestCase
+  , testCase
       -29 -9 7 4 $
-      mkBoard
         [ [0, 0, 0, 0]
         , [2, 6, 3, 1]
         , [5, 4, 4, 3]
         , [7, 3, 3, 4]
         ]
-  , TestCase
+  , testCase
       0 0 3 0 $
-      mkBoard
         [ [3, 3, 3, 3]
         , [3, 3, 3, 3]
         , [3, 3, 3, 3]

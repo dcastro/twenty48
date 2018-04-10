@@ -4,6 +4,7 @@ An AI for the 2048 game using minimax and alpha-beta pruning, written in Haskell
 
 ```
 stack bench --benchmark-arguments "--output bench.html"
+stack bench --benchmark-arguments "--time-limit 30"
 ```
 
 ## Database Setup
