@@ -1,14 +1,18 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module Game.Optimized.Board where
 
+import           Control.Newtype
 import qualified Data.List           as L
 import qualified Data.Vector.Unboxed as VU
 import           Game.Types
 import           Import
 
 newtype Board = Board { unBoard :: VU.Vector Cell }
-  deriving (Eq, NFData)
+  deriving (Eq, NFData, Generic)
+
+instance Newtype Board
 
 instance FromJSON Board where
   parseJSON = map boardFromLists . parseJSON

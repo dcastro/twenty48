@@ -1,25 +1,28 @@
 module Game.Optimized.Eval where
 
+import           Control.Newtype
 import           Data.Int             (Int8)
 import           Data.Monoid          (Sum (..))
 import qualified Data.Vector.Unboxed  as VU
-import           Game.Optimized.Moves           (transpose)
 import           Game.Optimized.Board
+import           Game.Optimized.Moves (transpose)
 import           Game.Types
 import           Import
 
 boardEval :: Board -> Score
 boardEval b =
-  smoothness b   * 0.1 +
-  monotonicity b * 1   +
-  maxValue b     * 1   +
-  emptyCells b   * 2.7
+  smoothness b t    * 0.1 +
+  monotonicity b t  * 1   +
+  maxValue b        * 1   +
+  emptyCells b      * 2.7
+  where
+    t = over Board (VU.modify transpose) b
   
-smoothness :: Board -> Score
-smoothness (Board rows) = fromIntegral . negate . sum $ distances
+smoothness :: Board -> Board -> Score
+smoothness (Board rows) (Board transposed) = fromIntegral . negate . sum $ distances
   where    
     distances = (distanceBetweenPairs =<< sliceRows rows) ++
-                (distanceBetweenPairs =<< sliceRows (VU.modify transpose rows))
+                (distanceBetweenPairs =<< sliceRows transposed)
                   
 -- convert Word8 to Int8 to avoid underflows
 distanceBetweenPairs :: VU.Vector Cell -> [Int8]
@@ -49,12 +52,12 @@ distanceBetweenPairs = go 0
       where
         x = unsafeIndex xs i
       
-monotonicity :: Board -> Score
-monotonicity (Board rows) =
+monotonicity :: Board -> Board -> Score
+monotonicity (Board rows) (Board transposed) =
   fromIntegral $ max decreaseHori increaseHori + max decreaseVert increaseVert
   where
     (Sum decreaseHori, Sum increaseHori) = foldMap (varianceAll 0) (sliceRows rows)
-    (Sum decreaseVert, Sum increaseVert) = foldMap (varianceAll 0) (sliceRows $ VU.modify transpose rows)
+    (Sum decreaseVert, Sum increaseVert) = foldMap (varianceAll 0) (sliceRows transposed)
 
 
     varianceAll :: Int -> VU.Vector Cell -> (Sum Int8, Sum Int8)

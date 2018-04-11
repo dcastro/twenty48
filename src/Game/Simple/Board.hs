@@ -1,16 +1,20 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module Game.Simple.Board where
   
-import           Data.Aeson.TH (defaultOptions, deriveFromJSON)
+import           Control.Newtype
+import           Data.Aeson.TH   (defaultOptions, deriveFromJSON)
 import           Game.Types
 import           Import
 
 type Row = [Cell]
 
-newtype Board = Board [Row]
-  deriving (Eq, NFData)
+newtype Board = Board { unBoard :: [Row] }
+  deriving (Eq, NFData, Generic)
+
+instance Newtype Board
 
 $(deriveFromJSON defaultOptions ''Board)
 

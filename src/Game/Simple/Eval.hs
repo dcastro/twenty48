@@ -8,19 +8,22 @@ import           Game.Simple.Board
 import           Game.Types
 import           Import
 import           Utils.Misc        (pairs)
+import Control.Newtype
 
 boardEval :: Board -> Score
 boardEval b =
-  smoothness b   * 0.1 +
-  monotonicity b * 1   +
-  maxValue b     * 1   +
-  emptyCells b   * 2.7
+  smoothness b t    * 0.1 +
+  monotonicity b t  * 1   +
+  maxValue b        * 1   +
+  emptyCells b      * 2.7
+  where
+    t = over Board transpose b
 
-smoothness :: Board -> Score
-smoothness (Board rows) = fromIntegral . negate . sum . map abs $ distances
+smoothness :: Board -> Board -> Score
+smoothness (Board rows) (Board transposed) = fromIntegral . negate . sum . map abs $ distances
   where    
     distances = (distanceBetweenPairs =<< rows) ++
-                (distanceBetweenPairs =<< transpose rows)
+                (distanceBetweenPairs =<< transposed)
 
     distanceBetweenPairs :: Row -> [Int]
     distanceBetweenPairs row =
@@ -28,12 +31,12 @@ smoothness (Board rows) = fromIntegral . negate . sum . map abs $ distances
         where
           distance (x, y) = fromIntegral x - fromIntegral y
 
-monotonicity :: Board -> Score
-monotonicity (Board rows) =
+monotonicity :: Board -> Board -> Score
+monotonicity (Board rows) (Board transposed) =
   fromIntegral $ max decreaseHori increaseHori + max decreaseVert increaseVert
     where
       (Sum decreaseHori, Sum increaseHori) = foldMap varianceAll rows
-      (Sum decreaseVert, Sum increaseVert) = foldMap varianceAll (transpose rows)
+      (Sum decreaseVert, Sum increaseVert) = foldMap varianceAll transposed
 
       varianceAll :: [Cell] -> (Sum Int8, Sum Int8)
       varianceAll [] = (mempty, mempty)

@@ -13,7 +13,7 @@ main =
   defaultMain
     [ bgroup ("alpha-beta: find best move") $
       flip map [5 .. 7] $ \depth ->
-        bench "board1 whnf" $ nf (findBestMove depth) sampleBoard4
+        bench ("board4 depth: " <> show depth) $ nf (findBestMove depth) sampleBoard4
     ]
 
 findBestMove :: Int -> Board -> Maybe Int

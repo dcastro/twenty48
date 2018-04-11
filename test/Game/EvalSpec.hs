@@ -3,10 +3,11 @@
 
 module Game.EvalSpec where
 
-import qualified Game.Optimized.Board as OB
-import qualified Game.Optimized.Eval  as OE
-import qualified Game.Simple.Board    as SB
-import qualified Game.Simple.Eval     as SE
+import           Control.Newtype
+import qualified Data.Vector.Unboxed  as VU
+import           Game.Optimized.Board
+import           Game.Optimized.Eval
+import           Game.Optimized.Moves
 import           Game.Types
 import           TestImport
 
@@ -17,67 +18,69 @@ spec =
     describe "smoothness" $ do
       forM_ testCases $ \(TestCase {..}, i) ->
         it ("board #" <> show i ) $ do
-          OE.smoothness testBoardO `shouldBe` expectedSmoothness
-          SE.smoothness testBoardS `shouldBe` expectedSmoothness
+          smoothness
+            testBoard
+            (over Board (VU.modify transpose) testBoard)
+            `shouldBe` expectedSmoothness
   
     describe "monotonicity" $ do
       forM_ testCases $ \(TestCase {..}, i) ->
         it ("board #" <> show i ) $ do
-          OE.monotonicity testBoardO `shouldBe` expectedMonotonicity
-          SE.monotonicity testBoardS `shouldBe` expectedMonotonicity
+          monotonicity
+            testBoard
+            (over Board (VU.modify transpose) testBoard)
+            `shouldBe` expectedMonotonicity
 
     describe "max value" $ 
       forM_ testCases $ \(TestCase {..}, i) ->
         it ("board #" <> show i ) $ do
-          OE.maxValue testBoardO `shouldBe` expectedMaxValue
-          SE.maxValue testBoardS `shouldBe` expectedMaxValue
+          maxValue testBoard `shouldBe` expectedMaxValue
     
     describe "empty cells" $
       forM_ testCases $ \(TestCase {..}, i) ->
         it ("board #" <> show i ) $ do
-          OE.emptyCells testBoardO `shouldBe` expectedEmptyCells
-          SE.emptyCells testBoardS `shouldBe` expectedEmptyCells
+          emptyCells testBoard `shouldBe` expectedEmptyCells
 
-data TestCase = TestCase 
-  { expectedSmoothness :: Score
+data TestCase = TestCase
+  { expectedSmoothness   :: Score
   , expectedMonotonicity :: Score
-  , expectedMaxValue :: Score
-  , expectedEmptyCells :: Score
-  , testBoardO :: OB.Board
-  , testBoardS :: SB.Board
+  , expectedMaxValue     :: Score
+  , expectedEmptyCells   :: Score
+  , testBoard            :: Board
   }
-
-testCase :: Score -> Score -> Score -> Score -> [[Cell]] -> TestCase
-testCase s m mv ec cells = TestCase s m mv ec (OB.boardFromLists cells) (SB.boardFromLists cells)
 
 testCases :: [(TestCase, Int)]
 testCases =
-  [ testCase
+  [ TestCase
       -23 -9 5 6 $
-        [ [1, 3, 4, 1]
-        , [5, 0, 5, 2]
-        , [3, 0, 0, 0]
-        , [1, 0, 1, 0]
-        ]
-  , testCase
+        boardFromLists
+          [ [1, 3, 4, 1]
+          , [5, 0, 5, 2]
+          , [3, 0, 0, 0]
+          , [1, 0, 1, 0]
+          ]
+  , TestCase
       -29 -13 6 7 $
-        [ [0, 0, 0, 0]
-        , [1, 4, 0, 0]
-        , [2, 5, 1, 0]
-        , [3, 2, 6, 3]
-        ]
-  , testCase
+        boardFromLists
+          [ [0, 0, 0, 0]
+          , [1, 4, 0, 0]
+          , [2, 5, 1, 0]
+          , [3, 2, 6, 3]
+          ]
+  , TestCase
       -29 -9 7 4 $
-        [ [0, 0, 0, 0]
-        , [2, 6, 3, 1]
-        , [5, 4, 4, 3]
-        , [7, 3, 3, 4]
-        ]
-  , testCase
+        boardFromLists
+          [ [0, 0, 0, 0]
+          , [2, 6, 3, 1]
+          , [5, 4, 4, 3]
+          , [7, 3, 3, 4]
+          ]
+  , TestCase
       0 0 3 0 $
-        [ [3, 3, 3, 3]
-        , [3, 3, 3, 3]
-        , [3, 3, 3, 3]
-        , [3, 3, 3, 3]
-        ]
+        boardFromLists
+          [ [3, 3, 3, 3]
+          , [3, 3, 3, 3]
+          , [3, 3, 3, 3]
+          , [3, 3, 3, 3]
+          ]
   ] `zip` [1..]

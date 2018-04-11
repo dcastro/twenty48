@@ -50,6 +50,7 @@ dependencies:
 - yesod-websockets
 - chunked-data
 - vector-th-unbox
+- newtype-generics
 
 ghc-options:
 - -fdefer-typed-holes
