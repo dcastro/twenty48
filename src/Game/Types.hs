@@ -80,7 +80,7 @@ data Path a b = Path
   }
   deriving (Eq)
   
-type Score = Double
+type Score = Float
 
 addTurn :: a -> Path b a -> Path a b
 addTurn turn Path{..} = Path (acons turn turns) score
