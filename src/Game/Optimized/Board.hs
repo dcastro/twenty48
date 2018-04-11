@@ -34,6 +34,9 @@ boardFromLists xs =
   where
     list = join xs
 
+boardToLists :: Board -> [[Cell]]
+boardToLists (Board b) = map (VU.toList) $ sliceRows b
+
 sliceRows :: VU.Vector Cell -> [VU.Vector Cell]
 sliceRows xs = 
   flip map [0..3] $ \i -> VU.slice (4*i) 4 xs

@@ -4,7 +4,7 @@
 
 module Game.Simple.Board where
   
-import           Control.Newtype
+import           Control.Newtype as N
 import           Data.Aeson.TH   (defaultOptions, deriveFromJSON)
 import           Game.Types
 import           Import
@@ -30,4 +30,7 @@ instance Show Board where
 
 
 boardFromLists :: [[Cell]] -> Board
-boardFromLists = Board
+boardFromLists = N.pack
+
+boardToLists :: Board -> [[Cell]]
+boardToLists = N.unpack
