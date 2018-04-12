@@ -9,15 +9,15 @@ module Game.Optimized.Moves
 import           Control.Monad.Random        (MonadRandom)
 import           Control.Monad.ST            (ST)
 import qualified Data.List                   as L
+import qualified Data.Strict.Maybe           as M
 import qualified Data.Vector.Generic.Mutable as GMV
 import qualified Data.Vector.Unboxed         as VU
 import qualified Data.Vector.Unboxed.Mutable as VUM
 import           Game.Optimized.Board
 import           Game.Types
 import           Import
-import           Utils.Control               (whenJust)
+import           Utils.Control               (whenJust')
 import           Utils.Random                (oneFrom)
-
 
 -- | converts an index of a vector of length 16 to 
 -- | a pair of coordinates (x, y) of a 4x4 matrix
@@ -68,7 +68,7 @@ shiftLeft xs i =
     x <- VUM.read xs i
     when (isAvailable x) $ do
       i2maybe <- findIndex xs (i+1) (isOccupied)
-      whenJust i2maybe $ \i2 ->
+      whenJust' i2maybe $ \i2 ->
         VUM.swap xs i i2
     shiftLeft xs (i+1)
 
@@ -98,14 +98,14 @@ transpose xs =
     coordToIndex x y = 4 * x + y
 
 -- | find the index of the next cell that satisfies predicate `p`, starting at index `i`
-findIndex :: Unbox a => VUM.MVector s a -> Int -> (a -> Bool) -> ST s (Maybe Int)
+findIndex :: Unbox a => VUM.MVector s a -> Int -> (a -> Bool) -> ST s (M.Maybe Int)
 findIndex xs i p =
   if i >= VUM.length xs
-    then pure Nothing
+    then pure M.Nothing
     else do
       x <- VUM.read xs i
       if p x
-        then pure $ Just i
+        then pure $ M.Just i
         else findIndex xs (i+1) p
 
 -------------------------------------------------------

@@ -51,6 +51,7 @@ dependencies:
 - chunked-data
 - vector-th-unbox
 - newtype-generics
+- strict
 
 ghc-options:
 - -fdefer-typed-holes

@@ -3,6 +3,7 @@ module Game.Optimized.Eval where
 import           Control.Newtype
 import           Data.Int             (Int8)
 import           Data.Monoid          (Sum (..))
+import qualified Data.Strict.Maybe    as M
 import qualified Data.Vector.Unboxed  as VU
 import           Game.Optimized.Board
 import           Game.Optimized.Moves (transpose)
@@ -35,23 +36,23 @@ distanceBetweenPairs = go 0
         else if (isOccupied (unsafeIndex xs i))
           then
             case findNext (i+1) isOccupied xs of
-              Just y -> distance (unsafeIndex xs i) y : go (i+1) xs
-              Nothing -> []
+              M.Just y -> distance (unsafeIndex xs i) y : go (i+1) xs
+              M.Nothing -> []
           else go (i+1) xs
 
     distance x y = abs $ fromIntegral x - fromIntegral y
 
-    findNext :: Int -> (Cell -> Bool) -> VU.Vector Cell -> Maybe Cell
+    findNext :: Int -> (Cell -> Bool) -> VU.Vector Cell -> M.Maybe Cell
     findNext i p xs =
       if (i < VU.length xs)
         then
           if p x
-            then Just x
+            then M.Just x
             else findNext (i+1) p xs
-        else Nothing
+        else M.Nothing
       where
         x = unsafeIndex xs i
-      
+
 monotonicity :: Board -> Board -> Score
 monotonicity (Board rows) (Board transposed) =
   fromIntegral $ max decreaseHori increaseHori + max decreaseVert increaseVert
@@ -63,20 +64,20 @@ monotonicity (Board rows) (Board transposed) =
     varianceAll :: Int -> VU.Vector Cell -> (Sum Int8, Sum Int8)
     varianceAll i xs =
       case getNextOccupiedOrLast (i+1) xs of
-        Nothing -> (mempty, mempty)
-        Just (nextIdx, nextCell) -> variance' (VU.unsafeIndex xs i) (nextCell) <> varianceAll nextIdx xs
+        M.Nothing                  -> mempty
+        M.Just (nextIdx, nextCell) -> variance' (VU.unsafeIndex xs i) (nextCell) <> varianceAll nextIdx xs
 
     variance' :: Cell -> Cell -> (Sum Int8, Sum Int8)
     variance' x y = if x < y 
-                        then (mempty, Sum $ fromIntegral x - fromIntegral y)
-                        else (Sum $ fromIntegral y - fromIntegral x, mempty)
+                        then (mempty, Sum (fromIntegral x - fromIntegral y))
+                        else (Sum (fromIntegral y - fromIntegral x), mempty)
 
-    getNextOccupiedOrLast :: Int -> VU.Vector Cell -> Maybe (Int, Cell)
+    getNextOccupiedOrLast :: Int -> VU.Vector Cell -> M.Maybe (Int, Cell)
     getNextOccupiedOrLast i xs =
       if i >= VU.length xs
-        then Nothing
+        then M.Nothing
         else if isOccupied x || i == VU.length xs - 1
-          then Just $ (i, x)
+          then M.Just $ (i, x)
           else getNextOccupiedOrLast (i+1) xs
       where 
         x = VU.unsafeIndex xs i

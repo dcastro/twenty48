@@ -29,7 +29,7 @@ wsApp =
     msg <- receiveMsg
     case msg of
       AutoPlayOnceMsg board -> do
-        whenJust (alphaBeta board aiDepth) $ \player -> 
+        whenJust' (alphaBeta board aiDepth) $ \player -> 
           sendMsg $ playPlayerMsg player
       AutoPlayMsg b -> do
         race_
@@ -39,7 +39,7 @@ wsApp =
       
 autoPlay :: Board -> WebSocketsT Handler ()
 autoPlay board = do
-  whenJust (alphaBeta board aiDepth) $ \player -> do
+  whenJust' (alphaBeta board aiDepth) $ \player -> do
     sendMsg $ playPlayerMsg player
 
     let newBoard = playPlayer player board

@@ -9,8 +9,10 @@ import           Game.Optimized.Board
 import           Game.StateTree
 import           Game.Types
 import           Import
+import qualified Data.Strict.Maybe as M
 
-minimax :: Board -> Int -> Maybe Player
+
+minimax :: Board -> Int -> M.Maybe Player
 minimax b h = 
   A.head . turns . maximumBy (comparing score) . maximize . map boardEval . pruneHeight h $ unfoldPlayerTree b
 

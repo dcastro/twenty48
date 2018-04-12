@@ -3,8 +3,4 @@
 :def hoogle \x -> Prelude.pure (":!hoogle \"" Prelude.++ x Prelude.++ "\"")
 :def doc \x -> Prelude.pure (":!hoogle --info \"" Prelude.++ x Prelude.++ "\"")
 
-import Control.Monad.Random
-
--- :set -Wno-unused-matches
--- :set -Wno-unused-imports
--- :set -Wno-unused-local-binds
+:set +t

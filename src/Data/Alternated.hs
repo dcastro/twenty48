@@ -2,7 +2,8 @@
 
 module Data.Alternated where
 
-import Import
+import qualified Data.Strict.Maybe as M
+import           Import
 
 data Alternated a b
   = Alternated a (Alternated b a)
@@ -28,9 +29,9 @@ instance (Show a, Show b) => Show (Alternated a b) where
     where 
       strs = fromAlternated show show xs
 
-head :: Alternated a b -> Maybe a
-head ANil = Nothing
-head (Alternated x _) = Just x
+head :: Alternated a b -> M.Maybe a
+head ANil = M.Nothing
+head (Alternated x _) = M.Just x
 
 atraverse :: Applicative f
           => (a -> f c)
