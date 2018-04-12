@@ -1,8 +1,9 @@
 module Data.Pair where
 
-import Import
-import Data.Ix
-import Data.Foldable
+import           Data.Aeson
+import           Data.Foldable
+import           Data.Ix
+import           Import
 
 -- | Same as `Data.Strict.Tuple.Pair` from the `strict` package,
 -- | but with Semigroup, Monoid and Functor instances.
@@ -27,6 +28,9 @@ instance Bifunctor Pair where
 instance Foldable (Pair a) where
   foldMap f (_ :!: y) = f y
   foldr f z (_ :!: y) = f y z
+
+instance (ToJSON a, ToJSON b) => ToJSON (Pair a b) where
+  toJSON (x :!: y) = toJSON [toJSON x, toJSON y]
 
 {-# INLINE fst #-}
 fst :: Pair a b -> a

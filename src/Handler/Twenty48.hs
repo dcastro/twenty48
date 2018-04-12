@@ -81,7 +81,6 @@ receiveMsg = do
       $logError $ "Unexpected message received " <> decodeUtf8 d
       receiveMsg
 
-
 $(deriveToJSON defaultOptions ''OutMsg)
 $(deriveFromJSON defaultOptions ''InMsg)
 

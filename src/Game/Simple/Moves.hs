@@ -8,6 +8,7 @@ module Game.Simple.Moves
 
 import           Control.Monad.Random (MonadRandom)
 import           Data.List            (transpose)
+import           Data.Pair
 import           Game.Simple.Board
 import           Game.Types
 import           Import
@@ -34,7 +35,7 @@ playPlayer (Player d) (Board rs) =
     mergeLeft xs = xs
 
 playComputer :: Computer -> Board -> Board
-playComputer (Computer (x, y) cell) (Board rows) =
+playComputer (Computer (x :!: y) cell) (Board rows) =
   Board $ updated y (updated x (const $ cell)) rows
 
 -------------------------------------------------------
@@ -50,7 +51,7 @@ freeCoords (Board rows) = join $ mapi freeCoords' rows
     freeCoord :: Int -> Int -> Cell -> Maybe Coord
     freeCoord y x p
       | isOccupied p  = Nothing
-      | otherwise     = Just (x, y)
+      | otherwise     = Just (x :!: y)
 
 computerAvailableMoves :: Board -> [Computer]
 computerAvailableMoves board = Computer <$> freeCoords board <*> [Cell 2, Cell 4]

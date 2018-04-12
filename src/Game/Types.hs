@@ -12,13 +12,14 @@ module Game.Types where
 import           Data.Aeson.TH                (defaultOptions, deriveJSON)
 import           Data.Alternated              (Alternated (..), acons,
                                                atraverse_)
+import           Data.Pair
 import           Data.Vector.Unboxed.Deriving (derivingUnbox)
 import           Import
 
 -- Coordinates (x, y)
 -- where x is the horizontal axis (left to right)
 -- and y is the inverted vertical axis (up to down)
-type Coord = (Int, Int)
+type Coord = Pair Int Int
 
 -- unsigned 8-bit integer
 newtype Cell = Cell { unCell :: Word8 }

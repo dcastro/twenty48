@@ -9,6 +9,7 @@ module Game.Optimized.Moves
 import           Control.Monad.Random        (MonadRandom)
 import           Control.Monad.ST            (ST)
 import qualified Data.List                   as L
+import           Data.Pair
 import qualified Data.Strict.Maybe           as M
 import qualified Data.Vector.Generic.Mutable as GMV
 import qualified Data.Vector.Unboxed         as VU
@@ -22,12 +23,12 @@ import           Utils.Random                (oneFrom)
 -- | converts an index of a vector of length 16 to 
 -- | a pair of coordinates (x, y) of a 4x4 matrix
 idxToCoord :: Int -> Coord
-idxToCoord idx = (idx `rem` 4, idx `div` 4)
+idxToCoord idx = (idx `rem` 4 :!: idx `div` 4)
 
 -- | converts a pair of coordinates (x, y) of a 4x4 matrix to
 -- | an index of a vector of length 16
 coordToIdx :: Coord -> Int
-coordToIdx (x, y) = y * 4 + x
+coordToIdx (x :!: y) = y * 4 + x
 
 -------------------------------------------------------
 -------------------------------------------------------
