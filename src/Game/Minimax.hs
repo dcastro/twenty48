@@ -4,13 +4,13 @@ module Game.Minimax where
 
 import           Data.Alternated      (Alternated (..))
 import qualified Data.Alternated      as A
-import           Game.Optimized.Eval
+import           Data.Pair
+import qualified Data.Strict.Maybe    as M
 import           Game.Optimized.Board
+import           Game.Optimized.Eval
 import           Game.StateTree
 import           Game.Types
 import           Import
-import qualified Data.Strict.Maybe as M
-
 
 minimax :: Board -> Int -> M.Maybe Player
 minimax b h = 
@@ -22,8 +22,8 @@ maximize StateTree{..} =
     where
       maxs = map (minimumBy (comparing score)) $ map minimize' forest
 
-      minimize' :: (Player, StateTree Computer Player Score) -> NonNull [Path Player Computer]
-      minimize' (player, sub) = mapNonNull (addTurn player) $  minimize sub
+      minimize' :: Pair Player (StateTree Computer Player Score) -> NonNull [Path Player Computer]
+      minimize' (player :!: sub) = mapNonNull (addTurn player) $  minimize sub
 
 minimize :: StateTree Computer Player Score -> NonNull [Path Computer Player]
 minimize StateTree{..} =
@@ -31,5 +31,5 @@ minimize StateTree{..} =
     where
       mins = map (maximumBy (comparing score)) $ map maximize' forest
 
-      maximize' :: (Computer, StateTree Player Computer Score) -> NonNull [Path Computer Player]
-      maximize' (computer, sub) = mapNonNull (addTurn computer) $ maximize sub
+      maximize' :: Pair Computer (StateTree Player Computer Score) -> NonNull [Path Computer Player]
+      maximize' (computer :!: sub) = mapNonNull (addTurn computer) $ maximize sub

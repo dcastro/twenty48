@@ -2,6 +2,7 @@ module Data.Pair where
 
 import Import
 import Data.Ix
+import Data.Foldable
 
 -- | Same as `Data.Strict.Tuple.Pair` from the `strict` package,
 -- | but with Semigroup, Monoid and Functor instances.
@@ -19,3 +20,22 @@ instance (Semigroup a, Semigroup b, Monoid a, Monoid b) => Monoid (Pair a b) whe
 
 instance Functor (Pair a) where
   fmap f (x :!: y) = x :!: f y
+
+instance Bifunctor Pair where
+  bimap f g (x :!: y) = (f x :!: g y)
+
+instance Foldable (Pair a) where
+  foldMap f (_ :!: y) = f y
+  foldr f z (_ :!: y) = f y z
+
+{-# INLINE fst #-}
+fst :: Pair a b -> a
+fst (x :!: _) = x
+
+{-# INLINE snd #-}
+snd :: Pair a b -> b
+snd (_ :!: y) = y
+
+{-# INLINE uncurry #-}
+uncurry :: (a -> b -> c) -> Pair a b -> c
+uncurry f (x :!: y) = f x y
