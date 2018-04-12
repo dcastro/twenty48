@@ -3,6 +3,7 @@ module Game.Optimized.Eval where
 import           Control.Newtype
 import           Data.Int             (Int8)
 import           Data.Monoid          (Sum (..))
+import           Data.Pair
 import qualified Data.Strict.Maybe    as M
 import qualified Data.Vector.Unboxed  as VU
 import           Game.Optimized.Board
@@ -57,27 +58,27 @@ monotonicity :: Board -> Board -> Score
 monotonicity (Board rows) (Board transposed) =
   fromIntegral $ max decreaseHori increaseHori + max decreaseVert increaseVert
   where
-    (Sum decreaseHori, Sum increaseHori) = foldMap (varianceAll 0) (sliceRows rows)
-    (Sum decreaseVert, Sum increaseVert) = foldMap (varianceAll 0) (sliceRows transposed)
+    Sum decreaseHori :!: Sum increaseHori = foldMap (varianceAll 0) (sliceRows rows)
+    Sum decreaseVert :!: Sum increaseVert = foldMap (varianceAll 0) (sliceRows transposed)
 
 
-    varianceAll :: Int -> VU.Vector Cell -> (Sum Int8, Sum Int8)
+    varianceAll :: Int -> VU.Vector Cell -> Pair (Sum Int8) (Sum Int8)
     varianceAll i xs =
       case getNextOccupiedOrLast (i+1) xs of
-        M.Nothing                  -> mempty
-        M.Just (nextIdx, nextCell) -> variance' (VU.unsafeIndex xs i) (nextCell) <> varianceAll nextIdx xs
+        M.Nothing                     -> mempty
+        M.Just (nextIdx :!: nextCell) -> variance' (VU.unsafeIndex xs i) (nextCell) <> varianceAll nextIdx xs
 
-    variance' :: Cell -> Cell -> (Sum Int8, Sum Int8)
+    variance' :: Cell -> Cell -> Pair (Sum Int8) (Sum Int8)
     variance' x y = if x < y 
-                        then (mempty, Sum (fromIntegral x - fromIntegral y))
-                        else (Sum (fromIntegral y - fromIntegral x), mempty)
+                        then mempty :!: Sum (fromIntegral x - fromIntegral y)
+                        else Sum (fromIntegral y - fromIntegral x) :!: mempty
 
-    getNextOccupiedOrLast :: Int -> VU.Vector Cell -> M.Maybe (Int, Cell)
+    getNextOccupiedOrLast :: Int -> VU.Vector Cell -> M.Maybe (Pair Int Cell)
     getNextOccupiedOrLast i xs =
       if i >= VU.length xs
         then M.Nothing
         else if isOccupied x || i == VU.length xs - 1
-          then M.Just $ (i, x)
+          then M.Just $ i :!: x
           else getNextOccupiedOrLast (i+1) xs
       where 
         x = VU.unsafeIndex xs i
