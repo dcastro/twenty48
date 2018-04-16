@@ -122,7 +122,8 @@ benchmarks:
   bench:
     main: Bench.hs
     source-dirs: benchmark
-    ghc-options: -Wall
+    ghc-options:
+    - -Wall
     dependencies:
     - criterion
     - twenty48

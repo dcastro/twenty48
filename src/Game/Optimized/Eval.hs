@@ -83,10 +83,12 @@ monotonicity (Board rows) (Board transposed) =
       where 
         x = VU.unsafeIndex xs i
 
+{-# INLINE maxValue #-}
 maxValue :: Board -> Score
 maxValue (Board rows) =
   fromIntegral $ VU.maximum rows
 
+{-# INLINE emptyCells #-}
 emptyCells :: Board -> Score
 emptyCells (Board rows) =
   VU.foldl' f 0 rows

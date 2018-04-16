@@ -21,7 +21,7 @@ getTwenty48R = do
   sendFile typeHtml "static/2048/index.html"
 
 aiDepth :: Int
-aiDepth = 6
+aiDepth = 7
 
 wsApp :: WebSocketsT Handler ()
 wsApp = 

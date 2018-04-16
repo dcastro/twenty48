@@ -7,8 +7,9 @@
 * Swapping `(,)` for `Data.Strict.Tuple.Pair` in `Eval.monotonicity` shaved off 15~20%
 * Swapping `(,)` for `Data.Strict.Tuple.Pair` in `StateTree` shaved off 5~10%
 
-## Things that were measured but did not speed up execution
+### Things that were measured but did not speed up execution
 
 * Specializing `sliceRowsM` and `findIndex`
 * Using `Vector.Mutable.Unboxed.unsafeWrite`, `unsafeRead`, `unsafeSlice`, `unsafeSwap`
 * Swapping `Data.Maybe` for `Data.Strict.Maybe`
+* `-fspecialise-aggressively`
