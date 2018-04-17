@@ -52,6 +52,7 @@ dependencies:
 - vector-th-unbox
 - newtype-generics
 - strict
+- extra
 
 ghc-options:
 - -fdefer-typed-holes
