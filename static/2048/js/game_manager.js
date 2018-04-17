@@ -22,6 +22,9 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
 }
 
 GameManager.prototype.autoPlay = function () {
+  if (this.over)
+    return;
+
   this.autoPlaying = true;
 
   const msg = {
@@ -114,6 +117,11 @@ GameManager.prototype.setup = function () {
         this.grid.insertTile(cell);
         break;        
     }
+
+    if (!this.movesAvailable()) {
+      this.over = true; // Game over!
+    }
+    this.actuate();
   }
 };
 
@@ -143,6 +151,8 @@ GameManager.prototype.actuate = function () {
   // Clear the state when the game is over (game over only, not win)
   if (this.over) {
     this.storageManager.clearGameState();
+    this.actuator.stopAutoPlay();
+    this.autoPlaying = false;
   } else {
     this.storageManager.setGameState(this.serialize());
   }
