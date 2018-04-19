@@ -1,17 +1,24 @@
-version: "2.0"
+version: "2.1"
 services:
   postgres:
-    image: postgres
+    image: postgres:10.3
     env_file: ./docker/database/dev_env
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
-
-  webserver:
+  twenty48:
     image: dcastro/2048-twenty48
     ports:
       - "80:80"
     environment:
       - PGHOST=postgres
       - PORT=80
+    depends_on:
+      postgres:
+        condition: service_healthy
 
