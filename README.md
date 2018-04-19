@@ -1,5 +1,15 @@
 An AI for the 2048 game using minimax and alpha-beta pruning, written in Haskell + Yesod. WIP.
 
+## Docker
+
+```plain
+stack --stack-yaml stack-docker.yaml docker pull
+stack --stack-yaml stack-docker.yaml image container
+
+docker-compose up -d
+
+```
+
 ## Benchmarks
 
 ```

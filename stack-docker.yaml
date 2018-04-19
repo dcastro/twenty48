@@ -1,0 +1,21 @@
+resolver: lts-10.5
+
+packages:
+- .
+
+docker:
+  enable: true
+
+image:
+  containers:
+    -
+      base: "fpco/stack-run"
+      name: "dcastro/2048"
+      entrypoints:
+        - twenty48
+      executables:
+        - twenty48
+      add:
+        config/: /config
+        static/: /static
+
