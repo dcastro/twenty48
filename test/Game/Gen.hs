@@ -1,5 +1,6 @@
 module Game.Gen where
 
+import           Data.Pair
 import qualified Game.Optimized.Board as O
 import qualified Game.Simple.Board    as S
 import           Game.Types
@@ -23,8 +24,8 @@ genCells =
 genDepth :: Gen Int
 genDepth = choose (0, 2)
 
-genCoord :: Gen (Int, Int)
-genCoord = (,) <$> choose (0, 3) <*> choose (0, 3)
+genCoord :: Gen (Pair Int Int)
+genCoord = (:!:) <$> choose (0, 3) <*> choose (0, 3)
 
 genDirection :: Gen Direction
 genDirection = elements directions
