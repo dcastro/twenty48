@@ -1,0 +1,1 @@
+--command="stack ghci --test --bench --main-is :test" --test main --warnings

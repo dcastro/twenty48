@@ -121,7 +121,7 @@ flags:
 
 benchmarks:
   bench:
-    main: Bench.hs
+    main: Main.hs
     source-dirs: benchmark
     ghc-options:
     - -Wall
