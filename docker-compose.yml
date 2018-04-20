@@ -10,6 +10,8 @@ services:
       interval: 30s
       timeout: 30s
       retries: 3
+    restart: always
+      
 
   twenty48:
     image: dcastro/2048-twenty48
@@ -21,4 +23,5 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    restart: always
 

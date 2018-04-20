@@ -5,11 +5,12 @@ packages:
 
 docker:
   enable: true
+  repo: "fpco/stack-build"
 
 image:
   containers:
     -
-      base: "fpco/stack-run"
+      base: "dcastro/base"
       name: "dcastro/2048"
       entrypoints:
         - twenty48
