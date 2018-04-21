@@ -6,12 +6,13 @@ packages:
 docker:
   enable: true
   repo: "fpco/stack-build"
+  auto-pull: true
 
 image:
   containers:
     -
-      base: "dcastro/base"
-      name: "dcastro/2048"
+      base: "dfacastro/base"
+      name: "dfacastro/2048"
       entrypoints:
         - twenty48
       executables:

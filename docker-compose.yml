@@ -14,7 +14,7 @@ services:
       
 
   twenty48:
-    image: dcastro/2048-twenty48
+    image: dfacastro/2048-twenty48
     ports:
       - "80:80"
     environment:

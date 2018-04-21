@@ -5,11 +5,7 @@ An AI for the 2048 game using minimax and alpha-beta pruning, written in Haskell
 ```plain
 
 // build base image
-docker build -t "dcastro/base" "./docker/base"
-
-// build image
-stack --stack-yaml stack-docker.yaml docker pull
-stack --stack-yaml stack-docker.yaml image container
+docker/build.sh
 
 // fire up container
 docker-compose up -d
