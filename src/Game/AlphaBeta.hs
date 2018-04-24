@@ -20,7 +20,7 @@ maximize :: StateTree Player Computer Score -> NonNull [Path Player Computer]
 maximize StateTree{..} = 
   fromMaybe (singleton (Path ANil root)) $ fromNullable maxs
     where
-      maxs = maxPrune $ map minimize' forest
+      maxs = mapmin $ map minimize' forest
 
       minimize' :: Pair Player (StateTree Computer Player Score) -> NonNull [Path Player Computer]
       minimize' (player :!: sub) = mapNonNull (addTurn player) $  minimize sub
@@ -29,7 +29,7 @@ minimize :: StateTree Computer Player Score -> NonNull [Path Computer Player]
 minimize StateTree{..} =
   fromMaybe (singleton (Path ANil root)) $ fromNullable mins
     where
-      mins = minPrune $ map maximize' forest
+      mins = mapmax $ map maximize' forest
 
       maximize' :: Pair Computer (StateTree Player Computer Score) -> NonNull [Path Computer Player]
       maximize' (computer :!: sub) = mapNonNull (addTurn computer) $ maximize sub
@@ -37,39 +37,43 @@ minimize StateTree{..} =
 -------------------------------------------------------
 -------------------------------------------------------
 
-maxPrune :: [NonNull [Path a b]] -> [Path a b]
-maxPrune [] = []
-maxPrune (xs : xss) =
-  min' : maxPrune' min' xss
+mapmin :: [NonNull [Path a b]] -> [Path a b]
+mapmin [] = []
+mapmin (xs : xss) =
+  min' : mapmin' min' xss
     where
       min' = minimum xs
 
-maxPrune' :: Path a b -> [NonNull [Path a b]] -> [Path a b]
-maxPrune' _ [] = []
-maxPrune' p (xs : xss)
-  | containsLeq p xs  = maxPrune' p xss
-  | otherwise         = min' : maxPrune' min' xss
+-- | Takes a potential maximum `Path` and the lists of minima for each subtree.
+mapmin' :: Path a b -> [NonNull [Path a b]] -> [Path a b]
+mapmin' _ [] = []
+mapmin' p (xs : xss)
+  | containsLeq p xs  = mapmin' p xss
+  | otherwise         = min' : mapmin' min' xss
     where
       min' = minimum xs
 
+-- | Takes a potential maximum `Path`, and a list of minima.
+-- | Returns true if any element in this subtree is less then the potential maximum;
+-- | if so, then this subtree is not worth looking at.
 containsLeq :: Path a b -> NonNull [Path a b] -> Bool
 containsLeq p1 = any (\p2 -> score p2 <= score p1)
 
 -------------------------------------------------------
 -------------------------------------------------------
 
-minPrune :: [NonNull [Path a b]] -> [Path a b]
-minPrune [] = []
-minPrune (xs : xss) =
-  max' : minPrune' max' xss
+mapmax :: [NonNull [Path a b]] -> [Path a b]
+mapmax [] = []
+mapmax (xs : xss) =
+  max' : mapmax' max' xss
     where
       max' = maximum xs
 
-minPrune' :: Path a b -> [NonNull [Path a b]] -> [Path a b]
-minPrune' _ []       = []
-minPrune' p (xs : xss)
-  | containsGeq p xs  = minPrune' p xss
-  | otherwise         = max' : minPrune' max' xss
+mapmax' :: Path a b -> [NonNull [Path a b]] -> [Path a b]
+mapmax' _ []       = []
+mapmax' p (xs : xss)
+  | containsGeq p xs  = mapmax' p xss
+  | otherwise         = max' : mapmax' max' xss
     where
       max' = maximum xs
       
