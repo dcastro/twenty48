@@ -14,7 +14,7 @@ import           Import
 
 alphaBeta :: Board -> Int -> M.Maybe Player
 alphaBeta b h = 
-  A.head . turns . maximumBy (comparing score) . maximize . map boardEval . pruneHeight h $ unfoldPlayerTree b
+  A.head . turns . maximum . maximize . map boardEval . pruneHeight h $ unfoldPlayerTree b
 
 maximize :: StateTree Player Computer Score -> NonNull [Path Player Computer]
 maximize StateTree{..} = 
@@ -42,7 +42,7 @@ maxPrune [] = []
 maxPrune (xs : xss) =
   min' : maxPrune' min' xss
     where
-      min' = minimumBy (comparing score) xs
+      min' = minimum xs
 
 maxPrune' :: Path a b -> [NonNull [Path a b]] -> [Path a b]
 maxPrune' _ [] = []
@@ -50,7 +50,7 @@ maxPrune' p (xs : xss)
   | containsLeq p xs  = maxPrune' p xss
   | otherwise         = min' : maxPrune' min' xss
     where
-      min' = minimumBy (comparing score) xs
+      min' = minimum xs
 
 containsLeq :: Path a b -> NonNull [Path a b] -> Bool
 containsLeq p1 = any (\p2 -> score p2 <= score p1)
@@ -63,7 +63,7 @@ minPrune [] = []
 minPrune (xs : xss) =
   max' : minPrune' max' xss
     where
-      max' = maximumBy (comparing score) xs
+      max' = maximum xs
 
 minPrune' :: Path a b -> [NonNull [Path a b]] -> [Path a b]
 minPrune' _ []       = []
@@ -71,7 +71,7 @@ minPrune' p (xs : xss)
   | containsGeq p xs  = minPrune' p xss
   | otherwise         = max' : minPrune' max' xss
     where
-      max' = maximumBy (comparing score) xs
+      max' = maximum xs
       
 containsGeq :: Path a b -> NonNull [Path a b] -> Bool
 containsGeq p1 = any (\p2 -> score p2 >= score p1)

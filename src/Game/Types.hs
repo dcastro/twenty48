@@ -79,7 +79,12 @@ data Path a b = Path
   { turns :: Alternated a b
   , score :: Score
   }
-  deriving (Eq)
+
+instance Eq (Path a b) where
+  p1 == p2 = p1 `compare` p2 == EQ
+
+instance Ord (Path a b) where
+  Path _ score1 `compare` Path _ score2 = score1 `compare` score2
   
 type Score = Float
 
