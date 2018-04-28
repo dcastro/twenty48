@@ -23,6 +23,20 @@
       <div class="scores-container">
         <div class="score-container">0</div>
         <div class="best-container">0</div>
+        <div id="login-area">
+          <div id="signed-in">
+            <a id="sign-out">
+              <img id="avatar">
+              <span>Sign-out</span>
+            </a>
+          </div>
+          <div id="signed-out">
+            <a id="sign-in">
+              <img src="/static/2048/img/btn_google_light_normal_ios.svg">
+              <span>Sign-in</span>
+            </a>
+          </div> 
+        </div>
       </div>
     </div>
 
@@ -91,12 +105,15 @@
     Created by <a href="http://gabrielecirulli.com" target="_blank">Gabriele Cirulli.</a> Based on <a href="https://itunes.apple.com/us/app/1024!/id823499224" target="_blank">1024 by Veewo Studio</a> and conceptually similar to <a href="http://asherv.com/threes/" target="_blank">Threes by Asher Vollmer.</a>
     </p>
   </div>
-
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
   <script src="static/2048/js/bind_polyfill.js"></script>
   <script src="static/2048/js/classlist_polyfill.js"></script>
   <script src="static/2048/js/animframe_polyfill.js"></script>
   <script src="static/2048/js/keyboard_input_manager.js"></script>
   <script src="static/2048/js/html_actuator.js"></script>
+  <script src="static/2048/js/login_service.js"></script>
   <script src="static/2048/js/grid.js"></script>
   <script src="static/2048/js/tile.js"></script>
   <script src="static/2048/js/local_storage_manager.js"></script>

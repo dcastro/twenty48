@@ -36,7 +36,8 @@ body {
 }
 
 .heading {
-  @include clearfix;
+  display: flex;
+  justify-content: space-between;
 }
 
 h1.title {
@@ -44,7 +45,6 @@ h1.title {
   font-weight: bold;
   margin: 0;
   display: block;
-  float: left;
 }
 
 @include keyframes(move-up) {
@@ -57,11 +57,6 @@ h1.title {
     top: -50px;
     opacity: 0;
   }
-}
-
-.scores-container {
-  float: right;
-  text-align: right;
 }
 
 .score-container, .best-container {
@@ -451,8 +446,35 @@ hr {
   @include animation-fill-mode(backwards);
 }
 
-.above-game-buttons {
 
+#login-area {
+  margin-top: 4px;
+
+  #signed-out, #signed-in { display: none; }
+
+  #sign-out, #sign-in {
+    
+    @include button;
+    text-align: center;
+
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+
+    img {
+      width: 32px;
+      height: 32px;
+      &#avatar { border-radius: 50%; }
+    }
+
+    span {
+      flex-grow: 1;
+    }
+  }
+}
+
+.above-game-buttons {
   display: flex;
   @include smaller($mobile-threshold) {
     flex-wrap: wrap;
@@ -460,9 +482,9 @@ hr {
 
   > a {
     @include button;
+    text-align: center;
     flex-grow: 1;
     flex-basis: 100%;
-    text-align: center;
     margin: 0 0 0 2px;
 
     @include smaller($mobile-threshold) {

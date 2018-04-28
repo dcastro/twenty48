@@ -10,17 +10,15 @@ html, body {
 body {
   margin: 80px 0; }
 
-.heading:after {
-  content: "";
-  display: block;
-  clear: both; }
+.heading {
+  display: flex;
+  justify-content: space-between; }
 
 h1.title {
   font-size: 80px;
   font-weight: bold;
   margin: 0;
-  display: block;
-  float: left; }
+  display: block; }
 
 @-webkit-keyframes move-up {
   0% {
@@ -43,10 +41,6 @@ h1.title {
   100% {
     top: -50px;
     opacity: 0; } }
-.scores-container {
-  float: right;
-  text-align: right; }
-
 .score-container, .best-container {
   position: relative;
   display: inline-block;
@@ -492,6 +486,32 @@ hr {
   -moz-animation-fill-mode: backwards;
   animation-fill-mode: backwards; }
 
+#login-area {
+  margin-top: 4px; }
+  #login-area #signed-out, #login-area #signed-in {
+    display: none; }
+  #login-area #sign-out, #login-area #sign-in {
+    display: inline-block;
+    background: #8f7a66;
+    border-radius: 3px;
+    padding: 0 20px;
+    text-decoration: none;
+    color: #f9f6f2;
+    height: 40px;
+    line-height: 42px;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box; }
+    #login-area #sign-out img, #login-area #sign-in img {
+      width: 32px;
+      height: 32px; }
+      #login-area #sign-out img#avatar, #login-area #sign-in img#avatar {
+        border-radius: 50%; }
+    #login-area #sign-out span, #login-area #sign-in span {
+      flex-grow: 1; }
+
 .above-game-buttons {
   display: flex; }
   @media screen and (max-width: 520px) {
@@ -506,9 +526,9 @@ hr {
     color: #f9f6f2;
     height: 40px;
     line-height: 42px;
+    text-align: center;
     flex-grow: 1;
     flex-basis: 100%;
-    text-align: center;
     margin: 0 0 0 2px; }
     @media screen and (max-width: 520px) {
       .above-game-buttons > a {
