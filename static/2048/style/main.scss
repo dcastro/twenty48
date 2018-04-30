@@ -151,9 +151,13 @@ hr {
 }
 
 // Styles for buttons
-@mixin button {
+@mixin button($setBackground: true) {
+
+  @if $setBackground {
+    background: darken($game-container-background, 20%);
+  }
+
   display: inline-block;
-  background: darken($game-container-background, 20%);
   border-radius: 3px;
   padding: 0 20px;
   text-decoration: none;
@@ -446,21 +450,52 @@ hr {
   @include animation-fill-mode(backwards);
 }
 
+// Thanks to: https://cloudcannon.com/deconstructions/2014/11/15/facebook-content-placeholder-deconstruction.html
+@keyframes placeHolderShimmer{
+  0%{
+      background-position: -468px 0
+  }
+  100%{
+      background-position: 468px 0
+  }
+}
+
+.loading {
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #f6f7f8;
+  background: #eeeeee;
+  background: -webkit-gradient(linear, left top, right top, color-stop(8%, #eeeeee), color-stop(18%, #dddddd), color-stop(33%, #eeeeee));
+  background: -webkit-linear-gradient(left, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+  background: linear-gradient(to right, #eeeeee 8%,#dddddd 18%,#eeeeee 33%);
+  -webkit-background-size: 800px 104px;
+  background-size: 800px 104px;
+  position: relative;
+}
 
 #login-area {
   margin-top: 4px;
 
   #signed-out, #signed-in { display: none; }
 
+  #sign-out, #sign-in, .loading {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .loading {
+    @include button(false);
+  }
+  
   #sign-out, #sign-in {
-    
     @include button;
     text-align: center;
 
     display: inline-flex;
     align-items: center;
-    width: 100%;
-    box-sizing: border-box;
 
     img {
       width: 32px;

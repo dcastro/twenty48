@@ -170,8 +170,8 @@ hr {
       display: block;
       margin-top: 59px; }
     .game-container .game-message a {
-      display: inline-block;
       background: #8f7a66;
+      display: inline-block;
       border-radius: 3px;
       padding: 0 20px;
       text-decoration: none;
@@ -486,13 +486,44 @@ hr {
   -moz-animation-fill-mode: backwards;
   animation-fill-mode: backwards; }
 
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -468px 0; }
+  100% {
+    background-position: 468px 0; } }
+.loading {
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #f6f7f8;
+  background: #eeeeee;
+  background: -webkit-gradient(linear, left top, right top, color-stop(8%, #eeeeee), color-stop(18%, #dddddd), color-stop(33%, #eeeeee));
+  background: -webkit-linear-gradient(left, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+  background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+  -webkit-background-size: 800px 104px;
+  background-size: 800px 104px;
+  position: relative; }
+
 #login-area {
   margin-top: 4px; }
   #login-area #signed-out, #login-area #signed-in {
     display: none; }
-  #login-area #sign-out, #login-area #sign-in {
+  #login-area #sign-out, #login-area #sign-in, #login-area .loading {
+    width: 100%;
+    box-sizing: border-box; }
+  #login-area .loading {
     display: inline-block;
+    border-radius: 3px;
+    padding: 0 20px;
+    text-decoration: none;
+    color: #f9f6f2;
+    height: 40px;
+    line-height: 42px; }
+  #login-area #sign-out, #login-area #sign-in {
     background: #8f7a66;
+    display: inline-block;
     border-radius: 3px;
     padding: 0 20px;
     text-decoration: none;
@@ -501,9 +532,7 @@ hr {
     line-height: 42px;
     text-align: center;
     display: inline-flex;
-    align-items: center;
-    width: 100%;
-    box-sizing: border-box; }
+    align-items: center; }
     #login-area #sign-out img, #login-area #sign-in img {
       width: 32px;
       height: 32px; }
@@ -518,8 +547,8 @@ hr {
     .above-game-buttons {
       flex-wrap: wrap; } }
   .above-game-buttons > a {
-    display: inline-block;
     background: #8f7a66;
+    display: inline-block;
     border-radius: 3px;
     padding: 0 20px;
     text-decoration: none;
@@ -624,8 +653,8 @@ hr {
         display: block;
         margin-top: 59px; }
       .game-container .game-message a {
-        display: inline-block;
         background: #8f7a66;
+        display: inline-block;
         border-radius: 3px;
         padding: 0 20px;
         text-decoration: none;
