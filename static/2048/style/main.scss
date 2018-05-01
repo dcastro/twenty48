@@ -476,6 +476,17 @@ hr {
   position: relative;
 }
 
+#scores-login {
+  width: 55%;
+  @include smaller($mobile-threshold) {
+    width: 70%;
+  }  
+}
+
+.scores-container { display: flex; }
+.score-container { flex-grow: 1; }
+.best-container { flex-grow: 1; margin-left: 4px; }
+
 #login-area {
   margin-top: 4px;
 

@@ -506,6 +506,22 @@ hr {
   background-size: 800px 104px;
   position: relative; }
 
+#scores-login {
+  width: 55%; }
+  @media screen and (max-width: 520px) {
+    #scores-login {
+      width: 70%; } }
+
+.scores-container {
+  display: flex; }
+
+.score-container {
+  flex-grow: 1; }
+
+.best-container {
+  flex-grow: 1;
+  margin-left: 4px; }
+
 #login-area {
   margin-top: 4px; }
   #login-area #signed-out, #login-area #signed-in {

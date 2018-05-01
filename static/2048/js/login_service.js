@@ -4,13 +4,11 @@ function LoginService() {
 
   function init() {
     gapi.load('client:auth2', () => {
-      console.log('loaded');
       gapi.client.init({
         'apiKey': 'AIzaSyDEmI3F231zE25CR_BYqRHsSqL16atW8KI',
         'clientId': '587486773943-lb3cfne32q7t784ivehivj7rinjr4ds2.apps.googleusercontent.com',
         'scope': 'profile'
       }).then(() => {
-        console.log('inited');
         const auth2 = gapi.auth2.getAuthInstance();
 
         if(auth2.isSignedIn.get())
@@ -34,11 +32,13 @@ function LoginService() {
       const profile = auth2.currentUser.get().getBasicProfile()
       $("#avatar").attr('src', profile.getImageUrl());
 
+      $("#login-area .loading").hide();
       $("#signed-out").hide();
       $("#signed-in").show();
     }
 
     function signedOut() {
+      $("#login-area .loading").hide();
       $("#signed-in").hide();
       $("#signed-out").show();
     }
