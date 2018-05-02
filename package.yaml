@@ -53,6 +53,7 @@ dependencies:
 - newtype-generics
 - strict
 - extra
+- esqueleto
 
 ghc-options:
 - -fdefer-typed-holes

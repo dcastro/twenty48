@@ -9,3 +9,4 @@
 / Twenty48R GET
 
 /score ScoreR POST
+/scores ScoresR GET

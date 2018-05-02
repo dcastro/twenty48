@@ -93,6 +93,7 @@ instance Yesod App where
 
     isAuthorized Twenty48R _ = pure Authorized
     isAuthorized ScoreR _ = pure Authorized
+    isAuthorized ScoresR _ = pure Authorized
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows

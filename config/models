@@ -5,7 +5,7 @@ User
     email Text
     UniqueEmail email
 
-GameScore
+GameScore json
     name Text
     score Int
     userId UserId
