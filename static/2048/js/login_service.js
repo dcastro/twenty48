@@ -2,6 +2,20 @@ function LoginService() {
   
   init();
 
+  this.userDetails = () => {
+    if (gapi.auth2 === undefined)
+      return;
+
+    const auth2 = gapi.auth2.getAuthInstance();
+    const profile = auth2.currentUser.get().getBasicProfile();
+
+    if(auth2.isSignedIn.get())
+      return {
+        email: profile.getEmail(),
+        name: profile.getName()
+      };
+  }
+
   function init() {
     gapi.load('client:auth2', () => {
       gapi.client.init({

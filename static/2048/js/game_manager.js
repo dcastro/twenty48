@@ -1,8 +1,9 @@
-function GameManager(size, InputManager, Actuator, StorageManager) {
+function GameManager(size, InputManager, Actuator, StorageManager, scoreSvc) {
   this.size           = size; // Size of the grid
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
+  this.scoreSvc       = scoreSvc;
 
   this.startTiles     = 2;
 
@@ -150,6 +151,8 @@ GameManager.prototype.actuate = function () {
 
   // Clear the state when the game is over (game over only, not win)
   if (this.over) {
+    this.scoreSvc.saveScore(this.score);      
+    
     this.storageManager.clearGameState();
     this.actuator.stopAutoPlay();
     this.autoPlaying = false;
@@ -238,6 +241,8 @@ GameManager.prototype.move = function (direction) {
           // The mighty 2048 tile
           if (merged.value === 2048) {
             self.won = true;
+            self.scoreSvc.saveScore(self.score);
+
             self.stopAutoPlay();
           }
         } else {

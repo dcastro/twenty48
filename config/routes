@@ -7,3 +7,5 @@
 /robots.txt RobotsR GET
 
 / Twenty48R GET
+
+/score ScoreR POST

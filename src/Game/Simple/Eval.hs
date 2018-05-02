@@ -1,5 +1,6 @@
 module Game.Simple.Eval where
 
+import           Control.Newtype
 import           Data.Int          (Int8)
 import           Data.List         (transpose)
 import qualified Data.List         as L
@@ -8,7 +9,6 @@ import           Game.Simple.Board
 import           Game.Types
 import           Import
 import           Utils.Misc        (pairs)
-import Control.Newtype
 
 boardEval :: Board -> Score
 boardEval b =
