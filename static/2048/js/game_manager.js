@@ -1,9 +1,9 @@
-function GameManager(size, InputManager, Actuator, StorageManager, scoreSvc) {
+function GameManager(size, InputManager, Actuator, StorageManager, loginSvc) {
   this.size           = size; // Size of the grid
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
-  this.scoreSvc       = scoreSvc;
+  this.loginSvc       = loginSvc;
 
   this.startTiles     = 2;
 
@@ -13,13 +13,32 @@ function GameManager(size, InputManager, Actuator, StorageManager, scoreSvc) {
   this.inputManager.on("autoPlay", this.autoPlay.bind(this))
   this.inputManager.on("autoPlayOnce", this.autoPlayOnce.bind(this))
   this.inputManager.on("stopAutoPlay", this.stopAutoPlay.bind(this))
+  this.inputManager.on("saveScore", () => this.saveScore(true))
 
   const url = location.href.replace(/^(https:\/\/)|(http:\/\/)/, "ws://")
   this.conn = new WebSocket(url);
 
   this.autoPlaying = false;
   this.conn.onopen = () => this.setup();
+}
 
+GameManager.prototype.saveScore = function (promptSignIn) {
+  this.getUserDetails(promptSignIn).then(details => {
+    if (details !== null) {
+      details.score = this.score;
+      $.post('/score', JSON.stringify(details));
+    } else {
+      console.error("Can't save scores unless logged in");
+    }
+  })
+}
+
+GameManager.prototype.getUserDetails = function(promptSignIn) {
+  return this.loginSvc.userDetails().then(details => {
+    return details === null && promptSignIn ?
+              this.loginSvc.signIn().then(() => this.loginSvc.userDetails()) :
+              Promise.resolve(details);
+  });
 }
 
 GameManager.prototype.autoPlay = function () {
@@ -151,7 +170,9 @@ GameManager.prototype.actuate = function () {
 
   // Clear the state when the game is over (game over only, not win)
   if (this.over) {
-    this.scoreSvc.saveScore(this.score);      
+    this.loginSvc.isSignedIn().then(signedIn => {
+      if (signedIn) this.saveScore();
+    });
     
     this.storageManager.clearGameState();
     this.actuator.stopAutoPlay();
@@ -160,13 +181,17 @@ GameManager.prototype.actuate = function () {
     this.storageManager.setGameState(this.serialize());
   }
 
-  this.actuator.actuate(this.grid, {
-    score:      this.score,
-    over:       this.over,
-    won:        this.won,
-    bestScore:  this.storageManager.getBestScore(),
-    terminated: this.isGameTerminated()
+  this.loginSvc.isSignedIn().then(signedIn => {
+    this.actuator.actuate(this.grid, {
+      score:      this.score,
+      over:       this.over,
+      won:        this.won,
+      bestScore:  this.storageManager.getBestScore(),
+      terminated: this.isGameTerminated()
+    },
+    signedIn);
   });
+
 
 };
 
@@ -241,7 +266,9 @@ GameManager.prototype.move = function (direction) {
           // The mighty 2048 tile
           if (merged.value === 2048) {
             self.won = true;
-            self.scoreSvc.saveScore(self.score);
+            self.loginSvc.isSignedIn().then(signedIn => {
+              if (signedIn) self.saveScore();
+            });
 
             self.stopAutoPlay();
           }

@@ -2,18 +2,30 @@ function LoginService() {
   
   init();
 
-  this.userDetails = () => {
-    if (gapi.auth2 === undefined)
-      return;
+  this.userDetails = () =>
+    this.isSignedIn().then(signedIn => {
 
-    const auth2 = gapi.auth2.getAuthInstance();
-    const profile = auth2.currentUser.get().getBasicProfile();
+      if(!signedIn)
+        return null;
 
-    if(auth2.isSignedIn.get())
+      const profile = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
+
       return {
         email: profile.getEmail(),
         name: profile.getName()
       };
+    });
+
+  this.isSignedIn = () =>
+    whenLoaded().then(() => gapi.auth2.getAuthInstance().isSignedIn.get());
+
+  this.signIn = () =>
+    whenLoaded().then(() => gapi.auth2.getAuthInstance().signIn());
+
+  function whenLoaded() {
+    return new Promise((fulfilled, _) => {
+      gapi.load('client:auth2', fulfilled);
+    });
   }
 
   function init() {
@@ -49,6 +61,8 @@ function LoginService() {
       $("#login-area .loading").hide();
       $("#signed-out").hide();
       $("#signed-in").show();
+
+      $("#save-score-button").hide();
     }
 
     function signedOut() {

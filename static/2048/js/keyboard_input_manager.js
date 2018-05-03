@@ -75,6 +75,7 @@ KeyboardInputManager.prototype.listen = function () {
   this.bindButtonPress(".auto-play-once-button", this.autoPlayOnce);
   this.bindButtonPress(".stop-auto-play-button", this.stopAutoPlay);
   this.bindButtonPress(".keep-playing-button", this.keepPlaying);
+  this.bindButtonPress("#save-score-button", this.saveScore);
 
   // Respond to swipe events
   var touchStartClientX, touchStartClientY;
@@ -161,4 +162,7 @@ KeyboardInputManager.prototype.stopAutoPlay = function (event) {
   this.emit("stopAutoPlay");
 };
 
-
+KeyboardInputManager.prototype.saveScore = function (event) {
+  event.preventDefault();
+  this.emit("saveScore");
+};

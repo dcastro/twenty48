@@ -7,7 +7,7 @@ function HTMLActuator() {
   this.score = 0;
 }
 
-HTMLActuator.prototype.actuate = function (grid, metadata) {
+HTMLActuator.prototype.actuate = function (grid, metadata, signedIn) {
   var self = this;
 
   window.requestAnimationFrame(function () {
@@ -26,9 +26,9 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
 
     if (metadata.terminated) {
       if (metadata.over) {
-        self.message(false); // You lose
+        self.message(false, signedIn); // You lose
       } else if (metadata.won) {
-        self.message(true); // You win!
+        self.message(true, signedIn); // You win!
       }
     }
 
@@ -124,12 +124,14 @@ HTMLActuator.prototype.updateBestScore = function (bestScore) {
   this.bestContainer.textContent = bestScore;
 };
 
-HTMLActuator.prototype.message = function (won) {
+HTMLActuator.prototype.message = function (won, signedIn) {
   var type    = won ? "game-won" : "game-over";
   var message = won ? "You win!" : "Game over!";
 
   this.messageContainer.classList.add(type);
   this.messageContainer.getElementsByTagName("p")[0].textContent = message;
+
+  signedIn ? $("#save-score-button").hide() : $("#save-score-button").show();
 };
 
 HTMLActuator.prototype.clearMessage = function () {
