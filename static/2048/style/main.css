@@ -41,7 +41,7 @@ h1.title {
   100% {
     top: -50px;
     opacity: 0; } }
-.score-container, .best-container {
+.score-container {
   position: relative;
   display: inline-block;
   background: #bbada0;
@@ -54,7 +54,7 @@ h1.title {
   color: white;
   margin-top: 8px;
   text-align: center; }
-  .score-container:after, .best-container:after {
+  .score-container:after {
     position: absolute;
     width: 100%;
     top: 10px;
@@ -64,7 +64,7 @@ h1.title {
     line-height: 13px;
     text-align: center;
     color: #eee4da; }
-  .score-container .score-addition, .best-container .score-addition {
+  .score-container .score-addition {
     position: absolute;
     right: 30px;
     color: red;
@@ -82,9 +82,6 @@ h1.title {
 
 .score-container:after {
   content: "Score"; }
-
-.best-container:after {
-  content: "Best"; }
 
 p {
   margin-top: 0;
@@ -507,10 +504,10 @@ hr {
   position: relative; }
 
 #scores-login {
-  width: 55%; }
+  width: 45%; }
   @media screen and (max-width: 520px) {
     #scores-login {
-      width: 70%; } }
+      width: 65%; } }
 
 .scores-container {
   display: flex; }
@@ -518,9 +515,36 @@ hr {
 .score-container {
   flex-grow: 1; }
 
-.best-container {
-  flex-grow: 1;
-  margin-left: 4px; }
+/** Icons by Font Awesome: https://fontawesome.com/license */
+.top-scores-icon {
+  width: 1.125em;
+  display: inline-block;
+  font-size: inherit;
+  height: 1em;
+  overflow: visible;
+  vertical-align: -.125em; }
+  .top-scores-icon path {
+    fill: currentColor; }
+
+.top-scores {
+  background: #8f7a66;
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0 20px;
+  text-decoration: none;
+  color: #f9f6f2;
+  height: 40px;
+  line-height: 42px;
+  background: #bbada0;
+  padding: 15px 25px;
+  font-size: 25px;
+  height: 25px;
+  border-radius: 3px;
+  margin-top: 8px;
+  text-align: center;
+  margin-left: 4px;
+  line-height: normal;
+  background: #8f7a66; }
 
 #login-area {
   margin-top: 4px; }
@@ -604,7 +628,7 @@ hr {
     width: 280px;
     margin: 0 auto; }
 
-  .score-container, .best-container {
+  .score-container, .top-scores {
     margin-top: 0;
     padding: 15px 10px;
     min-width: 40px; }

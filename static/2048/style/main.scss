@@ -59,7 +59,7 @@ h1.title {
   }
 }
 
-.score-container, .best-container {
+.score-container {
   $height: 25px;
 
   position: relative;
@@ -103,10 +103,6 @@ h1.title {
 
 .score-container:after {
   content: "Score";
-}
-
-.best-container:after {
-  content: "Best";
 }
 
 p {
@@ -477,15 +473,45 @@ hr {
 }
 
 #scores-login {
-  width: 55%;
+  width: 45%;
   @include smaller($mobile-threshold) {
-    width: 70%;
+    width: 65%;
   }  
 }
 
 .scores-container { display: flex; }
 .score-container { flex-grow: 1; }
-.best-container { flex-grow: 1; margin-left: 4px; }
+
+/** Icons by Font Awesome: https://fontawesome.com/license */
+.top-scores-icon {
+  width: 1.125em;
+  display: inline-block;
+  font-size: inherit;
+  height: 1em;
+  overflow: visible;
+  vertical-align: -.125em;
+
+  path { fill: currentColor; }
+}
+
+.top-scores {
+  @include button;
+
+  $height: 25px;
+
+  background: $game-container-background;
+  padding: 15px 25px;
+  font-size: $height;
+  height: $height;
+  border-radius: 3px;
+  margin-top: 8px;
+  text-align: center;
+
+  margin-left: 4px;
+
+  line-height: normal;
+  background: darken($game-container-background, 20%);
+}
 
 #login-area {
   margin-top: 4px;
@@ -578,7 +604,7 @@ hr {
     margin: 0 auto;
   }
 
-  .score-container, .best-container {
+  .score-container, .top-scores {
     margin-top: 0;
     padding: 15px 10px;
     min-width: 40px;
