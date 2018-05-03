@@ -14,12 +14,18 @@ function GameManager(size, InputManager, Actuator, StorageManager, loginSvc) {
   this.inputManager.on("autoPlayOnce", this.autoPlayOnce.bind(this))
   this.inputManager.on("stopAutoPlay", this.stopAutoPlay.bind(this))
   this.inputManager.on("saveScore", () => this.saveScore(true))
+  this.inputManager.on("showTopScores", () => this.showTopScores())
 
   const url = location.href.replace(/^(https:\/\/)|(http:\/\/)/, "ws://")
   this.conn = new WebSocket(url);
 
   this.autoPlaying = false;
   this.conn.onopen = () => this.setup();
+}
+
+GameManager.prototype.showTopScores = function () {
+  // TODO
+  console.log('Showing top scores');
 }
 
 GameManager.prototype.saveScore = function (promptSignIn) {

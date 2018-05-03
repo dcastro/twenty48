@@ -190,13 +190,38 @@ hr {
 
     .game-message {
       display: none;
+    }
+
+    .top-scores-panel {
+      background: rgba($tile-color, .8);
+
+      .top-scores-tables { display: flex; }
+
+      table {
+        flex-grow: 1;
+        border-collapse: collapse;
+        margin: 0 2px 0 2px;
+      }
+
+      tbody {
+        tr:nth-child(odd) {
+          background-color: rgba(darken($tile-color, 20%), .5);
+        }
+
+        td {
+          padding: 9px 0 9px 0;
+        }
+      }
+    }
+
+    .game-message, .top-scores-panel {
+      display: none;
 
       position: absolute;
       top: 0;
       right: 0;
       bottom: 0;
       left: 0;
-      background: rgba($tile-color, .5);
       z-index: 100;
 
       text-align: center;
@@ -230,12 +255,15 @@ hr {
       @include animation-fill-mode(both);
 
       &.game-won {
-        background: rgba($tile-gold-color, .5);
         color: $bright-text-color;
 
 	a.keep-playing-button {
 	  display: inline-block;
 	}
+      }
+
+      &.game-over {
+        background: rgba($tile-color, .5);
       }
 
       &.game-won, &.game-over {
@@ -637,7 +665,7 @@ hr {
     font-size: 35px;
   }
 
-  .game-message {
+  .game-message, .top-scores-panel {
     p {
       font-size: 30px !important;
       height: 30px !important;
