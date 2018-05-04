@@ -197,8 +197,14 @@ hr {
   .top-scores-panel {
     background: rgba($tile-color, .8);
 
-    .top-scores-labels, .top-scores-tables { display: flex; }
-    .top-scores-labels > a, .top-scores-tables > table { width: 50%; }
+    .top-scores-labels {
+      .my-scores-label { display: none; }
+      .all-scores-label { width: 100%; }
+    }
+    .top-scores-tables {
+      .my-scores-table { display: none; }
+      .all-scores-table { width: 100%; }
+    }
 
     .top-scores-labels {
       border-bottom: 2px solid;
@@ -219,6 +225,19 @@ hr {
       td {
         padding: 9px 0 9px 0;
       }
+    }
+  }
+
+  body.signed-in .top-scores-panel {
+    .top-scores-labels {
+      display: flex;
+      .my-scores-label { width: 50%; display: block; }
+      .all-scores-label { width: 50%; }
+    }
+    .top-scores-tables {
+      display: flex;
+      .my-scores-table { width: 50%; display: table; }
+      .all-scores-table { width: 50%; }
     }
   }
 
@@ -673,19 +692,12 @@ hr {
   }
 
   .top-scores-panel {
-    &.show-my-scores {
-      .my-scores-label span { border-bottom: 3px solid; }
-      .my-scores-table { display: table; }
-      .all-scores-table { display: none; }
-    }
 
-    &.show-all-scores {
-      .all-scores-label span { border-bottom: 3px solid; }
-      .my-scores-table { display: none; }
-      .all-scores-table { display: table; }
-    }
+    .my-scores-label { display: none; }
+    .my-scores-table { display: none; }
+    .all-scores-label span { border-bottom: 3px solid; }
 
-    .top-scores-tables > table {
+    .top-scores-tables .my-scores-table, .top-scores-tables .all-scores-table {
       width: 100%;
     }
 
@@ -694,6 +706,26 @@ hr {
     }
 
     tbody td { padding: 0; }
+  }
+
+  body.signed-in .top-scores-panel {
+    .top-scores-tables .my-scores-table, .top-scores-tables .all-scores-table {
+      width: 100%;
+    }
+
+    &.show-my-scores {
+      .my-scores-label span { border-bottom: 3px solid; }
+      .all-scores-label span { border-bottom: none; }
+      .my-scores-table { display: table; }
+      .all-scores-table { display: none; }
+    }
+
+    &.show-all-scores {
+      .my-scores-label span { border-bottom: none; }
+      .all-scores-label span { border-bottom: 3px solid; }
+      .my-scores-table { display: none; }
+      .all-scores-table { display: table; }
+    }
   }
 
   .game-message {

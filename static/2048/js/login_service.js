@@ -63,12 +63,16 @@ function LoginService() {
       $("#signed-in").show();
 
       $("#save-score-button").hide();
+
+      $("body").addClass("signed-in");
     }
 
     function signedOut() {
       $("#login-area .loading").hide();
       $("#signed-in").hide();
       $("#signed-out").show();
+
+      $("body").removeClass("signed-in");
     }
   }
 }

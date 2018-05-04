@@ -147,10 +147,14 @@ hr {
 
 .top-scores-panel {
   background: rgba(238, 228, 218, 0.8); }
-  .top-scores-panel .top-scores-labels, .top-scores-panel .top-scores-tables {
-    display: flex; }
-  .top-scores-panel .top-scores-labels > a, .top-scores-panel .top-scores-tables > table {
-    width: 50%; }
+  .top-scores-panel .top-scores-labels .my-scores-label {
+    display: none; }
+  .top-scores-panel .top-scores-labels .all-scores-label {
+    width: 100%; }
+  .top-scores-panel .top-scores-tables .my-scores-table {
+    display: none; }
+  .top-scores-panel .top-scores-tables .all-scores-table {
+    width: 100%; }
   .top-scores-panel .top-scores-labels {
     border-bottom: 2px solid; }
     .top-scores-panel .top-scores-labels a {
@@ -163,6 +167,21 @@ hr {
     background-color: rgba(206, 177, 148, 0.5); }
   .top-scores-panel tbody td {
     padding: 9px 0 9px 0; }
+
+body.signed-in .top-scores-panel .top-scores-labels {
+  display: flex; }
+  body.signed-in .top-scores-panel .top-scores-labels .my-scores-label {
+    width: 50%;
+    display: block; }
+  body.signed-in .top-scores-panel .top-scores-labels .all-scores-label {
+    width: 50%; }
+body.signed-in .top-scores-panel .top-scores-tables {
+  display: flex; }
+  body.signed-in .top-scores-panel .top-scores-tables .my-scores-table {
+    width: 50%;
+    display: table; }
+  body.signed-in .top-scores-panel .top-scores-tables .all-scores-table {
+    width: 50%; }
 
 .game-message, .top-scores-panel {
   display: none;
@@ -696,10 +715,14 @@ hr {
 
   .top-scores-panel {
     background: rgba(238, 228, 218, 0.8); }
-    .top-scores-panel .top-scores-labels, .top-scores-panel .top-scores-tables {
-      display: flex; }
-    .top-scores-panel .top-scores-labels > a, .top-scores-panel .top-scores-tables > table {
-      width: 50%; }
+    .top-scores-panel .top-scores-labels .my-scores-label {
+      display: none; }
+    .top-scores-panel .top-scores-labels .all-scores-label {
+      width: 100%; }
+    .top-scores-panel .top-scores-tables .my-scores-table {
+      display: none; }
+    .top-scores-panel .top-scores-tables .all-scores-table {
+      width: 100%; }
     .top-scores-panel .top-scores-labels {
       border-bottom: 2px solid; }
       .top-scores-panel .top-scores-labels a {
@@ -712,6 +735,21 @@ hr {
       background-color: rgba(206, 177, 148, 0.5); }
     .top-scores-panel tbody td {
       padding: 9px 0 9px 0; }
+
+  body.signed-in .top-scores-panel .top-scores-labels {
+    display: flex; }
+    body.signed-in .top-scores-panel .top-scores-labels .my-scores-label {
+      width: 50%;
+      display: block; }
+    body.signed-in .top-scores-panel .top-scores-labels .all-scores-label {
+      width: 50%; }
+  body.signed-in .top-scores-panel .top-scores-tables {
+    display: flex; }
+    body.signed-in .top-scores-panel .top-scores-tables .my-scores-table {
+      width: 50%;
+      display: table; }
+    body.signed-in .top-scores-panel .top-scores-tables .all-scores-table {
+      width: 50%; }
 
   .game-message, .top-scores-panel {
     display: none;
@@ -873,24 +911,37 @@ hr {
   .tile .tile-inner {
     font-size: 35px; }
 
-  .top-scores-panel.show-my-scores .my-scores-label span {
-    border-bottom: 3px solid; }
-  .top-scores-panel.show-my-scores .my-scores-table {
-    display: table; }
-  .top-scores-panel.show-my-scores .all-scores-table {
+  .top-scores-panel .my-scores-label {
     display: none; }
-  .top-scores-panel.show-all-scores .all-scores-label span {
-    border-bottom: 3px solid; }
-  .top-scores-panel.show-all-scores .my-scores-table {
+  .top-scores-panel .my-scores-table {
     display: none; }
-  .top-scores-panel.show-all-scores .all-scores-table {
-    display: table; }
-  .top-scores-panel .top-scores-tables > table {
+  .top-scores-panel .all-scores-label span {
+    border-bottom: 3px solid; }
+  .top-scores-panel .top-scores-tables .my-scores-table, .top-scores-panel .top-scores-tables .all-scores-table {
     width: 100%; }
   .top-scores-panel .top-scores-labels > a {
     cursor: pointer; }
   .top-scores-panel tbody td {
     padding: 0; }
+
+  body.signed-in .top-scores-panel .top-scores-tables .my-scores-table, body.signed-in .top-scores-panel .top-scores-tables .all-scores-table {
+    width: 100%; }
+  body.signed-in .top-scores-panel.show-my-scores .my-scores-label span {
+    border-bottom: 3px solid; }
+  body.signed-in .top-scores-panel.show-my-scores .all-scores-label span {
+    border-bottom: none; }
+  body.signed-in .top-scores-panel.show-my-scores .my-scores-table {
+    display: table; }
+  body.signed-in .top-scores-panel.show-my-scores .all-scores-table {
+    display: none; }
+  body.signed-in .top-scores-panel.show-all-scores .my-scores-label span {
+    border-bottom: none; }
+  body.signed-in .top-scores-panel.show-all-scores .all-scores-label span {
+    border-bottom: 3px solid; }
+  body.signed-in .top-scores-panel.show-all-scores .my-scores-table {
+    display: none; }
+  body.signed-in .top-scores-panel.show-all-scores .all-scores-table {
+    display: table; }
 
   .game-message p {
     font-size: 30px !important;
