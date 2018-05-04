@@ -23,9 +23,15 @@ function GameManager(size, InputManager, Actuator, StorageManager, loginSvc) {
   this.conn.onopen = () => this.setup();
 }
 
-GameManager.prototype.showTopScores = function () {
-  // TODO
-  console.log('Showing top scores');
+GameManager.prototype.showTopScores = function() {
+  const self = this;
+  self.loginSvc.userDetails().then(details => {
+    
+    const query = details === null? "" : "?user=" + details.email;
+
+    $.get('/scores' + query)
+      .done(self.actuator.updateTopScores);
+  });
 }
 
 GameManager.prototype.saveScore = function (promptSignIn) {

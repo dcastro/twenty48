@@ -166,7 +166,7 @@ hr {
   .top-scores-panel tbody tr:nth-child(odd) {
     background-color: rgba(206, 177, 148, 0.5); }
   .top-scores-panel tbody td {
-    padding: 9px 0 9px 0; }
+    height: 40px; }
 
 body.signed-in .top-scores-panel .top-scores-labels {
   display: flex; }
@@ -734,7 +734,7 @@ body.signed-in .top-scores-panel .top-scores-tables {
     .top-scores-panel tbody tr:nth-child(odd) {
       background-color: rgba(206, 177, 148, 0.5); }
     .top-scores-panel tbody td {
-      padding: 9px 0 9px 0; }
+      height: 40px; }
 
   body.signed-in .top-scores-panel .top-scores-labels {
     display: flex; }
@@ -922,7 +922,7 @@ body.signed-in .top-scores-panel .top-scores-tables {
   .top-scores-panel .top-scores-labels > a {
     cursor: pointer; }
   .top-scores-panel tbody td {
-    padding: 0; }
+    height: 20px; }
 
   body.signed-in .top-scores-panel .top-scores-tables .my-scores-table, body.signed-in .top-scores-panel .top-scores-tables .all-scores-table {
     width: 100%; }

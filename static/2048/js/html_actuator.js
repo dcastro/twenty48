@@ -144,3 +144,30 @@ HTMLActuator.prototype.stopAutoPlay = function() {
   document.getElementsByClassName("stop-auto-play-button")[0].style.display = 'none';
 };
 
+HTMLActuator.prototype.updateTopScores = function(topScores) {
+  updateTable($(".my-scores-table tbody"), topScores.myScores === null ? [] : topScores.myScores);
+  updateTable($(".all-scores-table tbody"), topScores.allScores);
+};
+
+function updateTable(tbody, scores) {
+  const rows =
+    scores.map(s =>
+      $("<tr>")
+        .append($("<td>").text(s.name))
+        .append($("<td>").text(s.score))
+    );
+
+  const emptyRow = () => $("<tr>").append('<td>').append('<td>');
+  const rows_ = rightPad(10, emptyRow, rows);
+
+  tbody.html("");
+  rows_.reduce((tb, row) => tb.append(row), tbody);
+}
+
+function rightPad(n, f, xs) {
+  const need = n - xs.length;
+
+  if (need <= 0)
+    return xs;
+  return xs.concat(Array(need).fill(f).map(f => f()));
+}

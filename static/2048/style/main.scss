@@ -223,7 +223,7 @@ hr {
       }
 
       td {
-        padding: 9px 0 9px 0;
+        height: 40px
       }
     }
   }
@@ -705,7 +705,7 @@ hr {
       cursor: pointer;
     }
 
-    tbody td { padding: 0; }
+    tbody td { height: 20px; }
   }
 
   body.signed-in .top-scores-panel {
