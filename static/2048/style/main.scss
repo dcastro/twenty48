@@ -188,93 +188,94 @@ hr {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 
-    .game-message {
-      display: none;
+  }
+
+  .game-message {
+    display: none;
+  }
+
+  .top-scores-panel {
+    background: rgba($tile-color, .8);
+
+    .top-scores-labels, .top-scores-tables { display: flex; }
+    .top-scores-labels > a, .top-scores-tables > table { width: 50%; }
+
+    .top-scores-labels {
+      border-bottom: 2px solid;
+
+      a { cursor: default; text-decoration: none; }
     }
 
-    .top-scores-panel {
-      background: rgba($tile-color, .8);
+    table {
+      border-collapse: collapse;
+      margin: 0 2px 0 2px;
+    }
 
-      .top-scores-labels, .top-scores-tables { display: flex; }
-      .top-scores-labels > a, .top-scores-tables > table { width: 50%; }
-
-      .top-scores-labels {
-        border-bottom: 2px solid;
-
-        a { cursor: default; text-decoration: none; }
+    tbody {
+      tr:nth-child(odd) {
+        background-color: rgba(darken($tile-color, 20%), .5);
       }
 
-      table {
-        border-collapse: collapse;
-        margin: 0 2px 0 2px;
+      td {
+        padding: 9px 0 9px 0;
       }
+    }
+  }
 
-      tbody {
-        tr:nth-child(odd) {
-          background-color: rgba(darken($tile-color, 20%), .5);
-        }
+  .game-message, .top-scores-panel {
+    display: none;
 
-        td {
-          padding: 9px 0 9px 0;
-        }
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+
+    text-align: center;
+
+    p {
+      font-size: 60px;
+      font-weight: bold;
+      height: 60px;
+      line-height: 60px;
+      margin-top: 222px;
+      // height: $field-width;
+      // line-height: $field-width;
+    }
+
+    .lower {
+      display: block;
+      margin-top: 59px;
+    }
+
+    a.btn {
+      @include button;
+      margin-left: 9px;
+      // margin-top: 59px;
+
+      &.keep-playing-button {
+        display: none;
       }
     }
 
-    .game-message, .top-scores-panel {
-      display: none;
+    @include animation(fade-in 800ms ease $transition-speed * 12);
+    @include animation-fill-mode(both);
 
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 100;
+    &.game-won {
+      color: $bright-text-color;
 
-      text-align: center;
-
-      p {
-        font-size: 60px;
-        font-weight: bold;
-        height: 60px;
-        line-height: 60px;
-        margin-top: 222px;
-        // height: $field-width;
-        // line-height: $field-width;
+      a.keep-playing-button {
+        display: inline-block;
       }
+    }
 
-      .lower {
-        display: block;
-        margin-top: 59px;
-      }
+    &.game-over {
+      background: rgba($tile-color, .5);
+    }
 
-      a.btn {
-        @include button;
-        margin-left: 9px;
-        // margin-top: 59px;
-
-	&.keep-playing-button {
-	  display: none;
-	}
-      }
-
-      @include animation(fade-in 800ms ease $transition-speed * 12);
-      @include animation-fill-mode(both);
-
-      &.game-won {
-        color: $bright-text-color;
-
-	a.keep-playing-button {
-	  display: inline-block;
-	}
-      }
-
-      &.game-over {
-        background: rgba($tile-color, .5);
-      }
-
-      &.game-won, &.game-over {
-        display: block;
-      }
+    &.game-won, &.game-over {
+      display: block;
     }
   }
 
@@ -671,46 +672,44 @@ hr {
     font-size: 35px;
   }
 
-  .game-container {
-    .top-scores-panel {
-      &.show-my-scores {
-        .my-scores-label span { border-bottom: 3px solid; }
-        .my-scores-table { display: table; }
-        .all-scores-table { display: none; }
-      }
-
-      &.show-all-scores {
-        .all-scores-label span { border-bottom: 3px solid; }
-        .my-scores-table { display: none; }
-        .all-scores-table { display: table; }
-      }
-
-      .top-scores-tables > table {
-        width: 100%;
-      }
-
-      .top-scores-labels > a {
-        cursor: pointer;
-      }
-
-      tbody td { padding: 0; }
+  .top-scores-panel {
+    &.show-my-scores {
+      .my-scores-label span { border-bottom: 3px solid; }
+      .my-scores-table { display: table; }
+      .all-scores-table { display: none; }
     }
 
-    .game-message {
-      p {
-        font-size: 30px !important;
-        height: 30px !important;
-        line-height: 30px !important;
-        margin-top: 90px !important;
-      }
+    &.show-all-scores {
+      .all-scores-label span { border-bottom: 3px solid; }
+      .my-scores-table { display: none; }
+      .all-scores-table { display: table; }
+    }
 
-      .lower {
-        margin-top: 30px !important;
-      }
-      
-      #save-score-button {
-        margin-top: 9px;
-      }
+    .top-scores-tables > table {
+      width: 100%;
+    }
+
+    .top-scores-labels > a {
+      cursor: pointer;
+    }
+
+    tbody td { padding: 0; }
+  }
+
+  .game-message {
+    p {
+      font-size: 30px !important;
+      height: 30px !important;
+      line-height: 30px !important;
+      margin-top: 90px !important;
+    }
+
+    .lower {
+      margin-top: 30px !important;
+    }
+    
+    #save-score-button {
+      margin-top: 9px;
     }
   }
 }

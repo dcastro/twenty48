@@ -141,70 +141,73 @@ hr {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
-  .game-container .game-message {
-    display: none; }
-  .game-container .top-scores-panel {
-    background: rgba(238, 228, 218, 0.8); }
-    .game-container .top-scores-panel .top-scores-labels, .game-container .top-scores-panel .top-scores-tables {
-      display: flex; }
-    .game-container .top-scores-panel .top-scores-labels > a, .game-container .top-scores-panel .top-scores-tables > table {
-      width: 50%; }
-    .game-container .top-scores-panel .top-scores-labels {
-      border-bottom: 2px solid; }
-      .game-container .top-scores-panel .top-scores-labels a {
-        cursor: default;
-        text-decoration: none; }
-    .game-container .top-scores-panel table {
-      border-collapse: collapse;
-      margin: 0 2px 0 2px; }
-    .game-container .top-scores-panel tbody tr:nth-child(odd) {
-      background-color: rgba(206, 177, 148, 0.5); }
-    .game-container .top-scores-panel tbody td {
-      padding: 9px 0 9px 0; }
-  .game-container .game-message, .game-container .top-scores-panel {
-    display: none;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 100;
-    text-align: center;
-    -webkit-animation: fade-in 800ms ease 1200ms;
-    -moz-animation: fade-in 800ms ease 1200ms;
-    animation: fade-in 800ms ease 1200ms;
-    -webkit-animation-fill-mode: both;
-    -moz-animation-fill-mode: both;
-    animation-fill-mode: both; }
-    .game-container .game-message p, .game-container .top-scores-panel p {
-      font-size: 60px;
-      font-weight: bold;
-      height: 60px;
-      line-height: 60px;
-      margin-top: 222px; }
-    .game-container .game-message .lower, .game-container .top-scores-panel .lower {
-      display: block;
-      margin-top: 59px; }
-    .game-container .game-message a.btn, .game-container .top-scores-panel a.btn {
-      background: #8f7a66;
-      display: inline-block;
-      border-radius: 3px;
-      padding: 0 20px;
-      text-decoration: none;
-      color: #f9f6f2;
-      height: 40px;
-      line-height: 42px;
-      margin-left: 9px; }
-      .game-container .game-message a.btn.keep-playing-button, .game-container .top-scores-panel a.btn.keep-playing-button {
-        display: none; }
-    .game-container .game-message.game-won, .game-container .top-scores-panel.game-won {
-      color: #f9f6f2; }
-      .game-container .game-message.game-won a.keep-playing-button, .game-container .top-scores-panel.game-won a.keep-playing-button {
-        display: inline-block; }
-    .game-container .game-message.game-over, .game-container .top-scores-panel.game-over {
-      background: rgba(238, 228, 218, 0.5); }
-    .game-container .game-message.game-won, .game-container .game-message.game-over, .game-container .top-scores-panel.game-won, .game-container .top-scores-panel.game-over {
-      display: block; }
+
+.game-message {
+  display: none; }
+
+.top-scores-panel {
+  background: rgba(238, 228, 218, 0.8); }
+  .top-scores-panel .top-scores-labels, .top-scores-panel .top-scores-tables {
+    display: flex; }
+  .top-scores-panel .top-scores-labels > a, .top-scores-panel .top-scores-tables > table {
+    width: 50%; }
+  .top-scores-panel .top-scores-labels {
+    border-bottom: 2px solid; }
+    .top-scores-panel .top-scores-labels a {
+      cursor: default;
+      text-decoration: none; }
+  .top-scores-panel table {
+    border-collapse: collapse;
+    margin: 0 2px 0 2px; }
+  .top-scores-panel tbody tr:nth-child(odd) {
+    background-color: rgba(206, 177, 148, 0.5); }
+  .top-scores-panel tbody td {
+    padding: 9px 0 9px 0; }
+
+.game-message, .top-scores-panel {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  text-align: center;
+  -webkit-animation: fade-in 800ms ease 1200ms;
+  -moz-animation: fade-in 800ms ease 1200ms;
+  animation: fade-in 800ms ease 1200ms;
+  -webkit-animation-fill-mode: both;
+  -moz-animation-fill-mode: both;
+  animation-fill-mode: both; }
+  .game-message p, .top-scores-panel p {
+    font-size: 60px;
+    font-weight: bold;
+    height: 60px;
+    line-height: 60px;
+    margin-top: 222px; }
+  .game-message .lower, .top-scores-panel .lower {
+    display: block;
+    margin-top: 59px; }
+  .game-message a.btn, .top-scores-panel a.btn {
+    background: #8f7a66;
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0 20px;
+    text-decoration: none;
+    color: #f9f6f2;
+    height: 40px;
+    line-height: 42px;
+    margin-left: 9px; }
+    .game-message a.btn.keep-playing-button, .top-scores-panel a.btn.keep-playing-button {
+      display: none; }
+  .game-message.game-won, .top-scores-panel.game-won {
+    color: #f9f6f2; }
+    .game-message.game-won a.keep-playing-button, .top-scores-panel.game-won a.keep-playing-button {
+      display: inline-block; }
+  .game-message.game-over, .top-scores-panel.game-over {
+    background: rgba(238, 228, 218, 0.5); }
+  .game-message.game-won, .game-message.game-over, .top-scores-panel.game-won, .top-scores-panel.game-over {
+    display: block; }
 
 .grid-container {
   position: absolute;
@@ -687,70 +690,73 @@ hr {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box; }
-    .game-container .game-message {
-      display: none; }
-    .game-container .top-scores-panel {
-      background: rgba(238, 228, 218, 0.8); }
-      .game-container .top-scores-panel .top-scores-labels, .game-container .top-scores-panel .top-scores-tables {
-        display: flex; }
-      .game-container .top-scores-panel .top-scores-labels > a, .game-container .top-scores-panel .top-scores-tables > table {
-        width: 50%; }
-      .game-container .top-scores-panel .top-scores-labels {
-        border-bottom: 2px solid; }
-        .game-container .top-scores-panel .top-scores-labels a {
-          cursor: default;
-          text-decoration: none; }
-      .game-container .top-scores-panel table {
-        border-collapse: collapse;
-        margin: 0 2px 0 2px; }
-      .game-container .top-scores-panel tbody tr:nth-child(odd) {
-        background-color: rgba(206, 177, 148, 0.5); }
-      .game-container .top-scores-panel tbody td {
-        padding: 9px 0 9px 0; }
-    .game-container .game-message, .game-container .top-scores-panel {
-      display: none;
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 100;
-      text-align: center;
-      -webkit-animation: fade-in 800ms ease 1200ms;
-      -moz-animation: fade-in 800ms ease 1200ms;
-      animation: fade-in 800ms ease 1200ms;
-      -webkit-animation-fill-mode: both;
-      -moz-animation-fill-mode: both;
-      animation-fill-mode: both; }
-      .game-container .game-message p, .game-container .top-scores-panel p {
-        font-size: 60px;
-        font-weight: bold;
-        height: 60px;
-        line-height: 60px;
-        margin-top: 222px; }
-      .game-container .game-message .lower, .game-container .top-scores-panel .lower {
-        display: block;
-        margin-top: 59px; }
-      .game-container .game-message a.btn, .game-container .top-scores-panel a.btn {
-        background: #8f7a66;
-        display: inline-block;
-        border-radius: 3px;
-        padding: 0 20px;
-        text-decoration: none;
-        color: #f9f6f2;
-        height: 40px;
-        line-height: 42px;
-        margin-left: 9px; }
-        .game-container .game-message a.btn.keep-playing-button, .game-container .top-scores-panel a.btn.keep-playing-button {
-          display: none; }
-      .game-container .game-message.game-won, .game-container .top-scores-panel.game-won {
-        color: #f9f6f2; }
-        .game-container .game-message.game-won a.keep-playing-button, .game-container .top-scores-panel.game-won a.keep-playing-button {
-          display: inline-block; }
-      .game-container .game-message.game-over, .game-container .top-scores-panel.game-over {
-        background: rgba(238, 228, 218, 0.5); }
-      .game-container .game-message.game-won, .game-container .game-message.game-over, .game-container .top-scores-panel.game-won, .game-container .top-scores-panel.game-over {
-        display: block; }
+
+  .game-message {
+    display: none; }
+
+  .top-scores-panel {
+    background: rgba(238, 228, 218, 0.8); }
+    .top-scores-panel .top-scores-labels, .top-scores-panel .top-scores-tables {
+      display: flex; }
+    .top-scores-panel .top-scores-labels > a, .top-scores-panel .top-scores-tables > table {
+      width: 50%; }
+    .top-scores-panel .top-scores-labels {
+      border-bottom: 2px solid; }
+      .top-scores-panel .top-scores-labels a {
+        cursor: default;
+        text-decoration: none; }
+    .top-scores-panel table {
+      border-collapse: collapse;
+      margin: 0 2px 0 2px; }
+    .top-scores-panel tbody tr:nth-child(odd) {
+      background-color: rgba(206, 177, 148, 0.5); }
+    .top-scores-panel tbody td {
+      padding: 9px 0 9px 0; }
+
+  .game-message, .top-scores-panel {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    text-align: center;
+    -webkit-animation: fade-in 800ms ease 1200ms;
+    -moz-animation: fade-in 800ms ease 1200ms;
+    animation: fade-in 800ms ease 1200ms;
+    -webkit-animation-fill-mode: both;
+    -moz-animation-fill-mode: both;
+    animation-fill-mode: both; }
+    .game-message p, .top-scores-panel p {
+      font-size: 60px;
+      font-weight: bold;
+      height: 60px;
+      line-height: 60px;
+      margin-top: 222px; }
+    .game-message .lower, .top-scores-panel .lower {
+      display: block;
+      margin-top: 59px; }
+    .game-message a.btn, .top-scores-panel a.btn {
+      background: #8f7a66;
+      display: inline-block;
+      border-radius: 3px;
+      padding: 0 20px;
+      text-decoration: none;
+      color: #f9f6f2;
+      height: 40px;
+      line-height: 42px;
+      margin-left: 9px; }
+      .game-message a.btn.keep-playing-button, .top-scores-panel a.btn.keep-playing-button {
+        display: none; }
+    .game-message.game-won, .top-scores-panel.game-won {
+      color: #f9f6f2; }
+      .game-message.game-won a.keep-playing-button, .top-scores-panel.game-won a.keep-playing-button {
+        display: inline-block; }
+    .game-message.game-over, .top-scores-panel.game-over {
+      background: rgba(238, 228, 218, 0.5); }
+    .game-message.game-won, .game-message.game-over, .top-scores-panel.game-won, .top-scores-panel.game-over {
+      display: block; }
 
   .grid-container {
     position: absolute;
@@ -867,30 +873,31 @@ hr {
   .tile .tile-inner {
     font-size: 35px; }
 
-  .game-container .top-scores-panel.show-my-scores .my-scores-label span {
+  .top-scores-panel.show-my-scores .my-scores-label span {
     border-bottom: 3px solid; }
-  .game-container .top-scores-panel.show-my-scores .my-scores-table {
+  .top-scores-panel.show-my-scores .my-scores-table {
     display: table; }
-  .game-container .top-scores-panel.show-my-scores .all-scores-table {
+  .top-scores-panel.show-my-scores .all-scores-table {
     display: none; }
-  .game-container .top-scores-panel.show-all-scores .all-scores-label span {
+  .top-scores-panel.show-all-scores .all-scores-label span {
     border-bottom: 3px solid; }
-  .game-container .top-scores-panel.show-all-scores .my-scores-table {
+  .top-scores-panel.show-all-scores .my-scores-table {
     display: none; }
-  .game-container .top-scores-panel.show-all-scores .all-scores-table {
+  .top-scores-panel.show-all-scores .all-scores-table {
     display: table; }
-  .game-container .top-scores-panel .top-scores-tables > table {
+  .top-scores-panel .top-scores-tables > table {
     width: 100%; }
-  .game-container .top-scores-panel .top-scores-labels > a {
+  .top-scores-panel .top-scores-labels > a {
     cursor: pointer; }
-  .game-container .top-scores-panel tbody td {
+  .top-scores-panel tbody td {
     padding: 0; }
-  .game-container .game-message p {
+
+  .game-message p {
     font-size: 30px !important;
     height: 30px !important;
     line-height: 30px !important;
     margin-top: 90px !important; }
-  .game-container .game-message .lower {
+  .game-message .lower {
     margin-top: 30px !important; }
-  .game-container .game-message #save-score-button {
+  .game-message #save-score-button {
     margin-top: 9px; } }
