@@ -122,10 +122,10 @@ HTMLActuator.prototype.message = function (won, signedIn) {
   var type    = won ? "game-won" : "game-over";
   var message = won ? "You win!" : "Game over!";
 
+  signedIn ? $("#save-score-button").hide() : $("#save-score-button").show();
+
   this.messageContainer.classList.add(type);
   this.messageContainer.getElementsByTagName("p")[0].textContent = message;
-
-  signedIn ? $("#save-score-button").hide() : $("#save-score-button").show();
 };
 
 HTMLActuator.prototype.clearMessage = function () {

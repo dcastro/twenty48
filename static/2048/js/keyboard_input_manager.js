@@ -77,6 +77,8 @@ KeyboardInputManager.prototype.listen = function () {
   this.bindButtonPress(".keep-playing-button", this.keepPlaying);
   this.bindButtonPress("#save-score-button", this.saveScore);
   this.bindButtonPress(".top-scores", this.showTopScores);
+  this.bindButtonPress(".my-scores-label", this.showMyScores);
+  this.bindButtonPress(".all-scores-label", this.showAllScores);
 
   // Respond to swipe events
   var touchStartClientX, touchStartClientY;
@@ -171,4 +173,14 @@ KeyboardInputManager.prototype.saveScore = function (event) {
 KeyboardInputManager.prototype.showTopScores = function (event) {
   event.preventDefault();
   this.emit("showTopScores");
+};
+
+KeyboardInputManager.prototype.showMyScores = function (event) {
+  event.preventDefault();
+  $(".top-scores-panel").removeClass("show-all-scores").addClass("show-my-scores");
+};
+
+KeyboardInputManager.prototype.showAllScores = function (event) {
+  event.preventDefault();
+  $(".top-scores-panel").removeClass("show-my-scores").addClass("show-all-scores");
 };

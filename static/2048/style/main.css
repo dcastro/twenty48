@@ -145,10 +145,16 @@ hr {
     display: none; }
   .game-container .top-scores-panel {
     background: rgba(238, 228, 218, 0.8); }
-    .game-container .top-scores-panel .top-scores-tables {
+    .game-container .top-scores-panel .top-scores-labels, .game-container .top-scores-panel .top-scores-tables {
       display: flex; }
+    .game-container .top-scores-panel .top-scores-labels > a, .game-container .top-scores-panel .top-scores-tables > table {
+      width: 50%; }
+    .game-container .top-scores-panel .top-scores-labels {
+      border-bottom: 2px solid; }
+      .game-container .top-scores-panel .top-scores-labels a {
+        cursor: default;
+        text-decoration: none; }
     .game-container .top-scores-panel table {
-      flex-grow: 1;
       border-collapse: collapse;
       margin: 0 2px 0 2px; }
     .game-container .top-scores-panel tbody tr:nth-child(odd) {
@@ -179,7 +185,7 @@ hr {
     .game-container .game-message .lower, .game-container .top-scores-panel .lower {
       display: block;
       margin-top: 59px; }
-    .game-container .game-message a, .game-container .top-scores-panel a {
+    .game-container .game-message a.btn, .game-container .top-scores-panel a.btn {
       background: #8f7a66;
       display: inline-block;
       border-radius: 3px;
@@ -189,7 +195,7 @@ hr {
       height: 40px;
       line-height: 42px;
       margin-left: 9px; }
-      .game-container .game-message a.keep-playing-button, .game-container .top-scores-panel a.keep-playing-button {
+      .game-container .game-message a.btn.keep-playing-button, .game-container .top-scores-panel a.btn.keep-playing-button {
         display: none; }
     .game-container .game-message.game-won, .game-container .top-scores-panel.game-won {
       color: #f9f6f2; }
@@ -685,10 +691,16 @@ hr {
       display: none; }
     .game-container .top-scores-panel {
       background: rgba(238, 228, 218, 0.8); }
-      .game-container .top-scores-panel .top-scores-tables {
+      .game-container .top-scores-panel .top-scores-labels, .game-container .top-scores-panel .top-scores-tables {
         display: flex; }
+      .game-container .top-scores-panel .top-scores-labels > a, .game-container .top-scores-panel .top-scores-tables > table {
+        width: 50%; }
+      .game-container .top-scores-panel .top-scores-labels {
+        border-bottom: 2px solid; }
+        .game-container .top-scores-panel .top-scores-labels a {
+          cursor: default;
+          text-decoration: none; }
       .game-container .top-scores-panel table {
-        flex-grow: 1;
         border-collapse: collapse;
         margin: 0 2px 0 2px; }
       .game-container .top-scores-panel tbody tr:nth-child(odd) {
@@ -719,7 +731,7 @@ hr {
       .game-container .game-message .lower, .game-container .top-scores-panel .lower {
         display: block;
         margin-top: 59px; }
-      .game-container .game-message a, .game-container .top-scores-panel a {
+      .game-container .game-message a.btn, .game-container .top-scores-panel a.btn {
         background: #8f7a66;
         display: inline-block;
         border-radius: 3px;
@@ -729,7 +741,7 @@ hr {
         height: 40px;
         line-height: 42px;
         margin-left: 9px; }
-        .game-container .game-message a.keep-playing-button, .game-container .top-scores-panel a.keep-playing-button {
+        .game-container .game-message a.btn.keep-playing-button, .game-container .top-scores-panel a.btn.keep-playing-button {
           display: none; }
       .game-container .game-message.game-won, .game-container .top-scores-panel.game-won {
         color: #f9f6f2; }
@@ -855,12 +867,30 @@ hr {
   .tile .tile-inner {
     font-size: 35px; }
 
-  .game-message p, .top-scores-panel p {
+  .game-container .top-scores-panel.show-my-scores .my-scores-label span {
+    border-bottom: 3px solid; }
+  .game-container .top-scores-panel.show-my-scores .my-scores-table {
+    display: table; }
+  .game-container .top-scores-panel.show-my-scores .all-scores-table {
+    display: none; }
+  .game-container .top-scores-panel.show-all-scores .all-scores-label span {
+    border-bottom: 3px solid; }
+  .game-container .top-scores-panel.show-all-scores .my-scores-table {
+    display: none; }
+  .game-container .top-scores-panel.show-all-scores .all-scores-table {
+    display: table; }
+  .game-container .top-scores-panel .top-scores-tables > table {
+    width: 100%; }
+  .game-container .top-scores-panel .top-scores-labels > a {
+    cursor: pointer; }
+  .game-container .top-scores-panel tbody td {
+    padding: 0; }
+  .game-container .game-message p {
     font-size: 30px !important;
     height: 30px !important;
     line-height: 30px !important;
     margin-top: 90px !important; }
-  .game-message .lower, .top-scores-panel .lower {
+  .game-container .game-message .lower {
     margin-top: 30px !important; }
-  .game-message #save-score-button, .top-scores-panel #save-score-button {
+  .game-container .game-message #save-score-button {
     margin-top: 9px; } }

@@ -195,10 +195,16 @@ hr {
     .top-scores-panel {
       background: rgba($tile-color, .8);
 
-      .top-scores-tables { display: flex; }
+      .top-scores-labels, .top-scores-tables { display: flex; }
+      .top-scores-labels > a, .top-scores-tables > table { width: 50%; }
+
+      .top-scores-labels {
+        border-bottom: 2px solid;
+
+        a { cursor: default; text-decoration: none; }
+      }
 
       table {
-        flex-grow: 1;
         border-collapse: collapse;
         margin: 0 2px 0 2px;
       }
@@ -241,7 +247,7 @@ hr {
         margin-top: 59px;
       }
 
-      a {
+      a.btn {
         @include button;
         margin-left: 9px;
         // margin-top: 59px;
@@ -665,20 +671,46 @@ hr {
     font-size: 35px;
   }
 
-  .game-message, .top-scores-panel {
-    p {
-      font-size: 30px !important;
-      height: 30px !important;
-      line-height: 30px !important;
-      margin-top: 90px !important;
+  .game-container {
+    .top-scores-panel {
+      &.show-my-scores {
+        .my-scores-label span { border-bottom: 3px solid; }
+        .my-scores-table { display: table; }
+        .all-scores-table { display: none; }
+      }
+
+      &.show-all-scores {
+        .all-scores-label span { border-bottom: 3px solid; }
+        .my-scores-table { display: none; }
+        .all-scores-table { display: table; }
+      }
+
+      .top-scores-tables > table {
+        width: 100%;
+      }
+
+      .top-scores-labels > a {
+        cursor: pointer;
+      }
+
+      tbody td { padding: 0; }
     }
 
-    .lower {
-      margin-top: 30px !important;
-    }
-    
-    #save-score-button {
-      margin-top: 9px;
+    .game-message {
+      p {
+        font-size: 30px !important;
+        height: 30px !important;
+        line-height: 30px !important;
+        margin-top: 90px !important;
+      }
+
+      .lower {
+        margin-top: 30px !important;
+      }
+      
+      #save-score-button {
+        margin-top: 9px;
+      }
     }
   }
 }

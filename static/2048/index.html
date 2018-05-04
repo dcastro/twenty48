@@ -66,22 +66,23 @@
       <div class="game-message">
         <p></p>
         <div class="lower">
-	        <a class="keep-playing-button">Keep going</a>
-          <a class="retry-button">Try again</a>
-          <a id="save-score-button">Save score</a>
+          <a class="btn keep-playing-button">Keep going</a>
+          <a class="btn retry-button">Try again</a>
+          <a class="btn" id="save-score-button">Save score</a>
         </div>
       </div>
 
-      <div class="top-scores-panel">
+      <div class="top-scores-panel show-my-scores">
+        <div class="top-scores-labels">
+          <a class="my-scores-label">
+              <h3><span>My scores</span></h3>
+          </a>
+          <a class="all-scores-label">
+            <h3><span>All scores</span></h3>
+          </a>
+        </div>
         <div class="top-scores-tables">
-          <table>
-            <thead>
-              <tr>
-                <td colspan=2>
-                  <h3>My scores</h3>
-                </td>
-              </tr>
-            </thead>
+          <table class="my-scores-table">
             <tbody>
               <tr>
                 <td>Diogo Castro</td>
@@ -126,14 +127,7 @@
             </tbody>
           </table>
 
-          <table>
-            <thead>
-              <tr>
-                <td colspan=2>
-                  <h3>All scores</h3>
-                </td>
-              </tr>
-            </thead>
+          <table class="all-scores-table">
             <tbody>
               <tr>
                 <td>Diogo Castro</td>
