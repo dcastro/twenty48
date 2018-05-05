@@ -253,6 +253,8 @@ hr {
 
     text-align: center;
 
+  }
+  .game-message {
     p {
       font-size: 60px;
       font-weight: bold;
@@ -282,6 +284,7 @@ hr {
     @include animation-fill-mode(both);
 
     &.game-won {
+      background: rgba($tile-gold-color, .5);
       color: $bright-text-color;
 
       a.keep-playing-button {
