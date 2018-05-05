@@ -59,6 +59,20 @@ h1.title {
   }
 }
 
+@mixin loading($bgColor) {
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: $bgColor;
+  background: -webkit-gradient(linear, left top, right top, color-stop(8%, $bgColor), color-stop(18%, #dddddd), color-stop(33%, $bgColor));
+  background: -webkit-linear-gradient(left, $bgColor 8%, #dddddd 18%, $bgColor 33%);
+  background: linear-gradient(to right, $bgColor 8%,#dddddd 18%, $bgColor 33%);
+  -webkit-background-size: 800px 104px;
+  background-size: 800px 104px;
+}
+
 .score-container {
   $height: 25px;
 
@@ -218,7 +232,14 @@ hr {
       }
 
       td {
-        height: 40px
+        height: 40px;
+
+        .loading-scores {
+          border-radius: 3px;
+          margin: 0 7px 0 7px;
+
+          @include loading(rgba(0, 0, 0, 0));
+        }
       }
     }
   }
@@ -508,21 +529,7 @@ hr {
   }
 }
 
-.loading {
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
-  animation-iteration-count: infinite;
-  animation-name: placeHolderShimmer;
-  animation-timing-function: linear;
-  background: #f6f7f8;
-  background: #eeeeee;
-  background: -webkit-gradient(linear, left top, right top, color-stop(8%, #eeeeee), color-stop(18%, #dddddd), color-stop(33%, #eeeeee));
-  background: -webkit-linear-gradient(left, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
-  background: linear-gradient(to right, #eeeeee 8%,#dddddd 18%,#eeeeee 33%);
-  -webkit-background-size: 800px 104px;
-  background-size: 800px 104px;
-  position: relative;
-}
+.loading { @include loading(#eeeeee); }
 
 #scores-login {
   width: 45%;

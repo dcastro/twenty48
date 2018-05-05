@@ -167,6 +167,20 @@ hr {
     background-color: rgba(206, 177, 148, 0.5); }
   .top-scores-panel tbody td {
     height: 40px; }
+    .top-scores-panel tbody td .loading-scores {
+      border-radius: 3px;
+      margin: 0 7px 0 7px;
+      animation-duration: 1s;
+      animation-fill-mode: forwards;
+      animation-iteration-count: infinite;
+      animation-name: placeHolderShimmer;
+      animation-timing-function: linear;
+      background: rgba(0, 0, 0, 0);
+      background: -webkit-gradient(linear, left top, right top, color-stop(8%, rgba(0, 0, 0, 0)), color-stop(18%, #dddddd), color-stop(33%, rgba(0, 0, 0, 0)));
+      background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 8%, #dddddd 18%, rgba(0, 0, 0, 0) 33%);
+      background: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, #dddddd 18%, rgba(0, 0, 0, 0) 33%);
+      -webkit-background-size: 800px 104px;
+      background-size: 800px 104px; }
 
 body.signed-in .top-scores-panel .top-scores-labels {
   display: flex; }
@@ -539,14 +553,12 @@ body.signed-in .top-scores-panel .top-scores-tables {
   animation-iteration-count: infinite;
   animation-name: placeHolderShimmer;
   animation-timing-function: linear;
-  background: #f6f7f8;
   background: #eeeeee;
   background: -webkit-gradient(linear, left top, right top, color-stop(8%, #eeeeee), color-stop(18%, #dddddd), color-stop(33%, #eeeeee));
   background: -webkit-linear-gradient(left, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
   background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
   -webkit-background-size: 800px 104px;
-  background-size: 800px 104px;
-  position: relative; }
+  background-size: 800px 104px; }
 
 #scores-login {
   width: 45%; }
@@ -738,6 +750,20 @@ body.signed-in .top-scores-panel .top-scores-tables {
       background-color: rgba(206, 177, 148, 0.5); }
     .top-scores-panel tbody td {
       height: 40px; }
+      .top-scores-panel tbody td .loading-scores {
+        border-radius: 3px;
+        margin: 0 7px 0 7px;
+        animation-duration: 1s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: placeHolderShimmer;
+        animation-timing-function: linear;
+        background: rgba(0, 0, 0, 0);
+        background: -webkit-gradient(linear, left top, right top, color-stop(8%, rgba(0, 0, 0, 0)), color-stop(18%, #dddddd), color-stop(33%, rgba(0, 0, 0, 0)));
+        background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 8%, #dddddd 18%, rgba(0, 0, 0, 0) 33%);
+        background: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, #dddddd 18%, rgba(0, 0, 0, 0) 33%);
+        -webkit-background-size: 800px 104px;
+        background-size: 800px 104px; }
 
   body.signed-in .top-scores-panel .top-scores-labels {
     display: flex; }
