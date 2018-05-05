@@ -4,6 +4,7 @@ function GameManager(size, InputManager, Actuator, StorageManager, loginSvc) {
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
   this.loginSvc       = loginSvc;
+  this.showingTopScores = false;
 
   this.startTiles     = 2;
 
@@ -24,14 +25,24 @@ function GameManager(size, InputManager, Actuator, StorageManager, loginSvc) {
 }
 
 GameManager.prototype.showTopScores = function() {
-  const self = this;
-  self.loginSvc.userDetails().then(details => {
-    
-    const query = details === null? "" : "?user=" + details.email;
 
-    $.get('/scores' + query)
-      .done(self.actuator.updateTopScores);
-  });
+  if(this.showingTopScores) {
+    this.actuator.hideTopScores();
+  }
+  else {
+    const scoresPromise =
+      this.loginSvc.userDetails().then(details => {
+        const query = details === null? "" : "?user=" + details.email;
+
+        return new Promise((fulfilled, rejected) => {
+          $.get('/scores' + query)
+            .done(fulfilled)
+            .fail(rejected)
+        });
+      });
+    this.actuator.showTopScores(scoresPromise);
+  }
+  this.showingTopScores = !this.showingTopScores;
 }
 
 GameManager.prototype.saveScore = function (promptSignIn) {

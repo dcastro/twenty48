@@ -144,9 +144,17 @@ HTMLActuator.prototype.stopAutoPlay = function() {
   document.getElementsByClassName("stop-auto-play-button")[0].style.display = 'none';
 };
 
-HTMLActuator.prototype.updateTopScores = function(topScores) {
-  updateTable($(".my-scores-table tbody"), topScores.myScores === null ? [] : topScores.myScores);
-  updateTable($(".all-scores-table tbody"), topScores.allScores);
+HTMLActuator.prototype.hideTopScores = function(topScores) {
+  $(".top-scores-panel").fadeOut();
+};
+
+HTMLActuator.prototype.showTopScores = function(topScoresPromise) {
+  $(".top-scores-panel").fadeIn();
+
+  topScoresPromise.then(topScores => {
+    updateTable($(".my-scores-table tbody"), topScores.myScores === null ? [] : topScores.myScores);
+    updateTable($(".all-scores-table tbody"), topScores.allScores);
+  });
 };
 
 function updateTable(tbody, scores) {
