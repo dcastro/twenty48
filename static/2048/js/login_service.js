@@ -1,4 +1,4 @@
-function LoginService() {
+function LoginService(onSignIn) {
   
   init();
 
@@ -65,6 +65,8 @@ function LoginService() {
       $("#save-score-button").hide();
 
       $("body").addClass("signed-in");
+
+      onSignIn();
     }
 
     function signedOut() {

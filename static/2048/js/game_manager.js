@@ -1,9 +1,9 @@
-function GameManager(size, InputManager, Actuator, StorageManager, loginSvc) {
+function GameManager(size, InputManager, Actuator, StorageManager, LoginService) {
   this.size           = size; // Size of the grid
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
-  this.loginSvc       = loginSvc;
+  this.loginSvc       = new LoginService(() => this.onSignIn()); // can't be eta-reduced because... javascript.
   this.showingTopScores = false;
 
   this.startTiles     = 2;
@@ -15,7 +15,7 @@ function GameManager(size, InputManager, Actuator, StorageManager, loginSvc) {
   this.inputManager.on("autoPlayOnce", this.autoPlayOnce.bind(this))
   this.inputManager.on("stopAutoPlay", this.stopAutoPlay.bind(this))
   this.inputManager.on("saveScore", () => this.saveScore(true))
-  this.inputManager.on("showTopScores", () => this.showTopScores())
+  this.inputManager.on("showTopScores", () => this.toggleTopScores())
 
   const url = location.href.replace(/^(https:\/\/)|(http:\/\/)/, "ws://")
   this.conn = new WebSocket(url);
@@ -24,26 +24,38 @@ function GameManager(size, InputManager, Actuator, StorageManager, loginSvc) {
   this.conn.onopen = () => this.setup();
 }
 
-GameManager.prototype.showTopScores = function() {
+GameManager.prototype.onSignIn = function() {
+  if(this.showingTopScores) {
+    // reload tables with user's "my scores"
+    this.showTopScores();
+  }
+}
 
+GameManager.prototype.toggleTopScores = function() {
   if(this.showingTopScores) {
     this.actuator.hideTopScores();
+    this.showingTopScores = false;
   }
   else {
-    const scoresPromise =
-      this.loginSvc.userDetails().then(details => {
-        const query = details === null? "" : "?user=" + details.email;
-
-        return new Promise((fulfilled, rejected) => {
-          $.get('/scores' + query)
-            .done(fulfilled)
-            .fail(rejected)
-        });
-      });
-    this.actuator.showTopScores(scoresPromise);
+    this.showTopScores();
   }
-  this.showingTopScores = !this.showingTopScores;
 }
+
+GameManager.prototype.showTopScores = function() {
+  const scoresPromise =
+  this.loginSvc.userDetails().then(details => {
+    const query = details === null? "" : "?user=" + details.email;
+
+    return new Promise((fulfilled, rejected) => {
+      $.get('/scores' + query)
+        .done(fulfilled)
+        .fail(rejected)
+    });
+  });
+  this.actuator.showTopScores(scoresPromise);
+  this.showingTopScores = true;
+}
+
 
 GameManager.prototype.saveScore = function (promptSignIn) {
   this.getUserDetails(promptSignIn).then(details => {
