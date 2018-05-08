@@ -17,11 +17,11 @@ function GameManager(size, InputManager, Actuator, StorageManager, LoginService)
   this.inputManager.on("saveScore", () => this.saveScore(true))
   this.inputManager.on("showTopScores", () => this.toggleTopScores())
 
-  const url = location.href.replace(/^(https:\/\/)|(http:\/\/)/, "ws://")
-  this.conn = new WebSocket(url);
-
+  this.autoPlayUrl = "ws://" + location.host + "/auto-play";
   this.autoPlaying = false;
-  this.conn.onopen = () => this.setup();
+  this.conn = null;
+
+  this.setup();
 }
 
 GameManager.prototype.onSignIn = function() {
@@ -77,37 +77,89 @@ GameManager.prototype.getUserDetails = function(promptSignIn) {
 }
 
 GameManager.prototype.autoPlay = function () {
+
   if (this.over)
     return;
 
+  if (this.conn !== null) {
+    console.error('A websockets connection is already open.');
+    return;
+  }
+
   this.autoPlaying = true;
-
-  const msg = {
-    tag: "AutoPlayMsg",
-    _board: this.grid.wsSerialize()
-  };
-
-  this.conn.send(JSON.stringify(msg));
   this.actuator.autoPlay();
-}
 
-GameManager.prototype.autoPlayOnce = function () {
-  const msg = {
-    tag: "AutoPlayOnceMsg",
-    _board: this.grid.wsSerialize()
-  };
+  this.conn = new WebSocket(this.autoPlayUrl);
 
-  this.conn.send(JSON.stringify(msg));
+  this.conn.onopen = () => this.conn.send(JSON.stringify(this.grid.wsSerialize()));
+  
+  this.conn.onmessage = msg => {
+    const data = JSON.parse(msg.data);
+
+    switch (data.tag) {
+      case "PlayPlayerMsg":
+        switch (data._direction) {
+          // 0: up, 1: right, 2: down, 3: left
+          case "U": this.move(0); break;
+          case "R": this.move(1); break;
+          case "D": this.move(2); break;
+          case "L": this.move(3); break;
+        }
+        break;
+      case "PlayComputerMsg":
+        const cell = new Tile({ x: data._coord[0], y: data._coord[1], }, data._cell);
+        this.grid.insertTile(cell);
+        break;        
+    }
+
+    if (!this.movesAvailable()) {
+      this.over = true; // Game over!
+    }
+    this.actuate();
+  }
+
+  this.conn.onerror = err => {
+    console.error(err);
+    this.autoPlaying = false;
+    this.actuator.stopAutoPlay();
+    this.conn = null;
+  }
+  this.conn.onclose = () => {
+    this.autoPlaying = false;
+    this.actuator.stopAutoPlay();
+    this.conn = null;
+  }
 }
 
 GameManager.prototype.stopAutoPlay = function () {
-  const msg = {
-    tag: "StopMsg",
-  };
+  if (this.autoPlaying) {
+    this.conn.send(JSON.stringify("stop"));
+    this.conn.close();
+    this.autoPlaying = false;
+    this.actuator.stopAutoPlay();
+    this.conn = null;
+  }
+}
 
-  this.conn.send(JSON.stringify(msg));
-  this.actuator.stopAutoPlay();
-  this.autoPlaying = false;
+GameManager.prototype.autoPlayOnce = function () {
+  const msg = JSON.stringify(this.grid.wsSerialize());
+
+  $.post("/auto-play-once", msg)
+    .done(rsp => {
+      if (rsp._direction !== null) {
+        switch (rsp._direction) {
+          // 0: up, 1: right, 2: down, 3: left
+          case "U": this.move(0); break;
+          case "R": this.move(1); break;
+          case "D": this.move(2); break;
+          case "L": this.move(3); break;
+        }
+        if (!this.movesAvailable()) {
+          this.over = true; // Game over!
+        }
+        this.actuate();
+      }      
+    });
 }
 
 // Restart the game
@@ -153,31 +205,6 @@ GameManager.prototype.setup = function () {
 
   // Update the actuator
   this.actuate();
-
-  this.conn.onmessage = msg => {
-    const data = JSON.parse(msg.data);
-
-    switch (data.tag) {
-      case "PlayPlayerMsg":
-        switch (data._direction) {
-          // 0: up, 1: right, 2: down, 3: left
-          case "U": this.move(0); break;
-          case "R": this.move(1); break;
-          case "D": this.move(2); break;
-          case "L": this.move(3); break;
-        }
-        break;
-      case "PlayComputerMsg":
-        const cell = new Tile({ x: data._coord[0], y: data._coord[1], }, data._cell);
-        this.grid.insertTile(cell);
-        break;        
-    }
-
-    if (!this.movesAvailable()) {
-      this.over = true; // Game over!
-    }
-    this.actuate();
-  }
 };
 
 // Set up the initial tiles to start the game with
@@ -206,8 +233,7 @@ GameManager.prototype.actuate = function () {
     });
     
     this.storageManager.clearGameState();
-    this.actuator.stopAutoPlay();
-    this.autoPlaying = false;
+    this.stopAutoPlay();
   } else {
     this.storageManager.setGameState(this.serialize());
   }

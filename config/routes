@@ -10,3 +10,7 @@
 
 /score ScoreR POST
 /scores ScoresR GET
+
+/auto-play-once AutoPlayOnceR POST
+/auto-play      AutoPlayR GET
+

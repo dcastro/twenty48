@@ -1,6 +1,7 @@
 module Utils.Misc where
 
-import           Data.ChunkedZip (Zip)
+import           Data.ChunkedZip   (Zip)
+import qualified Data.Strict.Maybe as M
 import           Import
 import           Numeric.Natural
 
@@ -23,3 +24,7 @@ pairs xs = zip xs (tailDef xs)
 filterMaybe :: (a -> Bool) -> Maybe a -> Maybe a
 filterMaybe _ Nothing = Nothing
 filterMaybe p (Just a) = if p a then Just a else Nothing
+
+toLazyMaybe :: M.Maybe a -> Maybe a
+toLazyMaybe (M.Just x) = Just x
+toLazyMaybe M.Nothing = Nothing
