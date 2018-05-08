@@ -18,11 +18,12 @@ function GameManager(size, InputManager, Actuator, StorageManager, LoginService)
   this.inputManager.on("showTopScores", () => this.toggleTopScores())
 
   this.autoPlayUrl = "ws://" + location.host + "/auto-play";
-  this.autoPlaying = false;
   this.conn = null;
 
   this.setup();
 }
+
+GameManager.prototype.autoPlaying = function() { return this.conn !== null; }
 
 GameManager.prototype.onSignIn = function() {
   if(this.showingTopScores) {
@@ -86,7 +87,6 @@ GameManager.prototype.autoPlay = function () {
     return;
   }
 
-  this.autoPlaying = true;
   this.actuator.autoPlay();
 
   this.conn = new WebSocket(this.autoPlayUrl);
@@ -120,22 +120,19 @@ GameManager.prototype.autoPlay = function () {
 
   this.conn.onerror = err => {
     console.error(err);
-    this.autoPlaying = false;
     this.actuator.stopAutoPlay();
     this.conn = null;
   }
   this.conn.onclose = () => {
-    this.autoPlaying = false;
     this.actuator.stopAutoPlay();
     this.conn = null;
   }
 }
 
 GameManager.prototype.stopAutoPlay = function () {
-  if (this.autoPlaying) {
+  if (this.autoPlaying()) {
     this.conn.send(JSON.stringify("stop"));
     this.conn.close();
-    this.autoPlaying = false;
     this.actuator.stopAutoPlay();
     this.conn = null;
   }
@@ -340,7 +337,7 @@ GameManager.prototype.move = function (direction) {
   });
 
   if (moved) {
-    if (!this.autoPlaying)
+    if (!this.autoPlaying())
       this.addRandomTile();
 
     if (!this.movesAvailable()) {
