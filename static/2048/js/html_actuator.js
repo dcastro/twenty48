@@ -150,35 +150,37 @@ HTMLActuator.prototype.hideTopScores = function(topScores) {
 
 HTMLActuator.prototype.showTopScores = function(topScoresPromise) {
 
-  $(".top-scores-tables tbody").html(Array(10).fill(loadingRow).map(f => f()));
+  $(".top-scores-tables tbody").html(Array(10).fill(loadingRow).map(function(f) { return f(); }));
 
   $(".top-scores-panel").fadeIn();
 
-  topScoresPromise.then(topScores => {
+  topScoresPromise.then(function(topScores) {
     $(".my-scores-table tbody").html(scoreRows(topScores.myScores === null ? [] : topScores.myScores));
     $(".all-scores-table tbody").html(scoreRows(topScores.allScores));
   });
 };
 
-const loadingRow = () => 
-  $("<tr>").append(
+function loadingRow() {
+  return $("<tr>").append(
     $("<td>").append($("<div>").html("&nbsp;").addClass("loading-scores"))
   );
+}
 
-const scoreRows = scores =>
-  rightPad(10, emptyRow,
-    scores.map(s =>
-      $("<tr>")
+function scoreRows (scores) {
+  return rightPad(10, emptyRow,
+    scores.map(function(s) {
+      return $("<tr>")
         .append($("<td>").text(s.name))
         .append($("<td>").text(s.score))
-    ));
+    }));
+}
 
-const emptyRow = () => $("<tr>").append('<td>').append('<td>');
+function emptyRow() { return $("<tr>").append('<td>').append('<td>'); }
 
 function rightPad(n, f, xs) {
   const need = n - xs.length;
 
   if (need <= 0)
     return xs;
-  return xs.concat(Array(need).fill(f).map(f => f()));
+  return xs.concat(Array(need).fill(f).map(function(f) { return f(); }));
 }

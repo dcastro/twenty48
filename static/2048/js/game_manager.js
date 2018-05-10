@@ -3,7 +3,7 @@ function GameManager(size, InputManager, Actuator, StorageManager, LoginService)
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
-  this.loginSvc       = new LoginService(() => this.onSignIn()); // can't be eta-reduced because... javascript.
+  this.loginSvc       = new LoginService(this.onSignIn.bind(this));
   this.showingTopScores = false;
 
   this.startTiles     = 2;
@@ -14,8 +14,8 @@ function GameManager(size, InputManager, Actuator, StorageManager, LoginService)
   this.inputManager.on("autoPlay", this.autoPlay.bind(this))
   this.inputManager.on("autoPlayOnce", this.autoPlayOnce.bind(this))
   this.inputManager.on("stopAutoPlay", this.stopAutoPlay.bind(this))
-  this.inputManager.on("saveScore", () => this.saveScore(true))
-  this.inputManager.on("showTopScores", () => this.toggleTopScores())
+  this.inputManager.on("saveScore", this.saveScore.bind(this, true))
+  this.inputManager.on("showTopScores", this.toggleTopScores.bind(this))
 
   this.autoPlayUrl = "ws://" + location.host + "/auto-play";
   this.conn = null;
@@ -44,10 +44,10 @@ GameManager.prototype.toggleTopScores = function() {
 
 GameManager.prototype.showTopScores = function() {
   const scoresPromise =
-  this.loginSvc.userDetails().then(details => {
+  this.loginSvc.userDetails().then(function(details) {
     const query = details === null? "" : "?user=" + details.email;
 
-    return new Promise((fulfilled, rejected) => {
+    return new Promise(function(fulfilled, rejected) {
       $.get('/scores' + query)
         .done(fulfilled)
         .fail(rejected)
@@ -59,9 +59,11 @@ GameManager.prototype.showTopScores = function() {
 
 
 GameManager.prototype.saveScore = function (promptSignIn) {
-  this.getUserDetails(promptSignIn).then(details => {
+  const self = this;
+
+  self.getUserDetails(promptSignIn).then(function(details) {
     if (details !== null) {
-      details.score = this.score;
+      details.score = self.score;
       $.post('/score', JSON.stringify(details));
     } else {
       console.error("Can't save scores unless logged in");
@@ -70,62 +72,67 @@ GameManager.prototype.saveScore = function (promptSignIn) {
 }
 
 GameManager.prototype.getUserDetails = function(promptSignIn) {
-  return this.loginSvc.userDetails().then(details => {
+  const self = this;
+
+  return self.loginSvc.userDetails().then(function(details) {
     return details === null && promptSignIn ?
-              this.loginSvc.signIn().then(() => this.loginSvc.userDetails()) :
+              self.loginSvc.signIn().then(function() { return self.loginSvc.userDetails(); }) :
               Promise.resolve(details);
   });
 }
 
 GameManager.prototype.autoPlay = function () {
+  const self = this;
 
-  if (this.over)
+  if (self.over)
     return;
 
-  if (this.conn !== null) {
+  if (self.conn !== null) {
     console.error('A websockets connection is already open.');
     return;
   }
 
-  this.actuator.autoPlay();
+  self.actuator.autoPlay();
 
-  this.conn = new WebSocket(this.autoPlayUrl);
+  self.conn = new WebSocket(self.autoPlayUrl);
 
-  this.conn.onopen = () => this.conn.send(JSON.stringify(this.grid.wsSerialize()));
+  self.conn.onopen = function() {
+    return self.conn.send(JSON.stringify(self.grid.wsSerialize()))
+  };
   
-  this.conn.onmessage = msg => {
+  self.conn.onmessage = function(msg) {
     const data = JSON.parse(msg.data);
 
     switch (data.tag) {
       case "PlayPlayerMsg":
         switch (data._direction) {
           // 0: up, 1: right, 2: down, 3: left
-          case "U": this.move(0); break;
-          case "R": this.move(1); break;
-          case "D": this.move(2); break;
-          case "L": this.move(3); break;
+          case "U": self.move(0); break;
+          case "R": self.move(1); break;
+          case "D": self.move(2); break;
+          case "L": self.move(3); break;
         }
         break;
       case "PlayComputerMsg":
         const cell = new Tile({ x: data._coord[0], y: data._coord[1], }, data._cell);
-        this.grid.insertTile(cell);
+        self.grid.insertTile(cell);
         break;        
     }
 
-    if (!this.movesAvailable()) {
-      this.over = true; // Game over!
+    if (!self.movesAvailable()) {
+      self.over = true; // Game over!
     }
-    this.actuate();
+    self.actuate();
   }
 
-  this.conn.onerror = err => {
+  self.conn.onerror = function(err) {
     console.error(err);
-    this.actuator.stopAutoPlay();
-    this.conn = null;
+    self.actuator.stopAutoPlay();
+    self.conn = null;
   }
-  this.conn.onclose = () => {
-    this.actuator.stopAutoPlay();
-    this.conn = null;
+  self.conn.onclose = function() {
+    self.actuator.stopAutoPlay();
+    self.conn = null;
   }
 }
 
@@ -139,22 +146,24 @@ GameManager.prototype.stopAutoPlay = function () {
 }
 
 GameManager.prototype.autoPlayOnce = function () {
-  const msg = JSON.stringify(this.grid.wsSerialize());
+  const self = this;
+
+  const msg = JSON.stringify(self.grid.wsSerialize());
 
   $.post("/auto-play-once", msg)
-    .done(rsp => {
+    .done(function(rsp) {
       if (rsp._direction !== null) {
         switch (rsp._direction) {
           // 0: up, 1: right, 2: down, 3: left
-          case "U": this.move(0); break;
-          case "R": this.move(1); break;
-          case "D": this.move(2); break;
-          case "L": this.move(3); break;
+          case "U": self.move(0); break;
+          case "R": self.move(1); break;
+          case "D": self.move(2); break;
+          case "L": self.move(3); break;
         }
-        if (!this.movesAvailable()) {
-          this.over = true; // Game over!
+        if (!self.movesAvailable()) {
+          self.over = true; // Game over!
         }
-        this.actuate();
+        self.actuate();
       }      
     });
 }
@@ -223,24 +232,26 @@ GameManager.prototype.addRandomTile = function () {
 
 // Sends the updated grid to the actuator
 GameManager.prototype.actuate = function () {
+  const self = this;
+
   // Clear the state when the game is over (game over only, not win)
-  if (this.over) {
-    this.loginSvc.isSignedIn().then(signedIn => {
-      if (signedIn) this.saveScore();
+  if (self.over) {
+    self.loginSvc.isSignedIn().then(function(signedIn) {
+      if (signedIn) self.saveScore();
     });
     
-    this.storageManager.clearGameState();
-    this.stopAutoPlay();
+    self.storageManager.clearGameState();
+    self.stopAutoPlay();
   } else {
-    this.storageManager.setGameState(this.serialize());
+    self.storageManager.setGameState(self.serialize());
   }
 
-  this.loginSvc.isSignedIn().then(signedIn => {
-    this.actuator.actuate(this.grid, {
-      score:      this.score,
-      over:       this.over,
-      won:        this.won,
-      terminated: this.isGameTerminated()
+  self.loginSvc.isSignedIn().then(function(signedIn) {
+    self.actuator.actuate(self.grid, {
+      score:      self.score,
+      over:       self.over,
+      won:        self.won,
+      terminated: self.isGameTerminated()
     },
     signedIn);
   });
@@ -319,7 +330,7 @@ GameManager.prototype.move = function (direction) {
           // The mighty 2048 tile
           if (merged.value === 2048) {
             self.won = true;
-            self.loginSvc.isSignedIn().then(signedIn => {
+            self.loginSvc.isSignedIn().then(function(signedIn) {
               if (signedIn) self.saveScore();
             });
 

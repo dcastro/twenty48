@@ -117,15 +117,20 @@ Grid.prototype.serialize = function () {
 };
 
 Grid.prototype.wsSerialize = function() {
-  const transpose = grid =>
-    grid[0].map((_, i) => grid.map(row => row[i]));
+  function transpose(grid) {
+    return grid[0].map(function(_, i) {
+       return grid.map(function(row) { 
+         return row[i];
+       });
+    });
+  };
 
   return transpose(
-    this.cells.map(row =>
-      row.map(cell =>
-        cell ? cell.value : null
-      )
-    )
+    this.cells.map(function(row) {
+      return row.map(function(cell) {
+        return cell ? cell.value : null;
+      });
+    })
   );
 }
 
