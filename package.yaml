@@ -54,6 +54,7 @@ dependencies:
 - strict
 - extra
 - esqueleto
+- shakespeare-sass
 
 ghc-options:
 - -fdefer-typed-holes

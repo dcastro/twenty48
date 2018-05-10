@@ -19,6 +19,7 @@ import           Data.Yaml                   (decodeEither')
 import           Database.Persist.Postgresql (PostgresConf)
 import           Language.Haskell.TH.Syntax  (Exp, Name, Q)
 import           Network.Wai.Handler.Warp    (HostPreference)
+import           Text.Shakespeare.Sass
 import           Yesod.Default.Config2       (applyEnvValue, configSettingsYml)
 import           Yesod.Default.Util          (WidgetFileSettings,
                                               widgetFileNoReload,
@@ -101,7 +102,7 @@ instance FromJSON AppSettings where
 --
 -- https://github.com/yesodweb/yesod/wiki/Overriding-widgetFile
 widgetFileSettings :: WidgetFileSettings
-widgetFileSettings = def
+widgetFileSettings = wfsSass ["sass_include/"]
 
 -- | How static files should be combined.
 combineSettings :: CombineSettings
