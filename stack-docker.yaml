@@ -3,6 +3,11 @@ resolver: lts-10.5
 packages:
 - .
 
+extra-deps:
+- shakespeare-sass-0.1.0.3
+- hsass-0.4.2
+- hlibsass-0.1.6.1
+
 docker:
   enable: true
   repo: "fpco/stack-build"

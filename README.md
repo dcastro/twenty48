@@ -5,9 +5,9 @@ An AI for the 2048 game using minimax and alpha-beta pruning, written in Haskell
 ```plain
 
 // build image
-docker/build.sh
+docker/build.sh 0.x
 
-// fire up container
+// fire up a container
 docker-compose up -d
 
 ```
