@@ -87,15 +87,15 @@ instance Yesod App where
     authRoute _ = Just Twenty48R
 
     -- Routes not requiring authentication.
-    isAuthorized FaviconR _ = return Authorized
-    isAuthorized RobotsR _ = return Authorized
-    isAuthorized (StaticR _) _ = return Authorized
+    isAuthorized FaviconR _      = pure Authorized
+    isAuthorized RobotsR _       = pure Authorized
+    isAuthorized (StaticR _) _   = pure Authorized
 
-    isAuthorized Twenty48R _ = pure Authorized
-    isAuthorized ScoreR _ = pure Authorized
-    isAuthorized ScoresR _ = pure Authorized
+    isAuthorized Twenty48R _     = pure Authorized
+    isAuthorized ScoreR _        = pure Authorized
+    isAuthorized ScoresR _       = pure Authorized
     isAuthorized AutoPlayOnceR _ = pure Authorized
-    isAuthorized AutoPlayR _ = pure Authorized
+    isAuthorized AutoPlayR _     = pure Authorized
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
@@ -133,17 +133,6 @@ instance YesodPersist App where
         runSqlPool action $ appConnPool master
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner appConnPool
-
-authId :: Handler (Maybe Text)
-authId = fmap decodeUtf8 <$> lookupHeader "X-User"
-
--- | Access function to determine if a user is logged in.
-isAuthenticated :: Handler AuthResult
-isAuthenticated = do
-    muid <- authId
-    return $ case muid of
-        Nothing -> Unauthorized "You must login to access this page"
-        Just _ -> Authorized
 
 -- This instance is required to use forms. You can modify renderMessage to
 -- achieve customized and internationalized form validation messages.
