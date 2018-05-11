@@ -21,6 +21,7 @@ services:
     environment:
       - PGHOST=postgres
       - PORT=80
+      - AI_DEPTH=6
     depends_on:
       postgres:
         condition: service_healthy

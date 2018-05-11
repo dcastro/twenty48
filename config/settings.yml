@@ -6,6 +6,9 @@ host:           "_env:HOST:*4" # any IPv4 host
 port:           "_env:PORT:3000" # NB: The port `yesod devel` uses is distinct from this value. Set the `yesod devel` port from the command line.
 ip-from-header: "_env:IP_FROM_HEADER:false"
 
+# The number of turns to look ahead
+ai-depth:       "_env:AI_DEPTH:6"
+
 # Default behavior: determine the application root from the request headers.
 # Uncomment to set an explicit approot
 #approot:        "_env:APPROOT:http://localhost:3000"

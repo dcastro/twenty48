@@ -18,25 +18,24 @@ import           Utils.Control        (whenJust')
 import           Utils.Misc           (toLazyMaybe)
 import           Yesod.WebSockets     hiding (race_)
 
-aiDepth :: Int
-aiDepth = 6
-
 postAutoPlayOnceR :: Handler Value
 postAutoPlayOnceR = do
   board <- requireJsonBody
-  returnJson . PlayPlayerMsg . fmap unPlayer . toLazyMaybe $ alphaBeta board aiDepth
+  depth <- aiDepth . appSettings <$> getYesod
+  returnJson . PlayPlayerMsg . fmap unPlayer . toLazyMaybe $ alphaBeta board depth
 
 getAutoPlayR :: Handler ()
-getAutoPlayR =
+getAutoPlayR = do
+  depth <- aiDepth . appSettings <$> getYesod
   webSockets $ do
     Start board <- receiveJson
     race_
-      (autoPlay board)
+      (autoPlay board depth)
       (receiveJson @_ @Stop)
 
-autoPlay :: Board -> WebSocketsT Handler ()
-autoPlay board =
-  whenJust' (alphaBeta board aiDepth) $ \player@(Player direction) -> do
+autoPlay :: Board -> Int -> WebSocketsT Handler ()
+autoPlay board depth =
+  whenJust' (alphaBeta board depth) $ \player@(Player direction) -> do
     sendJson $ PlayPlayerMsg $ Just direction
 
     let newBoard = playPlayer player board
@@ -46,7 +45,7 @@ autoPlay board =
       sendJson $ PlayComputerMsg coord cell
 
       let newBoard' = playComputer computer newBoard
-      autoPlay newBoard'
+      autoPlay newBoard' depth
 
 receiveJson :: (MonadIO m, MonadLogger m, FromJSON msg) => WebSocketsT m msg
 receiveJson = do
