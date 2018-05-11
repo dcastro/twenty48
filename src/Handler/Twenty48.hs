@@ -24,7 +24,7 @@ getTwenty48R = do
         , $(juliusFile "templates/js/grid.js")
         , $(juliusFile "templates/js/tile.js")
         , $(juliusFile "templates/js/local_storage_manager.js")
-        , $(juliusFile "templates/js/game_manager.js")
+        , $(juliusFile "templates/js/game_manager.julius")
         , $(juliusFile "templates/js/application.js")
         ]
       toWidget $(wsass' [] "templates/sass/main.scss")

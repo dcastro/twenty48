@@ -17,7 +17,6 @@ function GameManager(size, InputManager, Actuator, StorageManager, LoginService)
   this.inputManager.on("saveScore", this.saveScore.bind(this, true))
   this.inputManager.on("showTopScores", this.toggleTopScores.bind(this))
 
-  this.autoPlayUrl = "ws://" + location.host + "/auto-play";
   this.conn = null;
 
   this.setup();
@@ -48,7 +47,7 @@ GameManager.prototype.showTopScores = function() {
     const query = details === null? "" : "?user=" + details.email;
 
     return new Promise(function(fulfilled, rejected) {
-      $.get('/scores' + query)
+      $.get('@{ScoresR}' + query)
         .done(fulfilled)
         .fail(rejected)
     });
@@ -64,7 +63,7 @@ GameManager.prototype.saveScore = function (promptSignIn) {
   self.getUserDetails(promptSignIn).then(function(details) {
     if (details !== null) {
       details.score = self.score;
-      $.post('/score', JSON.stringify(details));
+      $.post('@{ScoreR}', JSON.stringify(details));
     } else {
       console.error("Can't save scores unless logged in");
     }
@@ -94,7 +93,7 @@ GameManager.prototype.autoPlay = function () {
 
   self.actuator.autoPlay();
 
-  self.conn = new WebSocket(self.autoPlayUrl);
+  self.conn = new WebSocket("@{AutoPlayR}".replace(/^(https:\/\/)|(http:\/\/)/, "ws://"));
 
   self.conn.onopen = function() {
     return self.conn.send(JSON.stringify(self.grid.wsSerialize()))
@@ -150,7 +149,7 @@ GameManager.prototype.autoPlayOnce = function () {
 
   const msg = JSON.stringify(self.grid.wsSerialize());
 
-  $.post("/auto-play-once", msg)
+  $.post("@{AutoPlayOnceR}", msg)
     .done(function(rsp) {
       if (rsp._direction !== null) {
         switch (rsp._direction) {
