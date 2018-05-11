@@ -1,1 +1,5 @@
---command="stack ghci --test --bench --main-is :test" --test main --warnings -o ghcid.txt
+--command "stack ghci twenty48 --flag twenty48:dev --test --bench --main-is :twenty48"
+--test DevelMain.update
+--warnings
+--reload static
+--reload templates
