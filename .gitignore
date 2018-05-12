@@ -21,3 +21,4 @@ cabal.sandbox.config
 twenty48.cabal
 bench.html
 ghcid.txt
+keys/

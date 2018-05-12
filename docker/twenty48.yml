@@ -1,0 +1,15 @@
+version: "2.2"
+services:     
+  twenty48:
+    image: dfacastro/2048-twenty48
+    ports:
+      - "3000:3000"
+    environment:
+      - PGHOST=postgres
+      - PORT=3000
+      - AI_DEPTH=6
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+    

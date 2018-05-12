@@ -93,7 +93,11 @@ GameManager.prototype.autoPlay = function () {
 
   self.actuator.autoPlay();
 
-  self.conn = new WebSocket("@{AutoPlayR}".replace(/^(https:\/\/)|(http:\/\/)/, "ws://"));
+  self.conn = new WebSocket(
+    "@{AutoPlayR}"
+      .replace(/^http:\/\//, "ws://")
+      .replace(/^https:\/\//, "wss://")
+    );
 
   self.conn.onopen = function() {
     return self.conn.send(JSON.stringify(self.grid.wsSerialize()))

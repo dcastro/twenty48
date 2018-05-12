@@ -2,7 +2,7 @@
 
 An AI for the 2048 game using minimax and alpha-beta pruning, as described by John Hughes in the paper ["Why Functional Programming Matters"](https://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf), written in Haskell + Yesod.
 
-Demo: <http://2048.diogocastro.com/>
+Demo: <https://2048.diogocastro.com/>
 
 ## Run
 
@@ -24,6 +24,7 @@ stack install ghcid
 
 ```text
 // setup database
+source docker/dependencies.env
 docker-compose up -d
 
 // with yesod
@@ -37,10 +38,13 @@ ghcid
 
 ```text
 stack build --exec twenty48
+```
 
-// or, in a container
+To run in a docker container with HTTPS, you'll first have to generate a [certificate for localhost](https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates), and then run:
+
+```text
 docker/build.sh latest
-docker/run.sh
+source docker/nginx-localhost.env && docker-compose up -d
 ```
 
 ## Tests and benchmarks

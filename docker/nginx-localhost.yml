@@ -1,0 +1,9 @@
+version: "2.2"
+services:     
+  nginx:
+    build: ./nginx-localhost
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - twenty48
