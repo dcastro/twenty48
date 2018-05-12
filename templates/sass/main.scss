@@ -223,7 +223,6 @@ hr {
 
     table {
       border-collapse: collapse;
-      margin: 0 2px 0 2px;
     }
 
     tbody {
@@ -254,6 +253,8 @@ hr {
       display: flex;
       .my-scores-table { width: 50%; display: table; }
       .all-scores-table { width: 50%; }
+
+      table { margin: 0 2px 0 2px; }
     }
   }
 
