@@ -14,6 +14,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       
+  twenty48:
+    image: dfacastro/2048-twenty48
+    ports:
+      - "80:80"
+    environment:
+      - PGHOST=postgres
+      - PORT=80
+      - AI_DEPTH=6
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+
 volumes:
   pgdata:
     
