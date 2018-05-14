@@ -1,6 +1,6 @@
 # 2048 AI
 
-An AI for the 2048 game using minimax and alpha-beta pruning, as described by John Hughes in the paper ["Why Functional Programming Matters"](https://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf), written in Haskell + Yesod.
+An AI for the 2048 game using minimax and alpha-beta pruning, as described by John Hughes in the paper ["Why Functional Programming Matters"](https://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf).
 
 The AI was written in Haskell and runs in a Yesod backend.
 The decisions are streamed to the browser via a websockets connection.
