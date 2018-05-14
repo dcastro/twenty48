@@ -9,7 +9,7 @@ Demo: <https://2048.diogocastro.com/>
 
 ## Run
 
-Install stack and, optionally, docker and docker-compose.
+Install stack, libsass, and, optionally, docker and docker-compose.
 
 ```text
 curl -sSL https://get.haskellstack.org/ | sh
@@ -43,7 +43,7 @@ ghcid
 stack build --exec twenty48
 ```
 
-To run in a docker container with HTTPS, you'll first have to generate a [certificate for localhost](https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates), and then run:
+To run in a docker container with HTTPS, you'll first need to generate a [certificate for localhost](https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates), and then run:
 
 ```text
 docker/build.sh latest
