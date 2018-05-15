@@ -4,6 +4,8 @@ module Game.Optimized.Moves
   , transpose
   , computerAvailableMoves
   , randomComputerMove
+  , randomCoord
+  , randomCell
   ) where
 
 import           Control.Monad.Random        (MonadRandom)
@@ -114,7 +116,7 @@ findIndex xs i p =
 
 -- | return list of moves that the `Computer` can play
 computerAvailableMoves :: Board -> [Computer]
-computerAvailableMoves board = Computer <$> freeIndices board <*> [2, 4]
+computerAvailableMoves board = Computer <$> freeIndices board <*> [1, 2]
 
 -- | returns list with indices where a cell is unoccupied
 freeIndices :: Board -> [Coord]
@@ -133,7 +135,7 @@ randomComputerMove board = do
 randomCell :: MonadRandom m => m Cell
 randomCell =
   oneFrom $
-    nReplicate 1 4 <> nReplicate 9 2
+    nReplicate 1 2 <> nReplicate 9 1
 
 randomCoord :: MonadRandom m => Board -> m (Maybe Coord)
 randomCoord board =

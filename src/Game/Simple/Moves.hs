@@ -54,7 +54,7 @@ freeCoords (Board rows) = join $ mapi freeCoords' rows
       | otherwise     = Just (x :!: y)
 
 computerAvailableMoves :: Board -> [Computer]
-computerAvailableMoves board = Computer <$> freeCoords board <*> [Cell 2, Cell 4]
+computerAvailableMoves board = Computer <$> freeCoords board <*> [1, 2]
 
 -------------------------------------------------------
 -------------------------------------------------------
@@ -69,7 +69,7 @@ randomComputerMove board = do
 randomCell :: MonadRandom m => m Cell
 randomCell =
   oneFrom $
-    nReplicate 1 (Cell 4) <> nReplicate 9 (Cell 2)
+    nReplicate 1 2 <> nReplicate 9 1
 
 randomCoord :: MonadRandom m => Board -> m (Maybe Coord)
 randomCoord board =
