@@ -14,7 +14,7 @@ import           Import
 
 alphaBeta :: Board -> Int -> M.Maybe Player
 alphaBeta b h = 
-  A.head . turns . maximum . maximize . map boardEval . pruneHeight h $ unfoldPlayerTree b
+  A.head . pathTurns . maximum . maximize . map boardEval . pruneHeight h $ unfoldPlayerTree b
 
 maximize :: StateTree Player Computer Score -> NonNull [Path Player Computer]
 maximize StateTree{..} = 
@@ -57,7 +57,7 @@ mapmin' p (xs : xss)
 -- | Returns true if any element in this subtree is less then the potential maximum;
 -- | if so, then this subtree is not worth looking at.
 containsLeq :: Path a b -> NonNull [Path a b] -> Bool
-containsLeq p1 = any (\p2 -> score p2 <= score p1)
+containsLeq p1 = any (\p2 -> pathScore p2 <= pathScore p1)
 
 -------------------------------------------------------
 -------------------------------------------------------
@@ -78,5 +78,5 @@ mapmax' p (xs : xss)
       max' = maximum xs
       
 containsGeq :: Path a b -> NonNull [Path a b] -> Bool
-containsGeq p1 = any (\p2 -> score p2 >= score p1)
+containsGeq p1 = any (\p2 -> pathScore p2 >= pathScore p1)
 

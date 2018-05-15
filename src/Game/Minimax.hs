@@ -14,7 +14,7 @@ import           Import
 
 minimax :: Board -> Int -> M.Maybe Player
 minimax b h = 
-  A.head . turns . maximum . maximize . map boardEval . pruneHeight h $ unfoldPlayerTree b
+  A.head . pathTurns . maximum . maximize . map boardEval . pruneHeight h $ unfoldPlayerTree b
 
 maximize :: StateTree Player Computer Score -> NonNull [Path Player Computer]
 maximize StateTree{..} = 
