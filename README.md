@@ -33,8 +33,8 @@ docker-compose up -d
 // with yesod
 yesod devel
 
-// or, using ghcid 0.7+ for subsecond code reload
-ghcid
+// or, using ghcid for subsecond code reload
+make ghcid-yesod
 ```
 
 ### Optimized
@@ -46,7 +46,7 @@ stack build --exec twenty48
 To run in a docker container with HTTPS, you'll first need to generate a [certificate for localhost](https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates), and then run:
 
 ```text
-docker/build.sh latest
+make docker-build
 source docker/nginx-localhost.env && docker-compose up -d
 ```
 
