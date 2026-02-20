@@ -11,52 +11,73 @@ Demo: <https://2048.diogocastro.com/>
 
 Install stack, libsass, and, optionally, docker and docker-compose.
 
-```text
+```sh
 curl -sSL https://get.haskellstack.org/ | sh
 brew install libsass
 ```
 
 For development, you'll need either yesod or ghcid
 
-```text
+```sh
 stack install yesod-bin --install-ghc
 stack install ghcid
 ```
 
 ### Dev mode
 
-```text
-// setup database
+Setup database:
+
+```sh
+# with docker
 source docker/dependencies.env
 docker-compose up -d
 
-// with yesod
+# manually
+sudo -u postgres psql
+postgres=# CREATE USER twenty48 WITH PASSWORD 'twenty48';
+postgres=# CREATE DATABASE twenty48 OWNER twenty48;
+postgres=# GRANT ALL PRIVILEGES ON DATABASE twenty48 TO twenty48;
+postgres=# \q
+
+# verify setup
+sudo -u postgres psql -c "\l" | grep twenty48
+sudo -u postgres psql -c "\du" | grep twenty48
+```
+
+```sh
+# with yesod
 yesod devel
 
-// or, using ghcid for subsecond code reload
+# or, using ghcid for subsecond code reload
 make ghcid-yesod
 ```
 
 ### Optimized
 
-```text
+```sh
 stack build --exec twenty48
 ```
 
 To run in a docker container with HTTPS, you'll first need to generate a [certificate for localhost](https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates), and then run:
 
-```text
+> NOTE:
+> The docker build stopped working when `stack` removed the `image` command and I haven't bothered updating it.
+> * https://github.com/commercialhaskell/stack/pull/4620/changes#diff-874f33563125619a7a5cb567ebe523c59258662d69858d78d24d947b275f9c6c
+> * https://academy.fpblock.com/blog/2017/12/building-haskell-apps-with-docker/
+
+
+```sh
 make docker-build
 source docker/nginx-localhost.env && docker-compose up -d
 ```
 
 ## Tests and benchmarks
 
-```text
+```sh
 stack test
 ```
 
-```text
+```sh
 stack bench
 ```
 

@@ -1,23 +1,24 @@
-resolver: lts-10.5
+resolver: lts-24.31
 
 packages:
-- .
+  - .
 
 extra-deps:
-- shakespeare-sass-0.1.0.3
-- hsass-0.4.2
-- hlibsass-0.1.6.1
+  - shakespeare-sass-0.1.4.1
+
+allow-newer: true
+allow-newer-deps:
+  - shakespeare-sass
 
 docker:
   enable: true
-  repo: "fpco/stack-build"
+  repo: 'fpco/stack-build'
   auto-pull: true
 
 image:
   containers:
-    -
-      base: "dfacastro/base"
-      name: "dfacastro/2048"
+    - base: 'dfacastro/base'
+      name: 'dfacastro/2048'
       entrypoints:
         - twenty48
       executables:
@@ -25,4 +26,3 @@ image:
       add:
         config/: /config
         static/: /static
-
