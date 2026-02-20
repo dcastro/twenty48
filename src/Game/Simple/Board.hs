@@ -14,7 +14,7 @@ type Row = [Cell]
 newtype Board = Board {unBoard :: [Row]}
   deriving (Eq, NFData, Generic)
 
-instance Newtype Board
+instance Newtype Board [Row]
 
 $(deriveFromJSON defaultOptions ''Board)
 

@@ -18,6 +18,24 @@ import Utils.Control (whenJust')
 import Utils.Misc (toLazyMaybe)
 import Yesod.WebSockets hiding (race_)
 
+data Start = Start Board
+data Stop = Stop
+
+instance FromJSON Stop where
+  parseJSON = J.withText "Stop" $ \case
+    "stop" -> pure Stop
+    _ -> empty
+
+instance FromJSON Start where
+  parseJSON = map Start . parseJSON
+
+data OutMsg
+  = PlayPlayerMsg {_direction :: Maybe Direction}
+  | PlayComputerMsg {_coord :: Coord, _cell :: Cell}
+  deriving (Generic)
+
+$(deriveToJSON defaultOptions ''OutMsg)
+
 postAutoPlayOnceR :: Handler Value
 postAutoPlayOnceR = do
   board <- requireJsonBody
@@ -58,21 +76,3 @@ receiveJson = do
 
 sendJson :: (MonadIO m, ToJSON msg) => msg -> WebSocketsT m ()
 sendJson = sendTextData . J.encode
-
-data Start = Start Board
-data Stop = Stop
-
-instance FromJSON Stop where
-  parseJSON = J.withText "Stop" $ \case
-    "stop" -> pure Stop
-    _ -> empty
-
-instance FromJSON Start where
-  parseJSON = map Start . parseJSON
-
-data OutMsg
-  = PlayPlayerMsg {_direction :: Maybe Direction}
-  | PlayComputerMsg {_coord :: Coord, _cell :: Cell}
-  deriving (Generic)
-
-$(deriveToJSON defaultOptions ''OutMsg)

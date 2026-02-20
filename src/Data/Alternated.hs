@@ -13,6 +13,9 @@ data Alternated a b
 acons :: a -> Alternated b a -> Alternated a b
 acons = Alternated
 
+instance Functor (Alternated a) where
+  fmap = second
+
 instance Bifunctor Alternated where
   bimap ::
     (a -> c) ->

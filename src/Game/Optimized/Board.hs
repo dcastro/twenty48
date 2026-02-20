@@ -12,7 +12,7 @@ import Import
 newtype Board = Board {unBoard :: VU.Vector Cell}
   deriving (Eq, NFData, Generic)
 
-instance Newtype Board
+instance Newtype Board (VU.Vector Cell)
 
 instance FromJSON Board where
   parseJSON = map boardFromLists . parseJSON
