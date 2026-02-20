@@ -26,7 +26,8 @@ type Coord = Pair Int Int
 
 -- unsigned 8-bit integer
 newtype Cell = Cell {unCell :: Word8}
-  deriving (Num, Integral, Real, Enum, Ord, Show, Eq, Generic, NFData)
+  deriving stock (Generic)
+  deriving newtype (Num, Integral, Real, Enum, Ord, Show, Eq, NFData)
 
 derivingUnbox
   "Cell"

@@ -161,7 +161,6 @@ executables:
       - -O2
     dependencies:
       - twenty48
-      - async
     when:
       - condition: flag(library-only)
         buildable: false

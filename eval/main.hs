@@ -3,7 +3,6 @@
 
 module Main where
 
-import Control.Concurrent.Async
 import Control.Monad.Random (MonadRandom)
 import Data.Function ((&))
 import Data.List qualified as L
