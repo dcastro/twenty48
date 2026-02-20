@@ -19,6 +19,7 @@ import Utils.Misc (toLazyMaybe)
 import Yesod.WebSockets hiding (race_)
 
 data Start = Start Board
+
 data Stop = Stop
 
 instance FromJSON Stop where

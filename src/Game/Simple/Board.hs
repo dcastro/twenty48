@@ -21,12 +21,12 @@ $(deriveFromJSON defaultOptions ''Board)
 instance Show Board where
   show (Board rows) =
     intercalate "\n" $ fmap printRow rows
-   where
-    printRow :: Row -> String
-    printRow row =
-      "[ " <> (intercalate ", " . fmap printCell $ row) <> " ]"
-    printCell :: Cell -> String
-    printCell (Cell p) = show p
+    where
+      printRow :: Row -> String
+      printRow row =
+        "[ " <> (intercalate ", " . fmap printCell $ row) <> " ]"
+      printCell :: Cell -> String
+      printCell (Cell p) = show p
 
 boardFromLists :: [[Cell]] -> Board
 boardFromLists = N.pack

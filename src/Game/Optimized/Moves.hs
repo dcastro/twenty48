@@ -1,28 +1,29 @@
 module Game.Optimized.Moves
-  ( playPlayer
-  , playComputer
-  , transpose
-  , computerAvailableMoves
-  , randomComputerMove
-  , randomCoord
-  , randomCell
-  ) where
+  ( playPlayer,
+    playComputer,
+    transpose,
+    computerAvailableMoves,
+    randomComputerMove,
+    randomCoord,
+    randomCell,
+  )
+where
 
-import           Control.Monad.Random        (MonadRandom)
-import           Control.Monad.ST            (ST)
-import qualified Data.List                   as L
-import           Data.Pair
-import qualified Data.Strict.Maybe           as M
-import qualified Data.Vector.Generic.Mutable as GMV
-import qualified Data.Vector.Unboxed         as VU
-import qualified Data.Vector.Unboxed.Mutable as VUM
-import           Game.Optimized.Board
-import           Game.Types
-import           Import
-import           Utils.Control               (whenJust')
-import           Utils.Random                (oneFrom)
+import Control.Monad.Random (MonadRandom)
+import Control.Monad.ST (ST)
+import Data.List qualified as L
+import Data.Pair
+import Data.Strict.Maybe qualified as M
+import Data.Vector.Generic.Mutable qualified as GMV
+import Data.Vector.Unboxed qualified as VU
+import Data.Vector.Unboxed.Mutable qualified as VUM
+import Game.Optimized.Board
+import Game.Types
+import Import
+import Utils.Control (whenJust')
+import Utils.Random (oneFrom)
 
--- | converts an index of a vector of length 16 to 
+-- | converts an index of a vector of length 16 to
 -- | a pair of coordinates (x, y) of a 4x4 matrix
 idxToCoord :: Int -> Coord
 idxToCoord idx = (idx `rem` 4 :!: idx `div` 4)
@@ -55,14 +56,14 @@ mergeLeft :: VUM.MVector s Cell -> ST s ()
 mergeLeft v = do
   shiftLeft v 0
 
-  forM_ [0..2] $ \i -> do
-    first' <- VUM.read v i 
+  forM_ [0 .. 2] $ \i -> do
+    first' <- VUM.read v i
     when (isOccupied first') $ do
       second' <- VUM.read v (i + 1)
       when (first' == second') $ do
         VUM.write v i (first' + 1)
-        VUM.write v (i+1) 0
-        moveToEnd v (i+1)
+        VUM.write v (i + 1) 0
+        moveToEnd v (i + 1)
 
 -- | moves all occupied cells to the left, and all zeroes to the right
 shiftLeft :: VUM.MVector s Cell -> Int -> ST s ()
@@ -70,38 +71,38 @@ shiftLeft xs i =
   when (i < VUM.length xs) $ do
     x <- VUM.read xs i
     when (isAvailable x) $ do
-      i2maybe <- findIndex xs (i+1) (isOccupied)
+      i2maybe <- findIndex xs (i + 1) (isOccupied)
       whenJust' i2maybe $ \i2 ->
         VUM.swap xs i i2
-    shiftLeft xs (i+1)
+    shiftLeft xs (i + 1)
 
 -- | pushes an unoccupied cell at index `i` to the right, and leaves it amongst the other unoccupied cells
 -- | moveToEnd [2, 0, 3, 0] 1 == [2, 3, 0, 0]
 moveToEnd :: VUM.MVector s Cell -> Int -> ST s ()
 moveToEnd xs i =
   when (i < VUM.length xs - 1) $ do
-    y <- VUM.read xs (i+1)
+    y <- VUM.read xs (i + 1)
     when (isOccupied y) $ do
-      VUM.swap xs i (i+1)
-      moveToEnd xs (i+1)
+      VUM.swap xs i (i + 1)
+      moveToEnd xs (i + 1)
 
 -- | slices a vector of length 16 into 4 vectors of length 4
-sliceRowsM :: Unbox a => VUM.MVector s a -> [VUM.MVector s a]
-sliceRowsM xs = 
-  flip map [0..3] $ \i -> VUM.slice (4*i) (4) xs
+sliceRowsM :: (Unbox a) => VUM.MVector s a -> [VUM.MVector s a]
+sliceRowsM xs =
+  flip map [0 .. 3] $ \i -> VUM.slice (4 * i) (4) xs
 
 -- | transposes a mutable vector
 transpose :: VUM.MVector s Cell -> ST s ()
 transpose xs =
   sequence_ $ do
-    x <- [0..2]
-    y <- [x+1..3]
+    x <- [0 .. 2]
+    y <- [x + 1 .. 3]
     pure $ VUM.swap xs (coordToIndex x y) (coordToIndex y x)
   where
     coordToIndex x y = 4 * x + y
 
 -- | find the index of the next cell that satisfies predicate `p`, starting at index `i`
-findIndex :: Unbox a => VUM.MVector s a -> Int -> (a -> Bool) -> ST s (M.Maybe Int)
+findIndex :: (Unbox a) => VUM.MVector s a -> Int -> (a -> Bool) -> ST s (M.Maybe Int)
 findIndex xs i p =
   if i >= VUM.length xs
     then pure M.Nothing
@@ -109,7 +110,7 @@ findIndex xs i p =
       x <- VUM.read xs i
       if p x
         then pure $ M.Just i
-        else findIndex xs (i+1) p
+        else findIndex xs (i + 1) p
 
 -------------------------------------------------------
 -------------------------------------------------------
@@ -126,18 +127,18 @@ freeIndices (Board rows) =
 -------------------------------------------------------
 -------------------------------------------------------
 
-randomComputerMove :: MonadRandom m => Board -> m (Maybe Computer)
+randomComputerMove :: (MonadRandom m) => Board -> m (Maybe Computer)
 randomComputerMove board = do
   cell <- randomCell
   coord <- randomCoord board
   pure $ Computer <$> coord <*> Just cell
 
-randomCell :: MonadRandom m => m Cell
+randomCell :: (MonadRandom m) => m Cell
 randomCell =
-  oneFrom $
-    nReplicate 1 2 <> nReplicate 9 1
+  oneFrom
+    $ nReplicate 1 2
+    <> nReplicate 9 1
 
-randomCoord :: MonadRandom m => Board -> m (Maybe Coord)
+randomCoord :: (MonadRandom m) => Board -> m (Maybe Coord)
 randomCoord board =
   traverse oneFrom $ fromNullable $ freeIndices board
-

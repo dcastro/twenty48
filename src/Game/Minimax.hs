@@ -2,34 +2,34 @@
 
 module Game.Minimax where
 
-import           Data.Alternated      (Alternated (..))
-import qualified Data.Alternated      as A
-import           Data.Pair
-import qualified Data.Strict.Maybe    as M
-import           Game.Optimized.Board
-import           Game.Optimized.Eval
-import           Game.StateTree
-import           Game.Types
-import           Import
+import Data.Alternated (Alternated (..))
+import Data.Alternated qualified as A
+import Data.Pair
+import Data.Strict.Maybe qualified as M
+import Game.Optimized.Board
+import Game.Optimized.Eval
+import Game.StateTree
+import Game.Types
+import Import
 
 minimax :: Board -> Int -> M.Maybe Player
-minimax b h = 
+minimax b h =
   A.head . pathTurns . maximum . maximize . map boardEval . pruneHeight h $ unfoldPlayerTree b
 
 maximize :: StateTree Player Computer Score -> NonNull [Path Player Computer]
-maximize StateTree{..} = 
+maximize StateTree {..} =
   fromMaybe (singleton (Path ANil root)) $ fromNullable maxs
-    where
-      maxs = map minimum $ map minimize' forest
+  where
+    maxs = map minimum $ map minimize' forest
 
-      minimize' :: Pair Player (StateTree Computer Player Score) -> NonNull [Path Player Computer]
-      minimize' (player :!: sub) = mapNonNull (addTurn player) $  minimize sub
+    minimize' :: Pair Player (StateTree Computer Player Score) -> NonNull [Path Player Computer]
+    minimize' (player :!: sub) = mapNonNull (addTurn player) $ minimize sub
 
 minimize :: StateTree Computer Player Score -> NonNull [Path Computer Player]
-minimize StateTree{..} =
+minimize StateTree {..} =
   fromMaybe (singleton (Path ANil root)) $ fromNullable mins
-    where
-      mins = map maximum $ map maximize' forest
+  where
+    mins = map maximum $ map maximize' forest
 
-      maximize' :: Pair Computer (StateTree Player Computer Score) -> NonNull [Path Computer Player]
-      maximize' (computer :!: sub) = mapNonNull (addTurn computer) $ maximize sub
+    maximize' :: Pair Computer (StateTree Player Computer Score) -> NonNull [Path Computer Player]
+    maximize' (computer :!: sub) = mapNonNull (addTurn computer) $ maximize sub

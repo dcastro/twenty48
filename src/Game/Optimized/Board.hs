@@ -20,18 +20,18 @@ instance FromJSON Board where
 instance Show Board where
   show (Board rows) =
     intercalate "\n" . map (printRow . VU.toList) $ sliceRows rows
-   where
-    printRow :: [Cell] -> String
-    printRow row =
-      "[ " <> (intercalate ", " . map (show . unCell) $ row) <> " ]"
+    where
+      printRow :: [Cell] -> String
+      printRow row =
+        "[ " <> (intercalate ", " . map (show . unCell) $ row) <> " ]"
 
 boardFromLists :: [[Cell]] -> Board
 boardFromLists xs =
   if (L.length list /= 16)
     then error "you dun goofed"
     else Board $ VU.fromList list
- where
-  list = join xs
+  where
+    list = join xs
 
 boardToLists :: Board -> [[Cell]]
 boardToLists (Board b) = map (VU.toList) $ sliceRows b
@@ -42,36 +42,36 @@ sliceRows xs =
 
 sampleBoard :: Board
 sampleBoard =
-  boardFromLists $
-    [ [0, 1, 2, 3]
-    , [0, 1, 1, 3]
-    , [1, 1, 1, 1]
-    , [2, 2, 1, 1]
-    ]
+  boardFromLists
+    $ [ [0, 1, 2, 3],
+        [0, 1, 1, 3],
+        [1, 1, 1, 1],
+        [2, 2, 1, 1]
+      ]
 
 sampleBoard2 :: Board
 sampleBoard2 =
-  boardFromLists $
-    [ [0, 0, 1, 3]
-    , [0, 0, 0, 3]
-    , [1, 0, 2, 1]
-    , [0, 0, 0, 0]
-    ]
+  boardFromLists
+    $ [ [0, 0, 1, 3],
+        [0, 0, 0, 3],
+        [1, 0, 2, 1],
+        [0, 0, 0, 0]
+      ]
 
 sampleBoard3 :: Board
 sampleBoard3 =
-  boardFromLists $
-    [ [1, 0, 0, 0]
-    , [1, 0, 0, 0]
-    , [2, 3, 0, 0]
-    , [3, 3, 1, 0]
-    ]
+  boardFromLists
+    $ [ [1, 0, 0, 0],
+        [1, 0, 0, 0],
+        [2, 3, 0, 0],
+        [3, 3, 1, 0]
+      ]
 
 sampleBoard4 :: Board
 sampleBoard4 =
-  boardFromLists $
-    [ [3, 0, 0, 0]
-    , [6, 3, 0, 0]
-    , [5, 4, 2, 2]
-    , [5, 0, 0, 0]
-    ]
+  boardFromLists
+    $ [ [3, 0, 0, 0],
+        [6, 3, 0, 0],
+        [5, 4, 2, 2],
+        [5, 0, 0, 0]
+      ]

@@ -30,8 +30,8 @@ instance Bifunctor Alternated where
 
 instance (Show a, Show b) => Show (Alternated a b) where
   show xs = "[ " <> intercalate ", " strs <> " ]"
-   where
-    strs = fromAlternated show show xs
+    where
+      strs = fromAlternated show show xs
 
 head :: Alternated a b -> M.Maybe a
 head ANil = M.Nothing

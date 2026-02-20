@@ -10,11 +10,11 @@
 module Game.Types where
 
 import Data.Aeson.TH (defaultOptions, deriveJSON)
-import Data.Alternated (
-  Alternated (..),
-  acons,
-  atraverse_,
- )
+import Data.Alternated
+  ( Alternated (..),
+    acons,
+    atraverse_,
+  )
 import Data.Pair
 import Data.Vector.Unboxed.Deriving (derivingUnbox)
 import Import
@@ -75,14 +75,13 @@ data Computer = Computer Coord Cell
 ------------------------------------------------
 ------------------------------------------------
 
-{- | represents a solution: a list of turns to take, and the score
-| attained at the end of those turns.
-| `a` and `b` represent the two players:
-| `a` goes first, `b` goes after.
--}
+-- | represents a solution: a list of turns to take, and the score
+-- | attained at the end of those turns.
+-- | `a` and `b` represent the two players:
+-- | `a` goes first, `b` goes after.
 data Path a b = Path
-  { pathTurns :: Alternated a b
-  , pathScore :: Score
+  { pathTurns :: Alternated a b,
+    pathScore :: Score
   }
 
 instance Eq (Path a b) where
@@ -94,9 +93,9 @@ instance Ord (Path a b) where
 type Score = Float
 
 addTurn :: a -> Path b a -> Path a b
-addTurn turn Path{..} = Path (acons turn pathTurns) pathScore
+addTurn turn Path {..} = Path (acons turn pathTurns) pathScore
 
 printPath :: (Show a, Show b) => Path a b -> IO ()
-printPath Path{..} = do
+printPath Path {..} = do
   putStrLn $ "Score: " <> tshow pathScore
   atraverse_ (putStrLn . tshow) (putStrLn . tshow) pathTurns

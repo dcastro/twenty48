@@ -1,8 +1,9 @@
 {-# LANGUAGE CPP #-}
 
-module Import.NoFoundation (
-    module Import,
-) where
+module Import.NoFoundation
+  ( module Import,
+  )
+where
 
 import ClassyPrelude.Yesod as Import
 import Model as Import

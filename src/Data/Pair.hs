@@ -1,9 +1,9 @@
 module Data.Pair where
 
-import           Data.Aeson
-import           Data.Foldable
-import           Data.Ix
-import           Import
+import Data.Aeson
+import Data.Foldable
+import Data.Ix
+import Import
 
 -- | Same as `Data.Strict.Tuple.Pair` from the `strict` package,
 -- | but with Semigroup, Monoid and Functor instances.
