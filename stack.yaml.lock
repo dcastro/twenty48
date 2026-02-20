@@ -11,6 +11,13 @@ packages:
       size: 278
   original:
     hackage: shakespeare-sass-0.1.4.1
+- completed:
+    hackage: process-1.6.26.1@sha256:6def2e07c317f52f4d30c43e92f97b7bc5f7c27cb1270d386b15dce429e1180f,2947
+    pantry-tree:
+      sha256: 4cdf369a03c496a02a67d6d963884ae7b57eead30407881316983394b73cdc2e
+      size: 1869
+  original:
+    hackage: process-1.6.26.1
 snapshots:
 - completed:
     sha256: d5dc0b770386350f61aa8310d3d347e6ea16466a0b0adb533b64689840eebfd6

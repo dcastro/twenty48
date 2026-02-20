@@ -35,3 +35,6 @@ docker-build:
 
 docker-publish:
 	docker push dfacastro/2048-twenty48
+
+nix-build:
+	nix build .#twenty48
