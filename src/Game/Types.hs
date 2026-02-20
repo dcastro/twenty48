@@ -1,20 +1,23 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 
 module Game.Types where
 
-import           Data.Aeson.TH                (defaultOptions, deriveJSON)
-import           Data.Alternated              (Alternated (..), acons,
-                                               atraverse_)
-import           Data.Pair
-import           Data.Vector.Unboxed.Deriving (derivingUnbox)
-import           Import
+import Data.Aeson.TH (defaultOptions, deriveJSON)
+import Data.Alternated (
+  Alternated (..),
+  acons,
+  atraverse_,
+ )
+import Data.Pair
+import Data.Vector.Unboxed.Deriving (derivingUnbox)
+import Import
 
 -- Coordinates (x, y)
 -- where x is the horizontal axis (left to right)
@@ -22,13 +25,14 @@ import           Import
 type Coord = Pair Int Int
 
 -- unsigned 8-bit integer
-newtype Cell = Cell { unCell :: Word8 }
+newtype Cell = Cell {unCell :: Word8}
   deriving (Num, Integral, Real, Enum, Ord, Show, Eq, NFData)
 
-derivingUnbox "Cell"
-   [t| Cell -> Word8 |]
-   [| \(Cell x) -> x |]
-   [| \x -> Cell x |]
+derivingUnbox
+  "Cell"
+  [t|Cell -> Word8|]
+  [|\(Cell x) -> x|]
+  [|\x -> Cell x|]
 
 -- take the value of a cell and convert it to its base 2, or 0 if the cell is empty
 -- e.g. logBase 2 16 = 4
@@ -62,7 +66,7 @@ directions = [minBound .. maxBound]
 ------------------------------------------------
 ------------------------------------------------
 
-newtype Player = Player { unPlayer :: Direction }
+newtype Player = Player {unPlayer :: Direction}
   deriving (Show, Eq)
 
 data Computer = Computer Coord Cell
@@ -71,10 +75,11 @@ data Computer = Computer Coord Cell
 ------------------------------------------------
 ------------------------------------------------
 
--- | represents a solution: a list of turns to take, and the score 
--- | attained at the end of those turns.
--- | `a` and `b` represent the two players:
--- | `a` goes first, `b` goes after.
+{- | represents a solution: a list of turns to take, and the score
+| attained at the end of those turns.
+| `a` and `b` represent the two players:
+| `a` goes first, `b` goes after.
+-}
 data Path a b = Path
   { pathTurns :: Alternated a b
   , pathScore :: Score
@@ -85,7 +90,7 @@ instance Eq (Path a b) where
 
 instance Ord (Path a b) where
   Path _ score1 `compare` Path _ score2 = score1 `compare` score2
-  
+
 type Score = Float
 
 addTurn :: a -> Path b a -> Path a b

@@ -1,30 +1,33 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Foundation where
 
-import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
-import Text.Jasmine         (minifym)
+import Import.NoFoundation
+import Text.Jasmine (minifym)
 
-import Yesod.Default.Util   (addStaticContentExternal)
-import Yesod.Core.Types     (Logger)
-import qualified Yesod.Core.Unsafe as Unsafe
+import Yesod.Core.Types (Logger)
+import Yesod.Core.Unsafe qualified as Unsafe
+import Yesod.Default.Util (addStaticContentExternal)
 
--- | The foundation datatype for your application. This can be a good place to
--- keep settings and values requiring initialization before your application
--- starts running, such as database connections. Every handler will have
--- access to the data present here.
+{- | The foundation datatype for your application. This can be a good place to
+keep settings and values requiring initialization before your application
+starts running, such as database connections. Every handler will have
+access to the data present here.
+-}
 data App = App
-    { appSettings    :: AppSettings
-    , appStatic      :: Static -- ^ Settings for static file serving.
-    , appConnPool    :: ConnectionPool -- ^ Database connection pool.
+    { appSettings :: AppSettings
+    , appStatic :: Static
+    -- ^ Settings for static file serving.
+    , appConnPool :: ConnectionPool
+    -- ^ Database connection pool.
     , appHttpManager :: Manager
-    , appLogger      :: Logger
+    , appLogger :: Logger
     }
 
 data MenuItem = MenuItem
@@ -55,7 +58,8 @@ mkYesodData "App" $(parseRoutesFile "config/routes")
 type Form x = Html -> MForm (HandlerT App IO) (FormResult x, Widget)
 
 -- | A convenient synonym for database access functions.
-type DB a = forall (m :: * -> *).
+type DB a =
+    forall (m :: * -> *).
     (MonadIO m, Functor m) => ReaderT SqlBackend m a
 
 -- Please see the documentation for the Yesod typeclass. There are a number
@@ -70,9 +74,11 @@ instance Yesod App where
 
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes
-    makeSessionBackend _ = Just <$> defaultClientSessionBackend
-        120    -- timeout in minutes
-        "config/client_session_key.aes"
+    makeSessionBackend _ =
+        Just
+            <$> defaultClientSessionBackend
+                120 -- timeout in minutes
+                "config/client_session_key.aes"
 
     -- Yesod Middleware allows you to run code before and after each handler function.
     -- The defaultYesodMiddleware adds the response header "Vary: Accept, Accept-Language" and performs authorization checks.
@@ -87,15 +93,14 @@ instance Yesod App where
     authRoute _ = Just Twenty48R
 
     -- Routes not requiring authentication.
-    isAuthorized FaviconR _      = pure Authorized
-    isAuthorized RobotsR _       = pure Authorized
-    isAuthorized (StaticR _) _   = pure Authorized
-
-    isAuthorized Twenty48R _     = pure Authorized
-    isAuthorized ScoreR _        = pure Authorized
-    isAuthorized ScoresR _       = pure Authorized
+    isAuthorized FaviconR _ = pure Authorized
+    isAuthorized RobotsR _ = pure Authorized
+    isAuthorized (StaticR _) _ = pure Authorized
+    isAuthorized Twenty48R _ = pure Authorized
+    isAuthorized ScoreR _ = pure Authorized
+    isAuthorized ScoresR _ = pure Authorized
     isAuthorized AutoPlayOnceR _ = pure Authorized
-    isAuthorized AutoPlayR _     = pure Authorized
+    isAuthorized AutoPlayR _ = pure Authorized
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
@@ -120,8 +125,10 @@ instance Yesod App where
     -- in development, and warnings and errors in production.
     shouldLog app _source level =
         appShouldLogAll (appSettings app)
-            || level == LevelWarn
-            || level == LevelError
+            || level
+            == LevelWarn
+            || level
+            == LevelError
 
     makeLogger = return . appLogger
 

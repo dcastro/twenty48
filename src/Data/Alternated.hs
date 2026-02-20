@@ -2,8 +2,8 @@
 
 module Data.Alternated where
 
-import qualified Data.Strict.Maybe as M
-import           Import
+import Data.Strict.Maybe qualified as M
+import Import
 
 data Alternated a b
   = Alternated a (Alternated b a)
@@ -14,10 +14,11 @@ acons :: a -> Alternated b a -> Alternated a b
 acons = Alternated
 
 instance Bifunctor Alternated where
-  bimap :: (a -> c)
-        -> (b -> d)
-        -> Alternated a b
-        -> Alternated c d
+  bimap ::
+    (a -> c) ->
+    (b -> d) ->
+    Alternated a b ->
+    Alternated c d
   bimap _ _ ANil = ANil
   bimap f g (Alternated x xs) = Alternated (f x) (bimap g f xs)
 
@@ -26,38 +27,38 @@ instance Bifunctor Alternated where
 
 instance (Show a, Show b) => Show (Alternated a b) where
   show xs = "[ " <> intercalate ", " strs <> " ]"
-    where 
-      strs = fromAlternated show show xs
+   where
+    strs = fromAlternated show show xs
 
 head :: Alternated a b -> M.Maybe a
 head ANil = M.Nothing
 head (Alternated x _) = M.Just x
 
-atraverse :: Applicative f
-          => (a -> f c)
-          -> (b -> f d)
-          -> Alternated a b
-          -> f (Alternated c d)
+atraverse ::
+  (Applicative f) =>
+  (a -> f c) ->
+  (b -> f d) ->
+  Alternated a b ->
+  f (Alternated c d)
 atraverse _ _ ANil = pure ANil
 atraverse f g (Alternated h t) = Alternated <$> f h <*> atraverse g f t
 
-atraverse_ :: Applicative f => (a -> f c) -> (b -> f d) -> Alternated a b -> f ()
+atraverse_ :: (Applicative f) => (a -> f c) -> (b -> f d) -> Alternated a b -> f ()
 atraverse_ f g = void . atraverse f g
 
-asequence :: Applicative f => Alternated (f a) (f a) -> f (Alternated a a)
+asequence :: (Applicative f) => Alternated (f a) (f a) -> f (Alternated a a)
 asequence = atraverse id id
 
-asequence_ :: Applicative f => Alternated (f a) (f a) -> f ()
+asequence_ :: (Applicative f) => Alternated (f a) (f a) -> f ()
 asequence_ = void . asequence
 
-
-fromAlternated :: (a -> c)
-               -> (b -> c)
-               -> Alternated a b
-               -> [c]
+fromAlternated ::
+  (a -> c) ->
+  (b -> c) ->
+  Alternated a b ->
+  [c]
 fromAlternated _ _ ANil = []
 fromAlternated f g (Alternated x xs) = f x : fromAlternated g f xs
 
 fromAlternated' :: (a -> b) -> Alternated a a -> [b]
 fromAlternated' f = fromAlternated f f
-

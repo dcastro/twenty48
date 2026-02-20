@@ -1,12 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes       #-}
-{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Handler.Twenty48 where
 
-import           Import
-import           Text.Hamlet           (hamletFile)
-import           Text.Julius           (juliusFile)
+import Import
+import Text.Hamlet (hamletFile)
+import Text.Julius (juliusFile)
+
 import           Text.Shakespeare.Sass
 
 getTwenty48R :: Handler Html

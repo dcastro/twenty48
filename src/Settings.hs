@@ -94,8 +94,8 @@ instance FromJSON AppSettings where
         appAnalytics              <- o .:? "analytics"
 
         appAuthDummyLogin         <- o .:? "auth-dummy-login"      .!= dev
-        
-        aiDepth                   <- o .: "ai-depth" 
+
+        aiDepth                   <- o .: "ai-depth"
 
         return AppSettings {..}
 

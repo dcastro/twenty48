@@ -1,22 +1,22 @@
-{-# LANGUAGE DeriveGeneric     #-}
-{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell   #-}
-{-# LANGUAGE TypeApplications  #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Handler.AutoPlay where
 
-import           Control.Monad.Extra  (whenJust)
-import           Data.Aeson           as J
-import           Data.Aeson.TH        (defaultOptions, deriveToJSON)
-import           Game.AlphaBeta
-import           Game.Optimized.Board
-import           Game.Optimized.Moves
-import           Game.Types
-import           Import
-import           Utils.Control        (whenJust')
-import           Utils.Misc           (toLazyMaybe)
-import           Yesod.WebSockets     hiding (race_)
+import Control.Monad.Extra (whenJust)
+import Data.Aeson as J
+import Data.Aeson.TH (defaultOptions, deriveToJSON)
+import Game.AlphaBeta
+import Game.Optimized.Board
+import Game.Optimized.Moves
+import Game.Types
+import Import
+import Utils.Control (whenJust')
+import Utils.Misc (toLazyMaybe)
+import Yesod.WebSockets hiding (race_)
 
 postAutoPlayOnceR :: Handler Value
 postAutoPlayOnceR = do
@@ -55,7 +55,7 @@ receiveJson = do
     Nothing -> do
       $logError $ "Unexpected message received: " <> decodeUtf8 d
       receiveJson
-      
+
 sendJson :: (MonadIO m, ToJSON msg) => msg -> WebSocketsT m ()
 sendJson = sendTextData . J.encode
 
@@ -64,15 +64,15 @@ data Stop = Stop
 
 instance FromJSON Stop where
   parseJSON = J.withText "Stop" $ \case
-    "stop"  -> pure Stop
-    _       -> empty
+    "stop" -> pure Stop
+    _ -> empty
 
 instance FromJSON Start where
   parseJSON = map Start . parseJSON
 
 data OutMsg
-  = PlayPlayerMsg { _direction :: Maybe Direction }
-  | PlayComputerMsg { _coord :: Coord, _cell :: Cell }
+  = PlayPlayerMsg {_direction :: Maybe Direction}
+  | PlayComputerMsg {_coord :: Coord, _cell :: Cell}
   deriving (Generic)
 
 $(deriveToJSON defaultOptions ''OutMsg)
