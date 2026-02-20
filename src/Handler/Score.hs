@@ -19,13 +19,11 @@ data UserWithScore = UserWithScore
     name :: Text,
     score :: Int
   }
-  deriving (Generic)
 
 data Scores = Scores
   { myScores :: Maybe [GameScore],
     allScores :: [GameScore]
   }
-  deriving (Generic)
 
 $(deriveFromJSON defaultOptions ''UserWithScore)
 $(deriveToJSON defaultOptions ''Scores)

@@ -8,7 +8,7 @@ import Import
 -- | Same as `Data.Strict.Tuple.Pair` from the `strict` package,
 -- | but with Semigroup, Monoid and Functor instances.
 data Pair a b = !a :!: !b
-  deriving (Eq, Ord, Show, Read, Bounded, Ix)
+  deriving stock (Eq, Ord, Show, Read, Bounded, Ix)
 
 infixl 2 :!:
 

@@ -57,7 +57,7 @@ isAvailable = not . isOccupied
 ------------------------------------------------
 
 data Direction = L | R | U | D
-  deriving (Enum, Bounded, Show, Generic, Eq)
+  deriving stock (Enum, Bounded, Show, Generic, Eq)
 
 $(deriveJSON defaultOptions ''Direction)
 
@@ -68,10 +68,10 @@ directions = [minBound .. maxBound]
 ------------------------------------------------
 
 newtype Player = Player {unPlayer :: Direction}
-  deriving (Show, Eq)
+  deriving newtype (Show, Eq)
 
 data Computer = Computer Coord Cell
-  deriving (Show, Eq)
+  deriving stock (Show, Eq)
 
 ------------------------------------------------
 ------------------------------------------------

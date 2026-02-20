@@ -19,11 +19,7 @@ data StateTree current next a
   { root :: a,
     forest :: [Pair current (StateTree next current a)]
   }
-  deriving (Functor, Foldable, Show)
-
-instance MonoFoldable (StateTree c n a)
-
-type instance Element (StateTree c n a) = a
+  deriving stock (Functor, Foldable, Show)
 
 ppStateTree :: (Show c, Show n, Show a) => StateTree c n a -> IO ()
 ppStateTree tree = putStrLn $ pack $ drawTree $ ppStateTree' Nothing tree

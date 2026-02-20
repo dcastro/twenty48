@@ -8,7 +8,7 @@ import Import
 data Alternated a b
   = Alternated a (Alternated b a)
   | ANil
-  deriving (Eq)
+  deriving stock (Eq)
 
 acons :: a -> Alternated b a -> Alternated a b
 acons = Alternated

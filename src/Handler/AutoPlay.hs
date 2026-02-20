@@ -33,7 +33,7 @@ instance FromJSON Start where
 data OutMsg
   = PlayPlayerMsg {_direction :: Maybe Direction}
   | PlayComputerMsg {_coord :: Coord, _cell :: Cell}
-  deriving (Generic)
+  deriving stock (Generic)
 
 $(deriveToJSON defaultOptions ''OutMsg)
 

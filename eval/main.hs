@@ -44,7 +44,7 @@ winRate boards =
   where
     won b = any (>= twenty48) $ join $ boardToLists b
     wins = NE.filter won boards
-    twenty48 = truncate $ logBase 2 2048
+    twenty48 = truncate @Double $ logBase 2 2048
 
 randomInitialBoard :: (MonadIO m, MonadRandom m) => m Board
 randomInitialBoard =
