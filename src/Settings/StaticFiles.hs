@@ -1,7 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-
 module Settings.StaticFiles where
 
 import Settings (appStaticDir, compileTimeAppSettings)

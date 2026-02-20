@@ -1,7 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-
 module TestImport
   ( module X,
   )

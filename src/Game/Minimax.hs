@@ -1,5 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
 module Game.Minimax where
 
 import Data.Alternated (Alternated (..))

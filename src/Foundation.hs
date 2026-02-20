@@ -1,4 +1,3 @@
-{-# LANGUAGE FieldSelectors #-}
 {-# OPTIONS_GHC -Wno-missing-deriving-strategies #-}
 
 module Foundation where

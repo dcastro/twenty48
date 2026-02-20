@@ -1,5 +1,3 @@
-{-# LANGUAGE InstanceSigs #-}
-
 module Data.Alternated where
 
 import Data.Strict.Maybe qualified as M

@@ -1,5 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
 module Game.AlphaBeta where
 
 import Data.Alternated (Alternated (..))

@@ -1,6 +1,3 @@
-{-# LANGUAGE NegativeLiterals #-}
-{-# LANGUAGE RecordWildCards #-}
-
 module Game.EvalSpec where
 
 import Control.Newtype
