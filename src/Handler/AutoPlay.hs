@@ -8,7 +8,7 @@ module Handler.AutoPlay where
 
 import Control.Monad.Extra (whenJust)
 import Data.Aeson as J
-import Data.Aeson.TH (defaultOptions, deriveToJSON)
+import Data.Aeson.TH (deriveToJSON)
 import Game.AlphaBeta
 import Game.Optimized.Board
 import Game.Optimized.Moves
@@ -39,7 +39,7 @@ $(deriveToJSON defaultOptions ''OutMsg)
 
 postAutoPlayOnceR :: Handler Value
 postAutoPlayOnceR = do
-  board <- requireJsonBody
+  board <- requireInsecureJsonBody
   depth <- aiDepth . appSettings <$> getYesod
   returnJson . PlayPlayerMsg . fmap unPlayer . toLazyMaybe $ alphaBeta board depth
 

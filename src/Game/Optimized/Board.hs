@@ -10,7 +10,7 @@ import Game.Types
 import Import
 
 newtype Board = Board {unBoard :: VU.Vector Cell}
-  deriving (Eq, NFData, Generic)
+  deriving newtype (Eq, NFData)
 
 instance Newtype Board (VU.Vector Cell)
 

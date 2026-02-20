@@ -3,6 +3,7 @@
 module Foundation where
 
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
+import GHC.Base (Type)
 import Import.NoFoundation
 import Text.Jasmine (minifym)
 import Yesod.Core.Types (Logger)
@@ -48,11 +49,11 @@ data MenuTypes
 mkYesodData "App" $(parseRoutesFile "config/routes")
 
 -- | A convenient synonym for creating forms.
-type Form x = Html -> MForm (HandlerT App IO) (FormResult x, Widget)
+type Form x = Html -> MForm (HandlerFor App) (FormResult x, Widget)
 
 -- | A convenient synonym for database access functions.
 type DB a =
-  forall (m :: * -> *).
+  forall (m :: Type -> Type).
   (MonadIO m, Functor m) =>
   ReaderT SqlBackend m a
 

@@ -12,7 +12,7 @@ import Import
 type Row = [Cell]
 
 newtype Board = Board {unBoard :: [Row]}
-  deriving (Eq, NFData, Generic)
+  deriving newtype (Eq, NFData, Generic)
 
 instance Newtype Board [Row]
 
