@@ -12,15 +12,78 @@ packages:
   original:
     hackage: shakespeare-sass-0.1.4.1
 - completed:
+    hackage: Cabal-3.14.2.0@sha256:5608a3091be7c029a3e8b2585ed51f41edd58effd1b51f3ad32504847e6f9753,14148
+    pantry-tree:
+      sha256: 158fe3405f202371c27a20dab78c127bdea03c4e8788b1f6c1a0fb954f087842
+      size: 12219
+  original:
+    hackage: Cabal-3.14.2.0
+- completed:
+    hackage: Cabal-syntax-3.14.2.0@sha256:16766e2cd18f98bf259d2caf2b507764ebdfff0b16c2fb5b293fc57c1137af6f,7380
+    pantry-tree:
+      sha256: 737f9522e754f8c1610a115a01bb264924a7cde1c931e285f3758ba46f145443
+      size: 10977
+  original:
+    hackage: Cabal-syntax-3.14.2.0
+- completed:
+    hackage: hsass-0.8.0@sha256:66047578fc359b7edfba6a6a35a47fbd5db0314b7000959b9e8662adeb58b587,2920
+    pantry-tree:
+      sha256: 0af65432e5b4f8a3dff9cd5ebd4bbce7b275edfe5d7d659f52cfe1e09f58136f
+      size: 1448
+  original:
+    hackage: hsass-0.8.0
+- completed:
+    hackage: hlibsass-0.1.10.3@sha256:b955ce8306103004cebab8bb48e7100940422ef9ba02e40d97caec83c83a79d2,2572
+    pantry-tree:
+      sha256: b2c6c1d06fd4ebf99fe5f2a3a118329413be870409e642183557ea074f151ee5
+      size: 11229
+  original:
+    hackage: hlibsass-0.1.10.3
+- completed:
+    hackage: classy-prelude-yesod-1.5.0@sha256:8f7e183bdfd6d2ea9674284c4f285294ab086aff60d9be4e5d7d2f3c1a2b05b7,1330
+    pantry-tree:
+      sha256: ae84d4cc0e1daf985db6cdcf2ac92319531b8e60f547183cc46480d00aafbe20
+      size: 330
+  original:
+    hackage: classy-prelude-yesod-1.5.0
+- completed:
+    hackage: yesod-auth-1.6.12.0@sha256:1c81b6f413176308c0a91aea056ce6ceb0bcbfad0d3b94e1161d9bfe2f3f102b,3105
+    pantry-tree:
+      sha256: af8360cd391f0862f4a0c0c0e3def872121b6cb4d620f00f6de27e999f97a7b3
+      size: 1013
+  original:
+    hackage: yesod-auth-1.6.12.0
+- completed:
+    hackage: yesod-static-1.6.1.2@sha256:b3e72bc0c1fdebb83c0b2edb3ff286c21d1d3e65bbc0a243c9a2c926373f26b4,4418
+    pantry-tree:
+      sha256: 2312f170adf3d50655812d138330887765de05f5468aa3a3d381bb80c39ac45a
+      size: 1700
+  original:
+    hackage: yesod-static-1.6.1.2
+- completed:
+    hackage: yesod-test-1.7.0.1@sha256:8a3d3f68efe57390c68f8e4b5d60ff87639ebca3fee576dafbe8de160e2f5a4e,2672
+    pantry-tree:
+      sha256: af14fa6f03a4d28fe68e45ddef5cb267a314b74b91287ebc57dc7cf296fd4499
+      size: 630
+  original:
+    hackage: yesod-test-1.7.0.1
+- completed:
     hackage: process-1.6.26.1@sha256:6def2e07c317f52f4d30c43e92f97b7bc5f7c27cb1270d386b15dce429e1180f,2947
     pantry-tree:
       sha256: 4cdf369a03c496a02a67d6d963884ae7b57eead30407881316983394b73cdc2e
       size: 1869
   original:
     hackage: process-1.6.26.1
+- completed:
+    hackage: file-io-0.1.5@sha256:1d68a81fa684d006b1ec73836cebe3de9a54688836915fe3e56a20389846bb4e,3309
+    pantry-tree:
+      sha256: 29b9dc0a18772cb73091b711a5dbda029fe89c1ffb06034b4f54258c4eabfe1b
+      size: 905
+  original:
+    hackage: file-io-0.1.5
 snapshots:
 - completed:
-    sha256: d5dc0b770386350f61aa8310d3d347e6ea16466a0b0adb533b64689840eebfd6
-    size: 726797
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/24/31.yaml
-  original: lts-24.31
+    sha256: 303c0300d085dad9b9a5d8efc72ddde5425e33c5536c4b0c1632cc46d11cb52c
+    size: 687948
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2025/8/27.yaml
+  original: nightly-2025-08-27

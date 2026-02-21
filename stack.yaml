@@ -1,10 +1,21 @@
-resolver: lts-24.31
+# resolver: lts-24.31
+resolver: nightly-2025-08-27
 
 packages:
   - .
 
 extra-deps:
   - shakespeare-sass-0.1.4.1
+
+  - Cabal-3.14.2.0
+  - Cabal-syntax-3.14.2.0
+  - hsass-0.8.0
+  - hlibsass-0.1.10.3
+
+  - classy-prelude-yesod-1.5.0
+  - yesod-auth-1.6.12.0
+  - yesod-static-1.6.1.2
+  - yesod-test-1.7.0.1
 
   # Fix nix build
   # > System/Process/Environment/OsString.hs:15:1: error: [GHC-61948]
@@ -14,8 +25,11 @@ extra-deps:
   # >       System.OsString.Internal (needs flag -package-id os-string-2.0.7)
   # >       System.OsString.Internal.Exception (needs flag -package-id os-string-2.0.7)
   - process-1.6.26.1
+  - file-io-0.1.5
 flags:
   process:
+    os-string: true
+  file-io:
     os-string: true
 
 allow-newer: true
