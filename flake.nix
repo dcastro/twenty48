@@ -366,6 +366,22 @@
                     '';
                   };
                 }
+                {
+                  packages.twenty48.components.exes.twenty48 = {
+                    postInstall = ''
+                      mkdir -p "$out/share/twenty48"
+                      cp -R "${./static}" "$out/share/twenty48/static"
+                      mv "$out/bin/twenty48" "$out/bin/twenty48.real"
+                      cat > "$out/bin/twenty48" <<'EOF'
+                      #!${pkgs.runtimeShell}
+                      self_dir="$(cd "$(dirname "$0")" && pwd)"
+                      export STATIC_DIR="$self_dir/../share/twenty48/static"
+                      exec "$self_dir/twenty48.real" "$@"
+                      EOF
+                      chmod +x "$out/bin/twenty48"
+                    '';
+                  };
+                }
               ];
 
               # This is used by `nix develop .` to open a shell for use with

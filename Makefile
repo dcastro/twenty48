@@ -47,6 +47,6 @@ rpi-deploy:
 	echo $$BUNDLE_PATH ;\
 	nix copy $$BUNDLE_PATH --to ssh://$(remote) ;\
 	ssh $(remote) -- "\
-		nix profile remove twenty48-rpi ;\
+		nix profile remove twenty48-exe-twenty48-aarch64-unknown-linux-gnu ;\
 		nix profile add $$BUNDLE_PATH ;\
 		"
