@@ -55,3 +55,9 @@ rpi-deploy:
         nix profile remove twenty48-exe-twenty48-aarch64-unknown-linux-gnu; \
         nix profile add $BUNDLE_PATH; \
         "
+
+# Setup the Raspberry Pi
+[confirm]
+rpi-setup client_session_key_file:
+    ssh {{ remote }} -- mkdir -p /home/dc/.local/share/twenty48
+    scp {{ client_session_key_file }} dc@{{ remote }}:/home/dc/.local/share/twenty48/client_session_key.aes

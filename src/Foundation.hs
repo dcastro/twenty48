@@ -69,11 +69,11 @@ instance Yesod App where
 
   -- Store session data on the client in encrypted cookies,
   -- default session idle timeout is 120 minutes
-  makeSessionBackend _ =
-    Just
-      <$> defaultClientSessionBackend
+  makeSessionBackend app =
+    Just <$> do
+      defaultClientSessionBackend
         120 -- timeout in minutes
-        "config/client_session_key.aes"
+        (app & appSettings & appSessionKeyPath)
 
   -- Yesod Middleware allows you to run code before and after each handler function.
   -- The defaultYesodMiddleware adds the response header "Vary: Accept, Accept-Language" and performs authorization checks.
