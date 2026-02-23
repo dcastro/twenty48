@@ -38,3 +38,15 @@ docker-publish:
 
 nix-build:
 	nix build .#twenty48
+
+# Address of the Raspberry Pi machine
+remote := "192.168.1.244"
+
+rpi-deploy:
+	BUNDLE_PATH=$$(nix build .#twenty48-rpi --print-out-paths --no-link) ; \
+	echo $$BUNDLE_PATH ;\
+	nix copy $$BUNDLE_PATH --to ssh://$(remote) ;\
+	ssh $(remote) -- "\
+		nix profile remove twenty48-rpi ;\
+		nix profile add $$BUNDLE_PATH ;\
+		"
