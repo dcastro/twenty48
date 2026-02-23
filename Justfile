@@ -42,7 +42,7 @@ nix-build:
     nix build .#twenty48
 
 # Deploy to the Raspberry Pi
-rpi-deploy:
+rpi-deploy client_session_key_file:
     #!/usr/bin/env bash
     set -euxo pipefail
     # Use a shebang to be able to set variables
@@ -54,10 +54,7 @@ rpi-deploy:
     ssh {{ remote }} -- "\
         nix profile remove twenty48-exe-twenty48-aarch64-unknown-linux-gnu; \
         nix profile add $BUNDLE_PATH; \
+        mkdir -p \"/home/dc/.local/share/twenty48/\"; \
         "
-
-# Setup the Raspberry Pi
-[confirm]
-rpi-setup client_session_key_file:
-    ssh {{ remote }} -- mkdir -p /home/dc/.local/share/twenty48
     scp {{ client_session_key_file }} dc@{{ remote }}:/home/dc/.local/share/twenty48/client_session_key.aes
+    scp -r ./static dc@{{ remote }}:/home/dc/.local/share/twenty48/
