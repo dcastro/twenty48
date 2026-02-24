@@ -58,3 +58,14 @@ rpi-deploy client_session_key_file:
         "
     scp {{ client_session_key_file }} dc@{{ remote }}:/home/dc/.local/share/twenty48/client_session_key.aes
     scp -r ./static dc@{{ remote }}:/home/dc/.local/share/twenty48/
+    ssh {{ remote }} -- "sudo systemctl restart twenty48"
+
+rpi-setup-service:
+    # `scp` can't use sudo, so we have to copy the file to a location where we have permission,
+    # and then use `ssh` to move it to the correct directory.`
+    scp ./twenty48.service     dc@{{ remote }}:/home/dc/.local/share/twenty48/twenty48.service
+    ssh {{ remote }} -- " \
+      sudo mv /home/dc/.local/share/twenty48/twenty48.service   /etc/systemd/system/twenty48.service;  \
+      sudo systemctl daemon-reload ; \
+      sudo systemctl enable twenty48 ; \
+      sudo systemctl restart twenty48 ; "
