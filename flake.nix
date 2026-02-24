@@ -25,6 +25,45 @@
         overlays = [
           haskellNix.overlay
           (final: prev: {
+
+            /* Dear programmer:
+                When Codex wrote this code, only God and Codex knew how it worked.
+                Now, only God knows it!
+
+                Clang refused to cross-compile PostgreSQL for ARM 64.
+                I sent Codex 5.2 to fix this and after _quite_ a few hours, it finally worked.
+
+                I do not know how it works, I do not want to know how it works.
+                I pray to all deities and then some I will never have to touch this again.
+
+                I pasted below the error message that sent me down this path of madness:
+
+                ```
+                > checking for aarch64-unknown-linux-gnu-gcc... aarch64-unknown-linux-gnu-clang
+                > checking whether the C compiler works... no
+                > configure: error: in `/build/source':
+                > configure: error: C compiler cannot create executables
+                > See `config.log' for more details
+                ```
+
+                ```
+                configure:4021: aarch64-unknown-linux-gnu-clang -V >&5
+                clang: error: unsupported option '-V -U_FORTIFY_SOURCE'
+                clang: error: no input files
+                configure:4032: $? = 1
+                configure:4021: aarch64-unknown-linux-gnu-clang -qversion >&5
+                clang: error: unknown argument '-qversion'; did you mean '--version'?
+                clang: error: no input files
+                configure:4032: $? = 1
+                configure:4052: checking whether the C compiler works
+                configure:4074: aarch64-unknown-linux-gnu-clang -fdata-sections -ffunction-sections -flto   conftest.c  >&5
+                clang: error: unable to execute command: posix_spawn failed: Exec format error
+                clang: error: linker command failed with exit code 1 (use -v to see invocation)
+                configure:4078: $? = 1
+                configure:4116: result: no
+                ```
+            */
+
             # For cross builds, PostgreSQL failed with clang wrapper exec-format
             # errors and lib/dev output reference cycles. We force GCC + native
             # binutils, drop LTO, and collapse PostgreSQL to a single output
@@ -256,6 +295,8 @@
 
               # Use stack.yaml instead of cabal.project
               projectFileName = "stack.yaml";
+
+              # Had to upgrade to GHC 9.12.2 to get `yesod-newsfeed` to compile, I was having Template Haskell related issues.
               compiler-nix-name = "ghc9122";
 
               # Workaround for: https://github.com/input-output-hk/haskell.nix/issues/2423
@@ -347,6 +388,38 @@
                   packages.hlibsass.components.library = {
                     # Strip the build dir RPATH to avoid /build references.
                     dontPatchELF = true;
+                    postInstall = ''
+                      while IFS= read -r -d "" f; do
+                        if [ "$(head -c 4 "$f")" = "$(printf '\x7fELF')" ]; then
+                          patchelf --remove-rpath "$f"
+                        fi
+                      done < <(find "$out" -type f -name 'libHShlibsass*.so*' -print0)
+                    '';
+                    /* > Building library for twenty48-0.0.0...
+                       > [ 1 of 28] Compiling Model            ( src/Model.hs, dist/build/Model.o )
+                       > ---> Starting iserv-proxy-interpreter on port 5828
+                       > ---| iserv-proxy-interpreter should have started on 5828
+                       > Listening on port 5828
+                       > iserv-proxy-interpreter: internal error: 0x0 address for _ZGVZN4utf815replace_invalidIPKcSt20back_insert_iteratorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEEET0_T_SC_SB_E18replacement_marker + 0 of type 311 in tmp/nix/store/v7ccq83j8srq6vsd74a6kj1sx3zclpy8-hlibsass-lib-hlibsass-aarch64-unknown-linux-gnu-0.1.10.3/lib/aarch64-linux-ghc-9.12.2-inplace/hlibsass-0.1.10.3-BdQqbJmmOCNA5pDyG35TDD/libsass.a(#53:sass_context.o) for relocation 154 in section 52 of kind: 0
+                       >
+                       >     (GHC version 9.12.2 for aarch64_unknown_linux)
+                       >     Please report this as a GHC bug:  https://www.haskell.org/ghc/reportabug
+                       > qemu: uncaught target signal 6 (Aborted) - core dumped
+                       > iserv-proxy: Uncaught exception ghc-internal:GHC.Internal.IO.Exception.IOException:
+                       >
+                       > {handle: <socket: 15>}: GHCi.Message.remoteCall: end of file
+                       >
+                       > HasCallStack backtrace:
+                       >   collectBacktraces, called at libraries/ghc-internal/src/GHC/Internal/Exception.hs:169:13 in ghc-internal:GHC.Internal.Exception
+                       >   toExceptionWithBacktrace, called at libraries/ghc-internal/src/GHC/Internal/Exception.hs:89:42 in ghc-internal:GHC.Internal.Exception
+                       >   throw, called at libraries/ghci/GHCi/Message.hs:673:16 in ghci-9.12.2-inplace:GHCi.Message
+                       >
+                       > <no location info>: error: External interpreter terminated (1)
+                       >
+                       > [ 2 of 28] Compiling Paths_twenty48   ( dist/build/autogen/Paths_twenty48.hs, dist/build/Paths_twenty48.o )
+                       > [ 3 of 28] Compiling Settings         ( src/Settings.hs, dist/build/Settings.o )
+                       > <no location info>: error: External interpreter terminated (1)
+                    */
                     preConfigure = ''
                       export CFLAGS="''${CFLAGS:-} -fPIC"
                       export CXXFLAGS="''${CXXFLAGS:-} -fPIC"
@@ -356,13 +429,6 @@
                       export C_INCLUDE_PATH="${pkgs.pkgsCross.aarch64-multiplatform.libsass}/include''${C_INCLUDE_PATH:+:}''${C_INCLUDE_PATH:-}"
                       export CPLUS_INCLUDE_PATH="${pkgs.pkgsCross.aarch64-multiplatform.libsass}/include''${CPLUS_INCLUDE_PATH:+:}''${CPLUS_INCLUDE_PATH:-}"
                       export LIBRARY_PATH="${pkgs.pkgsCross.aarch64-multiplatform.libsass}/lib''${LIBRARY_PATH:+:}''${LIBRARY_PATH:-}"
-                    '';
-                    postInstall = ''
-                      while IFS= read -r -d "" f; do
-                        if [ "$(head -c 4 "$f")" = "$(printf '\x7fELF')" ]; then
-                          patchelf --remove-rpath "$f"
-                        fi
-                      done < <(find "$out" -type f -name 'libHShlibsass*.so*' -print0)
                     '';
                   };
                 }
