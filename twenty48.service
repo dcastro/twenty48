@@ -1,0 +1,21 @@
+[Unit]
+Description=twenty48
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/dc/.nix-profile/bin/twenty48
+# If the server process dies, the service will be restarted
+Restart=always
+StandardOutput=journal
+StandardError=journal
+User=dc
+
+[Install]
+# Automatically start the service (if enabled) on reboot.
+# https://unix.stackexchange.com/a/506374/98391
+WantedBy=multi-user.target
+
+[Service]
+Environment="SESSION_KEY_PATH=/home/dc/.local/share/twenty48/client_session_key.aes"
+Environment="STATIC_DIR=/home/dc/.local/share/twenty48/static"

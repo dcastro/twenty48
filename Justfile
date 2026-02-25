@@ -1,0 +1,71 @@
+TAG := "latest"
+remote := "192.168.1.244"
+
+ghcid:
+    ghcid \
+    	--command "stack ghci \
+    		--test \
+    		--bench \
+    		--main-is twenty48:exe:twenty48"
+
+ghcid-yesod:
+    ghcid \
+    	--command "stack ghci twenty48 \
+    		--flag twenty48:dev \
+    		--test --bench \
+    		--main-is :twenty48 \
+    		--ghci-options=-fobject-code" \
+    	--test DevelMain.update \
+    	--warnings \
+    	--reload static \
+    	--reload templates
+
+ghcid-test:
+    ghcid \
+    	--command "stack ghci \
+    		--test \
+    		--bench \
+    		--main-is :test \
+    		--ghci-options=-fobject-code" \
+    	--test main \
+    	--warnings
+
+docker-build:
+    docker build -t "dfacastro/base" "./docker/base"
+    stack --stack-yaml "./stack-docker.yaml" image container
+    docker image tag "dfacastro/2048-twenty48:latest" "dfacastro/2048-twenty48:{{ TAG }}"
+
+docker-publish:
+    docker push "dfacastro/2048-twenty48"
+
+nix-build:
+    nix build .#twenty48
+
+# Deploy to the Raspberry Pi
+rpi-deploy client_session_key_file:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    # Use a shebang to be able to set variables
+    # See: https://just.systems/man/en/setting-variables-in-a-recipe.html
+
+    BUNDLE_PATH=$(nix build .#twenty48-rpi --print-out-paths --no-link); \
+    echo "$BUNDLE_PATH"; \
+    nix copy "$BUNDLE_PATH" --to "ssh://{{ remote }}"; \
+    ssh {{ remote }} -- "\
+        nix profile remove twenty48-exe-twenty48-aarch64-unknown-linux-gnu; \
+        nix profile add $BUNDLE_PATH; \
+        mkdir -p \"/home/dc/.local/share/twenty48/\"; \
+        "
+    scp {{ client_session_key_file }} dc@{{ remote }}:/home/dc/.local/share/twenty48/client_session_key.aes
+    scp -r ./static dc@{{ remote }}:/home/dc/.local/share/twenty48/
+    ssh {{ remote }} -- "sudo systemctl restart twenty48"
+
+rpi-setup-service:
+    # `scp` can't use sudo, so we have to copy the file to a location where we have permission,
+    # and then use `ssh` to move it to the correct directory.`
+    scp ./twenty48.service     dc@{{ remote }}:/home/dc/.local/share/twenty48/twenty48.service
+    ssh {{ remote }} -- " \
+      sudo mv /home/dc/.local/share/twenty48/twenty48.service   /etc/systemd/system/twenty48.service;  \
+      sudo systemctl daemon-reload ; \
+      sudo systemctl enable twenty48 ; \
+      sudo systemctl restart twenty48 ; "
