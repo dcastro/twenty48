@@ -24,54 +24,57 @@
 
         overlays = [
           haskellNix.overlay
-          (final: prev: {
+          (final: prev:
+            let
+              isCross = final.stdenv.buildPlatform != final.stdenv.hostPlatform;
+            in {
 
-            /* Dear programmer:
-                When Codex wrote this code, only God and Codex knew how it worked.
-                Now, only God knows it!
+              /* Dear programmer:
+                  When Codex wrote this code, only God and Codex knew how it worked.
+                  Now, only God knows it!
 
-                Clang refused to cross-compile PostgreSQL for ARM 64.
-                I sent Codex 5.2 to fix this and after _quite_ a few hours, it finally worked.
+                  Clang refused to cross-compile PostgreSQL for ARM 64.
+                  I sent Codex 5.2 to fix this and after _quite_ a few hours, it finally worked.
 
-                I do not know how it works, I do not want to know how it works.
-                I pray to all deities and then some I will never have to touch this again.
+                  I do not know how it works, I do not want to know how it works.
+                  I pray to all deities and then some I will never have to touch this again.
 
-                I pasted below the error message that sent me down this path of madness:
+                  I pasted below the error message that sent me down this path of madness:
 
-                ```
-                > checking for aarch64-unknown-linux-gnu-gcc... aarch64-unknown-linux-gnu-clang
-                > checking whether the C compiler works... no
-                > configure: error: in `/build/source':
-                > configure: error: C compiler cannot create executables
-                > See `config.log' for more details
-                ```
+                  ```
+                  > checking for aarch64-unknown-linux-gnu-gcc... aarch64-unknown-linux-gnu-clang
+                  > checking whether the C compiler works... no
+                  > configure: error: in `/build/source':
+                  > configure: error: C compiler cannot create executables
+                  > See `config.log' for more details
+                  ```
 
-                ```
-                configure:4021: aarch64-unknown-linux-gnu-clang -V >&5
-                clang: error: unsupported option '-V -U_FORTIFY_SOURCE'
-                clang: error: no input files
-                configure:4032: $? = 1
-                configure:4021: aarch64-unknown-linux-gnu-clang -qversion >&5
-                clang: error: unknown argument '-qversion'; did you mean '--version'?
-                clang: error: no input files
-                configure:4032: $? = 1
-                configure:4052: checking whether the C compiler works
-                configure:4074: aarch64-unknown-linux-gnu-clang -fdata-sections -ffunction-sections -flto   conftest.c  >&5
-                clang: error: unable to execute command: posix_spawn failed: Exec format error
-                clang: error: linker command failed with exit code 1 (use -v to see invocation)
-                configure:4078: $? = 1
-                configure:4116: result: no
-                ```
-            */
+                  ```
+                  configure:4021: aarch64-unknown-linux-gnu-clang -V >&5
+                  clang: error: unsupported option '-V -U_FORTIFY_SOURCE'
+                  clang: error: no input files
+                  configure:4032: $? = 1
+                  configure:4021: aarch64-unknown-linux-gnu-clang -qversion >&5
+                  clang: error: unknown argument '-qversion'; did you mean '--version'?
+                  clang: error: no input files
+                  configure:4032: $? = 1
+                  configure:4052: checking whether the C compiler works
+                  configure:4074: aarch64-unknown-linux-gnu-clang -fdata-sections -ffunction-sections -flto   conftest.c  >&5
+                  clang: error: unable to execute command: posix_spawn failed: Exec format error
+                  clang: error: linker command failed with exit code 1 (use -v to see invocation)
+                  configure:4078: $? = 1
+                  configure:4116: result: no
+                  ```
+              */
 
-            /* PostgreSQL cross build note:
-               The clang wrapper failed for aarch64 with exec-format errors
-               during configure. We force GCC and strip -flto so configure can
-               compile test binaries. We also keep PostgreSQL as a single
-               output and regenerate pg_config.env for downstream libpq users.
-            */
-            postgresql =
-              if final.stdenv.buildPlatform != final.stdenv.hostPlatform then
+              /* PostgreSQL cross build note:
+                 The clang wrapper failed for aarch64 with exec-format errors
+                 during configure. We force GCC and strip -flto so configure can
+                 compile test binaries. We also keep PostgreSQL as a single
+                 output and regenerate pg_config.env for downstream libpq users.
+              */
+
+              postgresql = if isCross then
                 prev.postgresql.overrideAttrs (old: {
                   outputs = [ "out" ];
                   prePatch = (old.prePatch or "") + ''
@@ -98,43 +101,37 @@
               else
                 prev.postgresql;
 
-            # This overlay adds our project to pkgs
-            twenty48Project = final.haskell-nix.project' {
+              # This overlay adds our project to pkgs
+              twenty48Project = final.haskell-nix.project' {
 
-              # We explicitly list out every file needed to build the project
-              # to avoid rebuilds when files like `README.md` or `justfile` change.
-              # Related:
-              #   https://github.com/numtide/nix-filter
-              #   https://discourse.nixos.org/t/how-to-make-src-in-a-flake-nix-not-change-a-lot/15129
-              #   https://discourse.nixos.org/t/excluding-a-subdirectory-when-using-local-paths/3954
-              #   https://unix.stackexchange.com/q/720616/98391
-              src = filter {
-                root = ./.;
-                include = [
-                  "src"
-                  "app"
-                  "config"
-                  "static"
-                  "templates"
-                  ./package.yaml
-                  ./stack.yaml
-                  ./stack.yaml.lock
-                ];
-              };
+                # We explicitly list out every file needed to build the project
+                # to avoid rebuilds when files like `README.md` or `justfile` change.
+                # Related:
+                #   https://github.com/numtide/nix-filter
+                #   https://discourse.nixos.org/t/how-to-make-src-in-a-flake-nix-not-change-a-lot/15129
+                #   https://discourse.nixos.org/t/excluding-a-subdirectory-when-using-local-paths/3954
+                #   https://unix.stackexchange.com/q/720616/98391
+                src = filter {
+                  root = ./.;
+                  include = [
+                    "src"
+                    "app"
+                    "config"
+                    "static"
+                    "templates"
+                    ./package.yaml
+                    ./stack.yaml
+                    ./stack.yaml.lock
+                  ];
+                };
 
-              # Use stack.yaml instead of cabal.project
-              projectFileName = "stack.yaml";
+                # Use stack.yaml instead of cabal.project
+                projectFileName = "stack.yaml";
 
-              # Had to upgrade to GHC 9.12.2 to get `yesod-newsfeed` to compile, I was having Template Haskell related issues.
-              compiler-nix-name = "ghc9122";
+                # Had to upgrade to GHC 9.12.2 to get `yesod-newsfeed` to compile, I was having Template Haskell related issues.
+                compiler-nix-name = "ghc9122";
 
-              modules = [
-                {
-                  # Workaround for: https://github.com/input-output-hk/haskell.nix/issues/2423
-                  packages.directory.flags.os-string = true;
-                  packages.unix.flags.os-string = true;
-                }
-                {
+                modules = pkgs.lib.optionals isCross [{
                   # > configure: error: Library requirements (PostgreSQL) not met.
                   packages.postgresql-libpq-configure.components.library.preConfigure =
                     ''
@@ -153,43 +150,48 @@
                       chmod +x pg_config
                       export PG_CONFIG="$PWD/pg_config"
                     '';
-                }
-                {
 
                   /* Cross builds: point hlibsass at the cross libsass headers
-                      and libs to avoid libsass detection failures.
+                     and libs to avoid libsass detection failures.
 
-                      Example failure:
+                     Example failure:
 
-                      > Building library for twenty48-0.0.0...
-                      > [ 1 of 28] Compiling Model            ( src/Model.hs, dist/build/Model.o )
-                      > ---> Starting iserv-proxy-interpreter on port 7394
-                      > ---| iserv-proxy-interpreter should have started on 7394
-                      > Listening on port 7394
-                      > iserv-proxy-interpreter: internal error: 0x0 address for _ZGVZN4utf815replace_invalidIPKcSt20back_insert_iteratorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEEET0_T_SC_SB_E18replacement_marker + 0 of type 311 in tmp/nix/store/ma63g9gw8yydi8n9hv31lrqhr6aybk6a-hlibsass-lib-hlibsass-aarch64-unknown-linux-gnu-0.1.10.3/lib/aarch64-linux-ghc-9.12.2-inplace/hlibsass-0.1.10.3-BdQqbJmmOCNA5pDyG35TDD/libsass.a(#53:sass_context.o) for relocation 154 in section 52 of kind: 0
-                      >
-                      >     (GHC version 9.12.2 for aarch64_unknown_linux)
-                      >     Please report this as a GHC bug:  https://www.haskell.org/ghc/reportabug
-                      > qemu: uncaught target signal 6 (Aborted) - core dumped
-                      > iserv-proxy: Uncaught exception ghc-internal:GHC.Internal.IO.Exception.IOException:
-                      >
-                      > {handle: <socket: 15>}: GHCi.Message.remoteCall: end of file
-                      >
-                      > HasCallStack backtrace:
-                      >   collectBacktraces, called at libraries/ghc-internal/src/GHC/Internal/Exception.hs:169:13 in ghc-internal:GHC.Internal.Exception
-                      >   toExceptionWithBacktrace, called at libraries/ghc-internal/src/GHC/Internal/Exception.hs:89:42 in ghc-internal:GHC.Internal.Exception
-                      >   throw, called at libraries/ghci/GHCi/Message.hs:673:16 in ghci-9.12.2-inplace:GHCi.Message
-                      >
-                      > <no location info>: error: External interpreter terminated (1)
-                      >
-                      > [ 2 of 28] Compiling Paths_twenty48   ( dist/build/autogen/Paths_twenty48.hs, dist/build/Paths_twenty48.o )
-                      > [ 3 of 28] Compiling Settings         ( src/Settings.hs, dist/build/Settings.o )
-                      > <no location info>: error: External interpreter terminated (1)
+                     > Building library for twenty48-0.0.0...
+                     > [ 1 of 28] Compiling Model            ( src/Model.hs, dist/build/Model.o )
+                     > ---> Starting iserv-proxy-interpreter on port 7394
+                     > ---| iserv-proxy-interpreter should have started on 7394
+                     > Listening on port 7394
+                     > iserv-proxy-interpreter: internal error: 0x0 address for _ZGVZN4utf815replace_invalidIPKcSt20back_insert_iteratorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEEET0_T_SC_SB_E18replacement_marker + 0 of type 311 in tmp/nix/store/ma63g9gw8yydi8n9hv31lrqhr6aybk6a-hlibsass-lib-hlibsass-aarch64-unknown-linux-gnu-0.1.10.3/lib/aarch64-linux-ghc-9.12.2-inplace/hlibsass-0.1.10.3-BdQqbJmmOCNA5pDyG35TDD/libsass.a(#53:sass_context.o) for relocation 154 in section 52 of kind: 0
+                     >
+                     >     (GHC version 9.12.2 for aarch64_unknown_linux)
+                     >     Please report this as a GHC bug:  https://www.haskell.org/ghc/reportabug
+                     > qemu: uncaught target signal 6 (Aborted) - core dumped
+                     > iserv-proxy: Uncaught exception ghc-internal:GHC.Internal.IO.Exception.IOException:
+                     >
+                     > {handle: <socket: 15>}: GHCi.Message.remoteCall: end of file
+                     >
+                     > HasCallStack backtrace:
+                     >   collectBacktraces, called at libraries/ghc-internal/src/GHC/Internal/Exception.hs:169:13 in ghc-internal:GHC.Internal.Exception
+                     >   toExceptionWithBacktrace, called at libraries/ghc-internal/src/GHC/Internal/Exception.hs:89:42 in ghc-internal:GHC.Internal.Exception
+                     >   throw, called at libraries/ghci/GHCi/Message.hs:673:16 in ghci-9.12.2-inplace:GHCi.Message
+                     >
+                     > <no location info>: error: External interpreter terminated (1)
+                     >
+                     > [ 2 of 28] Compiling Paths_twenty48   ( dist/build/autogen/Paths_twenty48.hs, dist/build/Paths_twenty48.o )
+                     > [ 3 of 28] Compiling Settings         ( src/Settings.hs, dist/build/Settings.o )
+                     > <no location info>: error: External interpreter terminated (1)
                   */
                   packages.hlibsass.configureFlags = [
                     "--extra-include-dirs=${pkgs.pkgsCross.aarch64-multiplatform.libsass}/include"
                     "--extra-lib-dirs=${pkgs.pkgsCross.aarch64-multiplatform.libsass}/lib"
                   ];
+
+                }] ++ [{
+
+                  # Workaround for: https://github.com/input-output-hk/haskell.nix/issues/2423
+                  packages.directory.flags.os-string = true;
+                  packages.unix.flags.os-string = true;
+
                   /* This is a workaround for the fact that `hlibsass` adds an RPATH to the library, which causes it to fail to load when the build directory is deleted after the build.
                       The `dontPatchELF` option prevents `haskell.nix` from patching the ELF files, and the `postInstall` script removes the RPATH from the library.
 
@@ -231,22 +233,21 @@
                       done < <(find "$out" -type f -name 'libHShlibsass*.so*' -print0)
                     '';
                   };
-                }
-              ];
+                }];
 
-              # This is used by `nix develop .` to open a shell for use with
-              # `cabal`, `hlint` and `haskell-language-server`
-              shell.tools = {
-                cabal = { };
-                # hlint = {};
-                # haskell-language-server = {};
+                # This is used by `nix develop .` to open a shell for use with
+                # `cabal`, `hlint` and `haskell-language-server`
+                shell.tools = {
+                  cabal = { };
+                  # hlint = {};
+                  # haskell-language-server = {};
+                };
+                # Non-Haskell shell tools go here
+                shell.buildInputs = with pkgs; [ nixpkgs-fmt ];
+                # This adds `js-unknown-ghcjs-cabal` to the shell.
+                # shell.crossPlatforms = p: [p.ghcjs];
               };
-              # Non-Haskell shell tools go here
-              shell.buildInputs = with pkgs; [ nixpkgs-fmt ];
-              # This adds `js-unknown-ghcjs-cabal` to the shell.
-              # shell.crossPlatforms = p: [p.ghcjs];
-            };
-          })
+            })
         ];
         pkgs = import nixpkgs {
           inherit system overlays;
