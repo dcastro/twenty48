@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
     \<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    \<script src="https://apis.google.com/js/api.js"></script>
+    \<script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
@@ -38,7 +38,8 @@
             
             <div id="signed-in">
               <a id="sign-out">
-                <img id="avatar" alt="Avatar">
+                <!-- https://stackoverflow.com/a/79440270/857807 -->
+                <img id="avatar" alt="Avatar" referrerPolicy="no-referrer">
                 <span>Sign-out
             
             <div id="signed-out">
