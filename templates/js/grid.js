@@ -96,7 +96,7 @@ Grid.prototype.removeTile = function (tile) {
 
 Grid.prototype.withinBounds = function (position) {
   return position.x >= 0 && position.x < this.size &&
-         position.y >= 0 && position.y < this.size;
+    position.y >= 0 && position.y < this.size;
 };
 
 Grid.prototype.serialize = function () {
@@ -116,21 +116,20 @@ Grid.prototype.serialize = function () {
   };
 };
 
-Grid.prototype.wsSerialize = function() {
+Grid.prototype.wsSerialize = function () {
   function transpose(grid) {
-    return grid[0].map(function(_, i) {
-       return grid.map(function(row) { 
-         return row[i];
-       });
+    return grid[0].map(function (_, i) {
+      return grid.map(function (row) {
+        return row[i];
+      });
     });
   };
 
   return transpose(
-    this.cells.map(function(row) {
-      return row.map(function(cell) {
+    this.cells.map(function (row) {
+      return row.map(function (cell) {
         return cell ? cell.value : null;
       });
     })
   );
 }
-

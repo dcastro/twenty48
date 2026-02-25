@@ -1,6 +1,6 @@
 function HTMLActuator() {
-  this.tileContainer    = document.querySelector(".tile-container");
-  this.scoreContainer   = document.querySelector(".score-container");
+  this.tileContainer = document.querySelector(".tile-container");
+  this.scoreContainer = document.querySelector(".score-container");
   this.messageContainer = document.querySelector(".game-message");
 
   this.score = 0;
@@ -47,9 +47,9 @@ HTMLActuator.prototype.clearContainer = function (container) {
 HTMLActuator.prototype.addTile = function (tile) {
   var self = this;
 
-  var wrapper   = document.createElement("div");
-  var inner     = document.createElement("div");
-  var position  = tile.previousPosition || { x: tile.x, y: tile.y };
+  var wrapper = document.createElement("div");
+  var inner = document.createElement("div");
+  var position = tile.previousPosition || { x: tile.x, y: tile.y };
   var positionClass = this.positionClass(position);
 
   // We can't use classlist because it somehow glitches when replacing classes
@@ -119,7 +119,7 @@ HTMLActuator.prototype.updateScore = function (score) {
 };
 
 HTMLActuator.prototype.message = function (won, signedIn) {
-  var type    = won ? "game-won" : "game-over";
+  var type = won ? "game-won" : "game-over";
   var message = won ? "You win!" : "Game over!";
 
   signedIn ? $("#save-score-button").hide() : $("#save-score-button").show();
@@ -134,27 +134,27 @@ HTMLActuator.prototype.clearMessage = function () {
   this.messageContainer.classList.remove("game-over");
 };
 
-HTMLActuator.prototype.autoPlay = function() {
+HTMLActuator.prototype.autoPlay = function () {
   document.getElementsByClassName("auto-play-button")[0].style.display = 'none';
   document.getElementsByClassName("stop-auto-play-button")[0].style.display = 'block';
 };
 
-HTMLActuator.prototype.stopAutoPlay = function() {
+HTMLActuator.prototype.stopAutoPlay = function () {
   document.getElementsByClassName("auto-play-button")[0].style.display = 'block';
   document.getElementsByClassName("stop-auto-play-button")[0].style.display = 'none';
 };
 
-HTMLActuator.prototype.hideTopScores = function(topScores) {
+HTMLActuator.prototype.hideTopScores = function (topScores) {
   $(".top-scores-panel").fadeOut();
 };
 
-HTMLActuator.prototype.showTopScores = function(topScoresPromise) {
+HTMLActuator.prototype.showTopScores = function (topScoresPromise) {
 
-  $(".top-scores-tables tbody").html(Array(10).fill(loadingRow).map(function(f) { return f(); }));
+  $(".top-scores-tables tbody").html(Array(10).fill(loadingRow).map(function (f) { return f(); }));
 
   $(".top-scores-panel").fadeIn();
 
-  topScoresPromise.then(function(topScores) {
+  topScoresPromise.then(function (topScores) {
     $(".my-scores-table tbody").html(scoreRows(topScores.myScores === null ? [] : topScores.myScores));
     $(".all-scores-table tbody").html(scoreRows(topScores.allScores));
   });
@@ -166,9 +166,9 @@ function loadingRow() {
   );
 }
 
-function scoreRows (scores) {
+function scoreRows(scores) {
   return rightPad(10, emptyRow,
-    scores.map(function(s) {
+    scores.map(function (s) {
       return $("<tr>")
         .append($("<td>").text(s.name))
         .append($("<td>").text(s.score))
@@ -182,5 +182,5 @@ function rightPad(n, f, xs) {
 
   if (need <= 0)
     return xs;
-  return xs.concat(Array(need).fill(f).map(function(f) { return f(); }));
+  return xs.concat(Array(need).fill(f).map(function (f) { return f(); }));
 }

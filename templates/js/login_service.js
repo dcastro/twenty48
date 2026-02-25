@@ -1,11 +1,11 @@
 function LoginService(onSignIn) {
-  
+
   init();
 
-  this.userDetails = function() {
-    return this.isSignedIn().then(function(signedIn) {
+  this.userDetails = function () {
+    return this.isSignedIn().then(function (signedIn) {
 
-      if(!signedIn)
+      if (!signedIn)
         return null;
 
       const profile = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
@@ -17,40 +17,40 @@ function LoginService(onSignIn) {
     });
   };
 
-  this.isSignedIn = function() {
-    return whenLoaded().then(function() {
+  this.isSignedIn = function () {
+    return whenLoaded().then(function () {
       return gapi.auth2.getAuthInstance().isSignedIn.get();
     });
   };
 
-  this.signIn = function() {
-    return whenLoaded().then(function() {
-       return gapi.auth2.getAuthInstance().signIn();
+  this.signIn = function () {
+    return whenLoaded().then(function () {
+      return gapi.auth2.getAuthInstance().signIn();
     });
   }
 
   function whenLoaded() {
-    return new Promise(function(fulfilled, _) {
+    return new Promise(function (fulfilled, _) {
       gapi.load('client:auth2', fulfilled);
     });
   }
 
   function init() {
-    gapi.load('client:auth2', function() {
+    gapi.load('client:auth2', function () {
       gapi.client.init({
         'apiKey': 'AIzaSyDEmI3F231zE25CR_BYqRHsSqL16atW8KI',
         'clientId': '587486773943-lb3cfne32q7t784ivehivj7rinjr4ds2.apps.googleusercontent.com',
         'scope': 'profile'
-      }).then(function() {
+      }).then(function () {
         const auth2 = gapi.auth2.getAuthInstance();
 
-        if(auth2.isSignedIn.get())
+        if (auth2.isSignedIn.get())
           signedIn(auth2);
         else
           signedOut();
 
-        auth2.isSignedIn.listen(function(isSignedIn) {
-          if(isSignedIn)
+        auth2.isSignedIn.listen(function (isSignedIn) {
+          if (isSignedIn)
             signedIn(auth2);
           else
             signedOut();

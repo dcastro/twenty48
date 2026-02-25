@@ -1,12 +1,12 @@
 function GameManager(size, InputManager, Actuator, StorageManager, LoginService) {
-  this.size           = size; // Size of the grid
-  this.inputManager   = new InputManager;
+  this.size = size; // Size of the grid
+  this.inputManager = new InputManager;
   this.storageManager = new StorageManager;
-  this.actuator       = new Actuator;
-  this.loginSvc       = new LoginService(this.onSignIn.bind(this));
+  this.actuator = new Actuator;
+  this.loginSvc = new LoginService(this.onSignIn.bind(this));
   this.showingTopScores = false;
 
-  this.startTiles     = 2;
+  this.startTiles = 2;
 
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
@@ -22,17 +22,17 @@ function GameManager(size, InputManager, Actuator, StorageManager, LoginService)
   this.setup();
 }
 
-GameManager.prototype.autoPlaying = function() { return this.conn !== null; }
+GameManager.prototype.autoPlaying = function () { return this.conn !== null; }
 
-GameManager.prototype.onSignIn = function() {
-  if(this.showingTopScores) {
+GameManager.prototype.onSignIn = function () {
+  if (this.showingTopScores) {
     // reload tables with user's "my scores"
     this.showTopScores();
   }
 }
 
-GameManager.prototype.toggleTopScores = function() {
-  if(this.showingTopScores) {
+GameManager.prototype.toggleTopScores = function () {
+  if (this.showingTopScores) {
     this.actuator.hideTopScores();
     this.showingTopScores = false;
   }
@@ -41,17 +41,17 @@ GameManager.prototype.toggleTopScores = function() {
   }
 }
 
-GameManager.prototype.showTopScores = function() {
+GameManager.prototype.showTopScores = function () {
   const scoresPromise =
-  this.loginSvc.userDetails().then(function(details) {
-    const query = details === null? "" : "?user=" + details.email;
+    this.loginSvc.userDetails().then(function (details) {
+      const query = details === null ? "" : "?user=" + details.email;
 
-    return new Promise(function(fulfilled, rejected) {
-      $.get('@{ScoresR}' + query)
-        .done(fulfilled)
-        .fail(rejected)
+      return new Promise(function (fulfilled, rejected) {
+        $.get('@{ScoresR}' + query)
+          .done(fulfilled)
+          .fail(rejected)
+      });
     });
-  });
   this.actuator.showTopScores(scoresPromise);
   this.showingTopScores = true;
 }
@@ -60,7 +60,7 @@ GameManager.prototype.showTopScores = function() {
 GameManager.prototype.saveScore = function (promptSignIn) {
   const self = this;
 
-  self.getUserDetails(promptSignIn).then(function(details) {
+  self.getUserDetails(promptSignIn).then(function (details) {
     if (details !== null) {
       details.score = self.score;
       $.post('@{ScoreR}', JSON.stringify(details));
@@ -70,13 +70,13 @@ GameManager.prototype.saveScore = function (promptSignIn) {
   })
 }
 
-GameManager.prototype.getUserDetails = function(promptSignIn) {
+GameManager.prototype.getUserDetails = function (promptSignIn) {
   const self = this;
 
-  return self.loginSvc.userDetails().then(function(details) {
+  return self.loginSvc.userDetails().then(function (details) {
     return details === null && promptSignIn ?
-              self.loginSvc.signIn().then(function() { return self.loginSvc.userDetails(); }) :
-              Promise.resolve(details);
+      self.loginSvc.signIn().then(function () { return self.loginSvc.userDetails(); }) :
+      Promise.resolve(details);
   });
 }
 
@@ -97,13 +97,13 @@ GameManager.prototype.autoPlay = function () {
     "@{AutoPlayR}"
       .replace(/^http:\/\//, "ws://")
       .replace(/^https:\/\//, "wss://")
-    );
+  );
 
-  self.conn.onopen = function() {
+  self.conn.onopen = function () {
     return self.conn.send(JSON.stringify(self.grid.wsSerialize()))
   };
-  
-  self.conn.onmessage = function(msg) {
+
+  self.conn.onmessage = function (msg) {
     const data = JSON.parse(msg.data);
 
     switch (data.tag) {
@@ -119,7 +119,7 @@ GameManager.prototype.autoPlay = function () {
       case "PlayComputerMsg":
         const cell = new Tile({ x: data._coord[0], y: data._coord[1], }, data._cell);
         self.grid.insertTile(cell);
-        break;        
+        break;
     }
 
     if (!self.movesAvailable()) {
@@ -128,12 +128,12 @@ GameManager.prototype.autoPlay = function () {
     self.actuate();
   }
 
-  self.conn.onerror = function(err) {
+  self.conn.onerror = function (err) {
     console.error(err);
     self.actuator.stopAutoPlay();
     self.conn = null;
   }
-  self.conn.onclose = function() {
+  self.conn.onclose = function () {
     self.actuator.stopAutoPlay();
     self.conn = null;
   }
@@ -154,7 +154,7 @@ GameManager.prototype.autoPlayOnce = function () {
   const msg = JSON.stringify(self.grid.wsSerialize());
 
   $.post("@{AutoPlayOnceR}", msg)
-    .done(function(rsp) {
+    .done(function (rsp) {
       if (rsp._direction !== null) {
         switch (rsp._direction) {
           // 0: up, 1: right, 2: down, 3: left
@@ -167,7 +167,7 @@ GameManager.prototype.autoPlayOnce = function () {
           self.over = true; // Game over!
         }
         self.actuate();
-      }      
+      }
     });
 }
 
@@ -195,17 +195,17 @@ GameManager.prototype.setup = function () {
 
   // Reload the game from a previous game if present
   if (previousState) {
-    this.grid        = new Grid(previousState.grid.size,
-                                previousState.grid.cells); // Reload grid
-    this.score       = previousState.score;
-    this.over        = previousState.over;
-    this.won         = previousState.won;
+    this.grid = new Grid(previousState.grid.size,
+      previousState.grid.cells); // Reload grid
+    this.score = previousState.score;
+    this.over = previousState.over;
+    this.won = previousState.won;
     this.keepPlaying = previousState.keepPlaying;
   } else {
-    this.grid        = new Grid(this.size);
-    this.score       = 0;
-    this.over        = false;
-    this.won         = false;
+    this.grid = new Grid(this.size);
+    this.score = 0;
+    this.over = false;
+    this.won = false;
     this.keepPlaying = false;
 
     // Add the initial tiles
@@ -239,24 +239,24 @@ GameManager.prototype.actuate = function () {
 
   // Clear the state when the game is over (game over only, not win)
   if (self.over) {
-    self.loginSvc.isSignedIn().then(function(signedIn) {
+    self.loginSvc.isSignedIn().then(function (signedIn) {
       if (signedIn) self.saveScore();
     });
-    
+
     self.storageManager.clearGameState();
     self.stopAutoPlay();
   } else {
     self.storageManager.setGameState(self.serialize());
   }
 
-  self.loginSvc.isSignedIn().then(function(signedIn) {
+  self.loginSvc.isSignedIn().then(function (signedIn) {
     self.actuator.actuate(self.grid, {
-      score:      self.score,
-      over:       self.over,
-      won:        self.won,
+      score: self.score,
+      over: self.over,
+      won: self.won,
       terminated: self.isGameTerminated()
     },
-    signedIn);
+      signedIn);
   });
 
 
@@ -265,10 +265,10 @@ GameManager.prototype.actuate = function () {
 // Represent the current game as an object
 GameManager.prototype.serialize = function () {
   return {
-    grid:        this.grid.serialize(),
-    score:       this.score,
-    over:        this.over,
-    won:         this.won,
+    grid: this.grid.serialize(),
+    score: this.score,
+    over: this.over,
+    won: this.won,
     keepPlaying: this.keepPlaying
   };
 };
@@ -299,9 +299,9 @@ GameManager.prototype.move = function (direction) {
 
   var cell, tile;
 
-  var vector     = this.getVector(direction);
+  var vector = this.getVector(direction);
   var traversals = this.buildTraversals(vector);
-  var moved      = false;
+  var moved = false;
 
   // Save the current tile positions and remove merger information
   this.prepareTiles();
@@ -314,7 +314,7 @@ GameManager.prototype.move = function (direction) {
 
       if (tile) {
         var positions = self.findFarthestPosition(cell, vector);
-        var next      = self.grid.cellContent(positions.next);
+        var next = self.grid.cellContent(positions.next);
 
         // Only one merger per row traversal?
         if (next && next.value === tile.value && !next.mergedFrom) {
@@ -333,7 +333,7 @@ GameManager.prototype.move = function (direction) {
           // The mighty 2048 tile
           if (merged.value === 2048) {
             self.won = true;
-            self.loginSvc.isSignedIn().then(function(signedIn) {
+            self.loginSvc.isSignedIn().then(function (signedIn) {
               if (signedIn) self.saveScore();
             });
 
@@ -366,9 +366,9 @@ GameManager.prototype.move = function (direction) {
 GameManager.prototype.getVector = function (direction) {
   // Vectors representing tile movement
   var map = {
-    0: { x: 0,  y: -1 }, // Up
-    1: { x: 1,  y: 0 },  // Right
-    2: { x: 0,  y: 1 },  // Down
+    0: { x: 0, y: -1 }, // Up
+    1: { x: 1, y: 0 },  // Right
+    2: { x: 0, y: 1 },  // Down
     3: { x: -1, y: 0 }   // Left
   };
 
@@ -397,9 +397,9 @@ GameManager.prototype.findFarthestPosition = function (cell, vector) {
   // Progress towards the vector direction until an obstacle is found
   do {
     previous = cell;
-    cell     = { x: previous.x + vector.x, y: previous.y + vector.y };
+    cell = { x: previous.x + vector.x, y: previous.y + vector.y };
   } while (this.grid.withinBounds(cell) &&
-           this.grid.cellAvailable(cell));
+    this.grid.cellAvailable(cell));
 
   return {
     farthest: previous,
@@ -424,9 +424,9 @@ GameManager.prototype.tileMatchesAvailable = function () {
       if (tile) {
         for (var direction = 0; direction < 4; direction++) {
           var vector = self.getVector(direction);
-          var cell   = { x: x + vector.x, y: y + vector.y };
+          var cell = { x: x + vector.x, y: y + vector.y };
 
-          var other  = self.grid.cellContent(cell);
+          var other = self.grid.cellContent(cell);
 
           if (other && other.value === tile.value) {
             return true; // These two tiles can be merged
