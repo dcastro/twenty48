@@ -100,7 +100,28 @@ function LoginService(onSignIn) {
   };
 
   this.signIn = function () {
-    service.button_clicked();
+    return new Promise(function (resolve, reject) {
+      ensureInitialized();
+
+      // https://developers.google.com/identity/gsi/web/reference/js-reference#google.accounts.id.prompt
+      // https://developers.google.com/identity/gsi/web/reference/js-reference#PromptMomentNotification
+      google.accounts.id.prompt(function (notification) {
+        if (notification.isNotDisplayed()) {
+          return reject(new Error(notification.getNotDisplayedReason()));
+        }
+        if (notification.isSkippedMoment()) {
+          return reject(new Error(notification.getSkippedReason()));
+        }
+        if (notification.isDismissedMoment()) {
+          if (notification.getDismissedReason() === 'credential_returned') {
+            // This case is hit when the user successfully signs.
+            return resolve();
+          }
+          return reject(new Error(notification.getDismissedReason()));
+        }
+        resolve();
+      });
+    });
   };
 
   this.signOut = function () {
