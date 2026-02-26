@@ -19,3 +19,4 @@ WantedBy=multi-user.target
 [Service]
 Environment="SESSION_KEY_PATH=/home/dc/.local/share/twenty48/client_session_key.aes"
 Environment="STATIC_DIR=/home/dc/.local/share/twenty48/static"
+Environment="AI_DEPTH=5"
