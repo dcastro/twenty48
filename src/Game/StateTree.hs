@@ -8,6 +8,7 @@ import Game.Types
 import Import
 import Numeric.Natural (Natural)
 
+-- | Keep track of the player whose turn it is to play
 -- | and the ones who goes after
 data StateTree current next a
   = StateTree
