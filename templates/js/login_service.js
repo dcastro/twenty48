@@ -2,6 +2,7 @@ function LoginService(onSignIn) {
   const service = this;
   let gisInitialized = false;
   let currentProfile = null;
+  const profileStorageKey = 'twenty48.profile';
 
   // https://developers.google.com/identity/gsi/web/guides/display-google-one-tap#credential_response
   function parseJwt(token) {
@@ -26,6 +27,10 @@ function LoginService(onSignIn) {
 
     $("body").addClass("signed-in");
 
+    if (window.localStorage) {
+      localStorage.setItem(profileStorageKey, JSON.stringify(profile));
+    }
+
     onSignIn();
   }
 
@@ -35,6 +40,34 @@ function LoginService(onSignIn) {
     $("#signed-out").show();
 
     $("body").removeClass("signed-in");
+
+    if (window.localStorage) {
+      localStorage.removeItem(profileStorageKey);
+    }
+  }
+
+  // Try to restore profile from localStorage if available.
+  // Returns `true` if a valid profile was restored and `false` otherwise.
+  function restoreProfile() {
+    if (!window.localStorage) {
+      return false;
+    }
+
+    const saved = localStorage.getItem(profileStorageKey);
+    if (!saved) {
+      return false;
+    }
+
+    try {
+      currentProfile = JSON.parse(saved);
+      if (currentProfile && (currentProfile.email || currentProfile.name || currentProfile.picture)) {
+        signedIn(currentProfile);
+        return true;
+      }
+    } catch (_) {
+      localStorage.removeItem(profileStorageKey);
+    }
+    return false;
   }
 
   function ensureInitialized() {
@@ -81,14 +114,16 @@ function LoginService(onSignIn) {
   };
 
   function init() {
+    if (!restoreProfile()) {
+      signedOut();
+    }
+
     $("#sign-in").click(function () {
       service.button_clicked();
     });
     $("#sign-out").click(function () {
       service.signOut();
     });
-
-    signedOut();
   }
 
   init();
