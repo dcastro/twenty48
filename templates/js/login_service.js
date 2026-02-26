@@ -1,87 +1,151 @@
 function LoginService(onSignIn) {
-  
-  init();
+  const service = this;
+  let gisInitialized = false;
+  let currentProfile = null;
+  const profileStorageKey = 'twenty48.profile';
 
-  this.userDetails = function() {
-    return this.isSignedIn().then(function(signedIn) {
-
-      if(!signedIn)
-        return null;
-
-      const profile = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
-
-      return {
-        email: profile.getEmail(),
-        name: profile.getName()
-      };
-    });
-  };
-
-  this.isSignedIn = function() {
-    return whenLoaded().then(function() {
-      return gapi.auth2.getAuthInstance().isSignedIn.get();
-    });
-  };
-
-  this.signIn = function() {
-    return whenLoaded().then(function() {
-       return gapi.auth2.getAuthInstance().signIn();
-    });
+  // https://developers.google.com/identity/gsi/web/guides/display-google-one-tap#credential_response
+  function parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
   }
 
-  function whenLoaded() {
-    return new Promise(function(fulfilled, _) {
-      gapi.load('client:auth2', fulfilled);
-    });
+  function signedIn(profile) {
+    if (profile.picture) {
+      $("#avatar").attr('src', profile.picture);
+    }
+
+    $("#login-area .loading").hide();
+    $("#signed-out").hide();
+    $("#signed-in").show();
+
+    $("#save-score-button").hide();
+
+    $("body").addClass("signed-in");
+
+    if (window.localStorage) {
+      localStorage.setItem(profileStorageKey, JSON.stringify(profile));
+    }
+
+    onSignIn();
   }
 
-  function init() {
-    gapi.load('client:auth2', function() {
-      gapi.client.init({
-        'apiKey': 'AIzaSyDEmI3F231zE25CR_BYqRHsSqL16atW8KI',
-        'clientId': '587486773943-lb3cfne32q7t784ivehivj7rinjr4ds2.apps.googleusercontent.com',
-        'scope': 'profile'
-      }).then(function() {
-        const auth2 = gapi.auth2.getAuthInstance();
+  function signedOut() {
+    $("#login-area .loading").hide();
+    $("#signed-in").hide();
+    $("#signed-out").show();
 
-        if(auth2.isSignedIn.get())
-          signedIn(auth2);
-        else
-          signedOut();
+    $("body").removeClass("signed-in");
 
-        auth2.isSignedIn.listen(function(isSignedIn) {
-          if(isSignedIn)
-            signedIn(auth2);
-          else
-            signedOut();
-        });
+    if (window.localStorage) {
+      localStorage.removeItem(profileStorageKey);
+    }
+  }
 
-        $('#sign-in').click(auth2.signIn);
-        $('#sign-out').click(auth2.signOut);
+  // Try to restore profile from localStorage if available.
+  // Returns `true` if a valid profile was restored and `false` otherwise.
+  function restoreProfile() {
+    if (!window.localStorage) {
+      return false;
+    }
+
+    const saved = localStorage.getItem(profileStorageKey);
+    if (!saved) {
+      return false;
+    }
+
+    try {
+      currentProfile = JSON.parse(saved);
+      if (currentProfile && (currentProfile.email || currentProfile.name || currentProfile.picture)) {
+        signedIn(currentProfile);
+        return true;
+      }
+    } catch (_) {
+      localStorage.removeItem(profileStorageKey);
+    }
+    return false;
+  }
+
+  function ensureInitialized() {
+    if (gisInitialized) {
+      return;
+    }
+
+    google.accounts.id.initialize({
+      client_id: '587486773943-lb3cfne32q7t784ivehivj7rinjr4ds2.apps.googleusercontent.com',
+      callback: function (response) {
+        const payload = parseJwt(response.credential);
+        currentProfile = {
+          email: payload.email || null,
+          name: payload.name || null,
+          picture: payload.picture || null
+        };
+        signedIn(currentProfile);
+      }
+    });
+
+    gisInitialized = true;
+  }
+
+  this.userDetails = function () {
+    return Promise.resolve(currentProfile);
+  };
+
+  this.isSignedIn = function () {
+    return Promise.resolve(!!currentProfile);
+  };
+
+  this.signIn = function () {
+    return new Promise(function (resolve, reject) {
+      ensureInitialized();
+
+      // https://developers.google.com/identity/gsi/web/reference/js-reference#google.accounts.id.prompt
+      // https://developers.google.com/identity/gsi/web/reference/js-reference#PromptMomentNotification
+      google.accounts.id.prompt(function (notification) {
+        if (notification.isNotDisplayed()) {
+          return reject(new Error(notification.getNotDisplayedReason()));
+        }
+        if (notification.isSkippedMoment()) {
+          return reject(new Error(notification.getSkippedReason()));
+        }
+        if (notification.isDismissedMoment()) {
+          if (notification.getDismissedReason() === 'credential_returned') {
+            // This case is hit when the user successfully signs.
+            return resolve();
+          }
+          return reject(new Error(notification.getDismissedReason()));
+        }
+        resolve();
       });
     });
+  };
 
-    function signedIn(auth2) {
-      const profile = auth2.currentUser.get().getBasicProfile()
-      $("#avatar").attr('src', profile.getImageUrl());
+  this.signOut = function () {
+    currentProfile = null;
+    signedOut();
+  };
 
-      $("#login-area .loading").hide();
-      $("#signed-out").hide();
-      $("#signed-in").show();
+  this.button_clicked = function () {
+    ensureInitialized();
+    google.accounts.id.prompt();
+  };
 
-      $("#save-score-button").hide();
-
-      $("body").addClass("signed-in");
-
-      onSignIn();
+  function init() {
+    if (!restoreProfile()) {
+      signedOut();
     }
 
-    function signedOut() {
-      $("#login-area .loading").hide();
-      $("#signed-in").hide();
-      $("#signed-out").show();
-
-      $("body").removeClass("signed-in");
-    }
+    $("#sign-in").click(function () {
+      service.button_clicked();
+    });
+    $("#sign-out").click(function () {
+      service.signOut();
+    });
   }
+
+  init();
 }
